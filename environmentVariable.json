@@ -1,0 +1,14 @@
+{
+    "MONGO_URL": "mongodb+srv://bhargavvidhan:Bhargav%402301@mypersonaltest.esvhw.mongodb.net/RestaurantTable?retryWrites=true&w=majority&appName=MyPersonalTest",
+    "JWT_SECRET": "your_very_secret_key",
+    "URL": "http://51.20.80.241:3660/",
+    "productionURL": "http://51.20.80.241:3660/",
+    "PORT": "3660",
+    "HOST": "mail.vidhaninfotech.com",
+    "SECURE": false,
+    "emailPORT": 25,
+    "AUTHUSER": "noreply@vidhaninfotech.com",
+    "AUTHPASSWORD": "iPKo3z!tpCSzrI5Sw",
+    "TWILIO_ACCOUNT_SID": "AC361462dda9f0e8d052dc09026ad3ec09",
+    "TWILIO_AUTH_TOKEN": "41e98bba946231b12fc72ce9508b5817"
+}
