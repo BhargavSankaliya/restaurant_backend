@@ -9,6 +9,7 @@ const categoryRoute = require("./routes/categoryRoute");
 const unitOfSalesRoute = require("./routes/unitOfSalesRoute")
 const ingredienceRoute = require("./routes/ingredience")
 const cuisineRoute = require("./routes/cuisineRoute")
+const roleMasterRoute = require("./routes/roleMasterRoute")
 const { errorHandler } = require("./middlewares/error");
 const verifyToken = require("./middlewares/verifyToken");
 //const config = require("./environmentVariable.json");
@@ -27,16 +28,16 @@ app.use(cookieParser());
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     let dirPath = "uploads";
-    if (file.fieldname === "cImage" ) {
+    if (file.fieldname === "cImage") {
       dirPath = "uploads/product/category";
     }
     if (file.fieldname === "iImage") {
       dirPath = "uploads/product/ingrediance";
     }
-    if (file.fieldname === "coverPicture" || file.fieldname === "profilePicture" ) {
+    if (file.fieldname === "coverPicture" || file.fieldname === "profilePicture") {
       dirPath = "uploads/user/images";
     }
-    if (file.fieldname === "image"  ) {
+    if (file.fieldname === "image") {
       dirPath = "uploads/cuisine/images";
     }
 
@@ -71,7 +72,7 @@ const cpUpload = upload.fields([
   { name: "Image", maxCount: 25 },
   { name: "image", maxCount: 25 },
   { name: "cImage", maxCount: 23 },
-  {name : "iImage", maxCount : 23}
+  { name: "iImage", maxCount: 23 }
 ]);
 
 // Serve static files
@@ -81,6 +82,9 @@ app.use("/api/category", cpUpload, categoryRoute);
 app.use("/api/unitOfSalesRoute", cpUpload, unitOfSalesRoute);
 app.use("/api/ingredienceRoute", cpUpload, ingredienceRoute);
 app.use("/api/cuisineRoute", cpUpload, cuisineRoute);
+
+// By Meet 
+app.use("/api/roleMaster", roleMasterRoute);
 
 // Error handling
 app.use((err, req, res, next) => {
@@ -104,7 +108,7 @@ const http = require("http");
 let server = http.createServer(app);
 app.set("port", process.env.PORT || config.PORT);
 
-server.listen(config.server.port , () => {
+server.listen(config.server.port, () => {
   connectDB();
   console.log(`Server is running on port ${config.server.port} in ${process.env.NODE_ENV} mode`);
 });
