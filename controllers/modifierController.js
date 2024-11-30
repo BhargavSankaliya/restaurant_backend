@@ -12,8 +12,11 @@ modifierController.createNewModifier = async (req, res, next) => {
         throw new CustomError("Modifire already exists!", 400);
       }
     }
+    if (!!req?.files?.modifierImage) {
+      req.body.modifierImage = req?.files?.modifierImage[0]?.filename;
+    }
     let newRoleCreated = await ModifierModel.create(
-      req.body
+      req?.body
     );
     createResponse(newRoleCreated, 200, "New modifire created successfully.", res);
   } catch (error) {
@@ -24,27 +27,32 @@ modifierController.createNewModifier = async (req, res, next) => {
 modifierController.updateModifierById = async (req, res, next) => {
   try {
     let { id, price, description, additionalItemName } = req.body;
-
     const Modifier = await ModifierModel.findById(id);
     if (!Modifier) {
       throw new CustomError("Modifier not found!", 404);
     }
-
     const existingModifier = await ModifierModel.findOne({
       additionalItemName: additionalItemName,
       _id: { $ne: id },
     });
-
     if (existingModifier) {
       throw new CustomError("Additional Item Name already exists!", 400);
     }
-
+    let updateData = {
+      price: price,
+      description: description,
+      additionalItemName: additionalItemName
+    }
+    if (req?.files) {
+      if (req?.files?.modifierImage) {
+        updateData.modifierImage = req?.files?.modifierImage[0]?.filename;
+      }
+    }
     const updatedModifierData = await ModifierModel.findOneAndUpdate(
       { _id: id },
-      { price: price, description: description, additionalItemName: additionalItemName },
+      updateData,
       { new: true }
     );
-
     createResponse(updatedModifierData, 200, "Modifier updated successfully.", res);
   } catch (error) {
     errorHandler(error, req, res);

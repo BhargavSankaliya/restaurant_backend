@@ -26,6 +26,11 @@ const modifierSchema = new mongoose.Schema(
       // required: [true, 'Status is required.'],
       default: "Active"
     },
+    modifierImage: {
+      type: String,
+      default: '',
+      //required: true
+    },
   },
   { timestamps: true }
 );

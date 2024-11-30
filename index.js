@@ -38,6 +38,9 @@ const storage = multer.diskStorage({
     if (file.fieldname === "coverPicture" || file.fieldname === "profilePicture") {
       dirPath = "uploads/user/images";
     }
+    if (file.fieldname === "modifierImage") {
+      dirPath = "uploads/mofifier/images";
+    }
     if (file.fieldname === "image") {
       dirPath = "uploads/cuisine/images";
     }
@@ -68,6 +71,7 @@ const cpUpload = upload.fields([
   { name: "function_video", maxCount: 1 },
   { name: "icon_image", maxCount: 1 },
   { name: "coverPicture", maxCount: 30 },
+  { name: "modifierImage", maxCount: 1 },
   { name: "profilePicture", maxCount: 30 },
   { name: "logo", maxCount: 1 },
   { name: "Image", maxCount: 25 },
@@ -86,7 +90,7 @@ app.use("/api/cuisineRoute", cpUpload, cuisineRoute);
 
 // By Meet 
 app.use("/api/roleMaster", roleMasterRoute);
-app.use("/api/modifier", modifierRoute);
+app.use("/api/modifier", cpUpload, modifierRoute);
 
 // Error handling
 app.use((err, req, res, next) => {
