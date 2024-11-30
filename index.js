@@ -10,6 +10,7 @@ const unitOfSalesRoute = require("./routes/unitOfSalesRoute")
 const ingredienceRoute = require("./routes/ingredience")
 const cuisineRoute = require("./routes/cuisineRoute")
 const roleMasterRoute = require("./routes/roleMasterRoute")
+const modifierRoute = require("./routes/modifierRoute")
 const { errorHandler } = require("./middlewares/error");
 const verifyToken = require("./middlewares/verifyToken");
 //const config = require("./environmentVariable.json");
@@ -85,6 +86,7 @@ app.use("/api/cuisineRoute", cpUpload, cuisineRoute);
 
 // By Meet 
 app.use("/api/roleMaster", roleMasterRoute);
+app.use("/api/modifier", modifierRoute);
 
 // Error handling
 app.use((err, req, res, next) => {

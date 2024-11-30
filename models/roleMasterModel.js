@@ -5,7 +5,11 @@ const commonSchema = require("./CommonModel");
 
 const roleMasterSchema = new mongoose.Schema(
   {
-    roleName: { type: String, allowNullEmpty: false },
+    roleName: {
+      type: String,
+      required: [true, 'Role name is requied.'],
+      default: ''
+    },
     status: {
       type: String,
       enum: ["Active", "Inactive"],

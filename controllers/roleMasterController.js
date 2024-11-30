@@ -1,17 +1,11 @@
 const { CustomError, errorHandler } = require("../middlewares/error.js");
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const config = require("../environmentVariable.json");
 const createResponse = require("../middlewares/response.js");
 const RoleMasterModel = require("../models/roleMasterModel.js");
-const { commonFilter, convertIdToObjectId } = require("../middlewares/commonFilter.js");
 const roleMasterController = {};
-const ObjectID = require("mongodb").ObjectId;
 
 
 roleMasterController.createNewRole = async (req, res, next) => {
   try {
-
     let { roleName } = req.body;
     const findRole = await RoleMasterModel.findOne({ roleName: roleName, isDeleted: false });
     if (!!findRole) {
@@ -22,7 +16,7 @@ roleMasterController.createNewRole = async (req, res, next) => {
     let newRoleCreated = await RoleMasterModel.create(
       req.body
     );
-    createResponse(newRoleCreated, 200, "New Role Created Successfully.", res);
+    createResponse(newRoleCreated, 200, "New role created successfully.", res);
   } catch (error) {
     errorHandler(error, req, res)
   }
@@ -30,19 +24,34 @@ roleMasterController.createNewRole = async (req, res, next) => {
 
 roleMasterController.updateRoleById = async (req, res, next) => {
   try {
-    console.log("Start ssssssssssssssss")
     let { id, roleName } = req.body;
+
     const Role = await RoleMasterModel.findById(id);
     if (!Role) {
       throw new CustomError("Role not found!", 404);
     }
-    console.log("Role", Role)
-    let updatedRoleData = await RoleMasterModel.findOneAndUpdate({ _id: id }, { roleName: roleName })
+
+    const existingRole = await RoleMasterModel.findOne({
+      roleName: roleName,
+      _id: { $ne: id },
+    });
+
+    if (existingRole) {
+      throw new CustomError("Role name already exists!", 400);
+    }
+
+    let updatedRoleData = await RoleMasterModel.findOneAndUpdate(
+      { _id: id },
+      { roleName: roleName },
+      { new: true }
+    );
+
     createResponse(updatedRoleData, 200, "Role updated successfully.", res);
   } catch (error) {
     errorHandler(error, req, res);
   }
 };
+
 
 roleMasterController.getRoleList = async (req, res, next) => {
   try {
@@ -62,7 +71,7 @@ roleMasterController.getRoleList = async (req, res, next) => {
     } else if (status === 'Inactive') {
       queryCondition = { status: 'Inactive' }; // Only inactive users
     } else if (status) {
-      throw new CustomError("Invalid status. Use 'active' or 'inactive'.", 400);
+      throw new CustomError("Invalid status. Role 'active' or 'inactive'.", 400);
     }
 
     if (roleName) {
