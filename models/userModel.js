@@ -35,13 +35,13 @@ const userSchema = new mongoose.Schema(
     firstName: {
       type: String,
       required: [true, 'first Name is requied.'],
-    //  trim: true,
+      //  trim: true,
       default: ''
     },
     lastName: {
       type: String,
       required: [true, 'last Name is requied.'],
-    //  trim: true,
+      //  trim: true,
       default: ''
     },
     email: {
@@ -63,31 +63,31 @@ const userSchema = new mongoose.Schema(
     },
     isVerified: {
       type: Boolean,
-      enum: [true , false],
+      enum: [true, false],
       required: true,
     },
     gender: {
       type: String,
-      enum: ["male", "female" , "other"],
+      enum: ["male", "female", "other"],
       required: [true, 'gender is required.'],
       trim: true,
       default: ''
     },
     address: {
       type: String,
-      required: true,
+      required: false,
       default: ''
     },
-   
+
     locations: {
-      type: Object, // Array of location objects
+      type: Object,
       require: false,
       //default: []
     },
-   
+
     coverPicture: {
       type: String,
-   //   required: true,
+      //   required: true,
       default: ''
     },
     profilePicture: {
@@ -98,10 +98,15 @@ const userSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["Active", "Inactive"],
-      required: [true, 'Status is required.'],
-      default: ''
+      default: "Active",
     },
-   
+
+    // By Meet
+    role: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: [true, 'Role is required.']
+    }
+
   },
   { timestamps: true }
 );
