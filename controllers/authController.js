@@ -7,7 +7,58 @@ const UserModel = require("../models/userModel.js");
 const RoleMasterModel = require("../models/roleMasterModel.js");
 const { commonFilter, convertIdToObjectId } = require("../middlewares/commonFilter.js");
 const authController = {};
-const saltRounds = 10;
+const saltRounds = process.env.saltRounds;
+const jwt = require("jsonwebtoken");
+
+
+
+authController.userLogin = async (req, res, next) => {
+  try {
+    const { email, password } = req?.body;
+
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      throw new CustomError("Invalid email or password", 401);
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user?.password);
+    if (!isPasswordValid) {
+      throw new CustomError("Invalid email or password", 401);
+    }
+
+    const roleDetails = await RoleMasterModel.findById(user?.role);
+    if (!roleDetails) {
+      throw new CustomError("Role details not found", 404);
+    }
+
+    const token = jwt.sign(
+      { id: user?._id, email: user?.email },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.expiresIn }
+    );
+
+    const response = {
+      user: {
+        id: user?._id,
+        email: user?.email,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        phone: user?.phone,
+        gender: user?.gender,
+        role: {
+          id: user?.role,
+          roleName: roleDetails?.roleName,
+          permissions: roleDetails?.permissions,
+        },
+      },
+      token,
+    };
+
+    createResponse(response, 200, "Login successful", res);
+  } catch (error) {
+    errorHandler(error, req, res);
+  }
+};
 
 
 authController.createUser = async (req, res, next) => {
@@ -34,7 +85,6 @@ authController.createUser = async (req, res, next) => {
     errorHandler(error, req, res);
   }
 };
-
 
 authController.updateUserById = async (req, res, next) => {
   try {
@@ -68,7 +118,6 @@ authController.updateUserById = async (req, res, next) => {
     errorHandler(error, req, res);
   }
 };
-
 
 authController.getUsersList = async (req, res, next) => {
   try {
@@ -113,7 +162,6 @@ authController.getUsersList = async (req, res, next) => {
     errorHandler(error, req, res);
   }
 };
-
 
 authController.toggleUserStatus = async (req, res, next) => {
   try {
