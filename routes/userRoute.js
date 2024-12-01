@@ -6,6 +6,8 @@ const { authController } = require('../controllers/authController');
 const UserModel = require('../models/userModel');
 
 
+router.post("/userLogin", authController.userLogin);
+
 router.post("/create-user", validateSchema(UserModel), authController.createUser);
 router.post('/updateUserById', authController.updateUserById);
 router.post('/getUsersList', authController.getUsersList);
