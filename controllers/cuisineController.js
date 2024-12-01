@@ -13,7 +13,7 @@ const cuisineController = {};
 cuisineController.createCuisine = async (req, res, next) => {
   try {
     let { name, description, image, status } = req.body;
-console.log(req)
+    console.log(req)
     if (!!req.files.image) {
       req.body.image = req.files.image[0].filename; // Assuming you're using multer for file uploads
     }
@@ -34,7 +34,7 @@ console.log(req)
 cuisineController.updateCuisineById = async (req, res) => {
   try {
     const { name, cuisineId, status, description, image } = req.body;
-    
+
     if (!name || !cuisineId) {
       throw new CustomError("Required fields are missing to edit cuisine!", 400);
     }

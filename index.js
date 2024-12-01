@@ -11,6 +11,7 @@ const ingredienceRoute = require("./routes/ingredience")
 const cuisineRoute = require("./routes/cuisineRoute")
 const roleMasterRoute = require("./routes/roleMasterRoute")
 const modifierRoute = require("./routes/modifierRoute")
+const itemsRoute = require("./routes/itemsRoute")
 const { errorHandler } = require("./middlewares/error");
 const verifyToken = require("./middlewares/verifyToken");
 //const config = require("./environmentVariable.json");
@@ -40,6 +41,9 @@ const storage = multer.diskStorage({
     }
     if (file.fieldname === "modifierImage") {
       dirPath = "uploads/mofifier/images";
+    }
+    if (file.fieldname === "itemImage") {
+      dirPath = "uploads/itemImage/images";
     }
     if (file.fieldname === "image") {
       dirPath = "uploads/cuisine/images";
@@ -72,6 +76,7 @@ const cpUpload = upload.fields([
   { name: "icon_image", maxCount: 1 },
   { name: "coverPicture", maxCount: 30 },
   { name: "modifierImage", maxCount: 1 },
+  { name: "itemImage", maxCount: 1 },
   { name: "profilePicture", maxCount: 30 },
   { name: "logo", maxCount: 1 },
   { name: "Image", maxCount: 25 },
@@ -91,6 +96,7 @@ app.use("/api/cuisineRoute", cpUpload, cuisineRoute);
 // By Meet 
 app.use("/api/roleMaster", roleMasterRoute);
 app.use("/api/modifier", cpUpload, modifierRoute);
+app.use("/api/item", cpUpload, itemsRoute);
 
 // Error handling
 app.use((err, req, res, next) => {
