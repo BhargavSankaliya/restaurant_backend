@@ -4,14 +4,14 @@ const router = express.Router()
 const { validateSchema } = require('../models/baseModel');
 const { categoryController } = require('../controllers/categoryController');
 const categoryModel = require('../models/category');
+const middleware = require("../middlewares/middleware");
 
 
-//ads create and update api (if update then _id pass in query)
-router.post("/create-Category", categoryController.createCategory)
-router.post("/update-Category", categoryController.updateCategoryById);
-router.get("/categortGetById/:categoryId" , categoryController.categoryGetById)
-router.get("/categoryList",categoryController.categoryList)
-router.get("/activeCategoryList",categoryController.activeCategoryList)
+router.post("/create-Category", middleware, categoryController.createCategory)
+router.post("/update-Category", middleware, categoryController.updateCategoryById);
+router.get("/categortGetById/:categoryId", middleware, categoryController.categoryGetById)
+router.get("/categoryList", middleware, categoryController.categoryList)
+router.get("/activeCategoryList", middleware, categoryController.activeCategoryList)
 
 
 module.exports = router
