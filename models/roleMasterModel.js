@@ -1,21 +1,24 @@
 const mongoose = require("mongoose");
-const validator = require("validator");
 const commonSchema = require("./CommonModel");
 
+const permissionSchema = new mongoose.Schema({
+  module: { type: String, required: true },
+  permission: { type: Boolean, default: false },
+});
 
 const roleMasterSchema = new mongoose.Schema(
   {
     roleName: {
       type: String,
-      required: [true, 'Role name is requied.'],
-      default: ''
+      required: [true, "Role name is required."],
+      default: "",
     },
     status: {
       type: String,
       enum: ["Active", "Inactive"],
-      // required: [true, 'Status is required.'],
-      default: "Active"
+      default: "Active",
     },
+    permissions: [permissionSchema],
   },
   { timestamps: true }
 );

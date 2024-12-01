@@ -6,25 +6,26 @@ const roleMasterController = {};
 
 roleMasterController.createNewRole = async (req, res, next) => {
   try {
-    let { roleName } = req.body;
-    const findRole = await RoleMasterModel.findOne({ roleName: roleName, isDeleted: false });
-    if (!!findRole) {
-      if (findRole.roleName == roleName) {
-        throw new CustomError("Role already exists!", 400);
-      }
+    const { roleName, permissions } = req.body;
+    const findRole = await RoleMasterModel.findOne({ roleName, isDeleted: false });
+    if (findRole) {
+      throw new CustomError("Role already exists!", 400);
     }
-    let newRoleCreated = await RoleMasterModel.create(
-      req.body
-    );
+    const defaultPermissions = permissions
+    const newRoleData = {
+      roleName,
+      permissions: defaultPermissions,
+    };
+    const newRoleCreated = await RoleMasterModel.create(newRoleData);
     createResponse(newRoleCreated, 200, "New role created successfully.", res);
   } catch (error) {
-    errorHandler(error, req, res)
+    errorHandler(error, req, res);
   }
-}
+};
 
 roleMasterController.updateRoleById = async (req, res, next) => {
   try {
-    let { id, roleName } = req.body;
+    let { id, roleName, permissions } = req.body;
 
     const Role = await RoleMasterModel.findById(id);
     if (!Role) {
@@ -40,9 +41,10 @@ roleMasterController.updateRoleById = async (req, res, next) => {
       throw new CustomError("Role name already exists!", 400);
     }
 
+    const defaultPermissions = permissions
     let updatedRoleData = await RoleMasterModel.findOneAndUpdate(
       { _id: id },
-      { roleName: roleName },
+      { roleName: roleName, permissions: defaultPermissions },
       { new: true }
     );
 
@@ -55,34 +57,31 @@ roleMasterController.updateRoleById = async (req, res, next) => {
 
 roleMasterController.getRoleList = async (req, res, next) => {
   try {
-    const { status, roleName } = req?.body; // Get the status from query parameters
-    const page = parseInt(req?.body?.page) || 1; // Current page number
-    const limit = parseInt(req?.body?.limit) || 10; // Number of users per page
-    const skip = (page - 1) * limit; // Calculate the number of documents to skip
+    const { status, roleName } = req?.body;
+    const page = parseInt(req?.body?.page) || 1;
+    const limit = parseInt(req?.body?.limit) || 10;
+    const skip = (page - 1) * limit;
 
-    // Initialize query condition
     let queryCondition = {
       isDeleted: false
     };
 
-    // Set the query condition based on status
     if (status === 'Active') {
-      queryCondition = { status: 'Active' }; // Only active users
+      queryCondition = { status: 'Active' };
     } else if (status === 'Inactive') {
-      queryCondition = { status: 'Inactive' }; // Only inactive users
+      queryCondition = { status: 'Inactive' };
     } else if (status) {
       throw new CustomError("Invalid status. Role 'active' or 'inactive'.", 400);
     }
 
     if (roleName) {
       queryCondition = {
-        roleName: { $regex: roleName, $options: 'i' } // Case-insensitive regex search
+        roleName: { $regex: roleName, $options: 'i' }
       };
     }
 
-    // Fetch users based on the query condition with pagination
     const users = await RoleMasterModel.find(queryCondition).skip(skip).limit(limit);
-    const totalUsers = await RoleMasterModel.countDocuments(queryCondition); // Total count for pagination
+    const totalUsers = await RoleMasterModel.countDocuments(queryCondition);
 
     const response = {
       totalUsers,
@@ -99,21 +98,18 @@ roleMasterController.getRoleList = async (req, res, next) => {
 
 roleMasterController.toggleRoleStatus = async (req, res, next) => {
   try {
-    const { status, id } = req?.body; // Expecting the new status from the request body
+    const { status, id } = req?.body;
 
-    // Validate status input
     if (status !== 'Active' && status !== 'Inactive') {
       throw new CustomError("Invalid status. Use 'active' or 'inactive'.", 400);
     }
 
-    // Find the Role by ID
     const Role = await RoleMasterModel.findById(id);
     if (!Role) {
       throw new CustomError("Role not found!", 404);
     }
 
-    // Update the Role's status
-    Role.status = status; // Update the status field
+    Role.status = status;
     await Role.save();
 
     createResponse(Role, 200, "Role status updated successfully.", res);
@@ -124,9 +120,8 @@ roleMasterController.toggleRoleStatus = async (req, res, next) => {
 
 roleMasterController.getRoleById = async (req, res, next) => {
   try {
-    const { id } = req?.body; // Get the user ID from the URL parameters
+    const { id } = req?.body;
 
-    // Find the user by ID
     const user = await RoleMasterModel.findById(id);
     if (!user) {
       throw new CustomError("Role not found!", 404);
@@ -140,9 +135,8 @@ roleMasterController.getRoleById = async (req, res, next) => {
 
 roleMasterController.roleDelete = async (req, res, next) => {
   try {
-    const { id } = req?.body; // Expecting the new status from the request body
+    const { id } = req?.body;
 
-    // Find the user by ID
     const Role = await RoleMasterModel.findById(id);
     if (!Role) {
       throw new CustomError("Role not found!", 404);
@@ -156,12 +150,5 @@ roleMasterController.roleDelete = async (req, res, next) => {
     errorHandler(error, req, res);
   }
 };
-
-
-
-
-
-
-
 
 module.exports = { roleMasterController }
