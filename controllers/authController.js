@@ -7,10 +7,12 @@ const UserModel = require("../models/userModel.js");
 const RoleMasterModel = require("../models/roleMasterModel.js");
 const { commonFilter, convertIdToObjectId } = require("../middlewares/commonFilter.js");
 const authController = {};
+const saltRounds = 10;
+
 
 authController.createUser = async (req, res, next) => {
   try {
-    let { email, role } = req?.body;
+    let { email, password, role, phone } = req?.body;
     if (!!req?.files?.coverPicture) {
       req.body.coverPicture = req?.files?.coverPicture[0]?.filename;
     }
@@ -21,17 +23,18 @@ authController.createUser = async (req, res, next) => {
     if (!!findUser) {
       throw new CustomError("Email already exists!", 400);
     }
-    const id = role
-    const findRole = await RoleMasterModel.findById(id);
+    const findRole = await RoleMasterModel.findById(role);
     if (!findRole) {
       throw new CustomError("Invalid Role ID provided!", 400);
     }
+    req.body.password = await bcrypt.hash(password ? password : phone, saltRounds);
     let userCreated = await UserModel.create(req?.body);
     createResponse(userCreated, 200, "User Created Successfully.", res);
   } catch (error) {
     errorHandler(error, req, res);
   }
 };
+
 
 authController.updateUserById = async (req, res, next) => {
   try {

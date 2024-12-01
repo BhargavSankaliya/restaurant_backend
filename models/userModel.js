@@ -105,7 +105,11 @@ const userSchema = new mongoose.Schema(
     role: {
       type: mongoose.Schema.Types.ObjectId,
       required: [true, 'Role is required.']
-    }
+    },
+    password: {
+      type: String,
+      default: '',
+    },
 
   },
   { timestamps: true }
