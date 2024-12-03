@@ -14,14 +14,12 @@ const unitOfSalesSchema = new mongoose.Schema(
     description: {
       type: String,
       required: false,
-   //   trim: true,
       default: ''
     },
     status: {
       type: String,
       enum: ["Active", "Inactive"],
-      required: [true, 'Status is required.'],
-      default: ''
+      default: 'Active'
     },
   },
   { timestamps: true }
