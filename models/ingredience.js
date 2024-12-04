@@ -14,50 +14,41 @@ const ingredienceSchema = new mongoose.Schema(
     description: {
       type: String,
       required: false,
-      //   trim: true,
       default: ''
     },
     iImage: {
       type: String,
-      required: [true, 'image is required.'],
-      trim: true,
-      default: ''
+      require: false
     },
     status: {
       type: String,
       enum: ["Active", "Inactive"],
-      required: [true, 'Status is required.'],
-      default: ''
+      default: 'Active'
     },
     isVeg: {
       type: Boolean,
       enum: [true, false],
-      //required: [true, 'Status is required.'],
-      default: ''
+      default: false
     },
     isVegan: {
       type: Boolean,
       enum: [true, false],
-      //required: [true, 'Status is required.'],
-      default: ''
+      default: false
     },
     isJain: {
       type: Boolean,
       enum: [true, false],
-      //required: [true, 'Status is required.'],
-      default: ''
+      default: false
     },
     isSwaminarayan: {
       type: Boolean,
       enum: [true, false],
-      //required: [true, 'Status is required.'],
-      default: ''
+      default: false
     },
     isNonVeg: {
       type: Boolean,
       enum: [true, false],
-      //required: [true, 'Status is required.'],
-      default: ''
+      default: false
     },
   },
   { timestamps: true }
