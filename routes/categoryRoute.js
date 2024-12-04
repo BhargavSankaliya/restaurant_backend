@@ -7,9 +7,9 @@ const categoryModel = require('../models/category');
 const middleware = require("../middlewares/middleware");
 
 
-router.post("/create-Category", middleware, categoryController.createCategory)
+router.post("/create-Category", middleware, validateSchema(categoryModel), categoryController.createCategory)
 router.post("/update-Category", middleware, categoryController.updateCategoryById);
-router.get("/categortGetById/:categoryId", middleware, categoryController.categoryGetById)
+router.post("/categortGetById", middleware, categoryController.categoryGetById)
 router.get("/categoryList", middleware, categoryController.categoryList)
 router.get("/activeCategoryList", middleware, categoryController.activeCategoryList)
 

@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
-const validator = require("validator");
 const commonSchema = require("./CommonModel");
-
 
 const categorySchema = new mongoose.Schema(
   {
@@ -14,20 +12,16 @@ const categorySchema = new mongoose.Schema(
     description: {
       type: String,
       required: false,
-   //   trim: true,
       default: ''
     },
     cImage: {
       type: String,
-      required: [true, 'categoryImage is required.'],
-      trim: true,
-      default: ''
+      required: false
     },
     status: {
       type: String,
       enum: ["Active", "Inactive"],
-      required: [true, 'Status is required.'],
-      default: ''
+      default: 'Active'
     },
   },
   { timestamps: true }
