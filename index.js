@@ -12,6 +12,7 @@ const cuisineRoute = require("./routes/cuisineRoute")
 const roleMasterRoute = require("./routes/roleMasterRoute")
 const modifierRoute = require("./routes/modifierRoute")
 const itemsRoute = require("./routes/itemsRoute")
+const masterAdminModuleMasterRoute = require("./routes/masterAdmin/moduleMasterRoute")
 const { errorHandler } = require("./middlewares/error");
 const verifyToken = require("./middlewares/verifyToken");
 //const config = require("./environmentVariable.json");
@@ -97,6 +98,8 @@ app.use("/api/cuisineRoute", cpUpload, cuisineRoute);
 app.use("/api/roleMaster", roleMasterRoute);
 app.use("/api/modifier", cpUpload, modifierRoute);
 app.use("/api/item", cpUpload, itemsRoute);
+
+app.use("/api/masterAdmin/module", masterAdminModuleMasterRoute);
 
 // Error handling
 app.use((err, req, res, next) => {
