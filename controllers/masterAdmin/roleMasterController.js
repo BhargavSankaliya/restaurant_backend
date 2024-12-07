@@ -1,7 +1,7 @@
-const { convertIdToObjectId, commonFilter } = require("../middlewares/commonFilter.js");
-const { CustomError, errorHandler } = require("../middlewares/error.js");
-const createResponse = require("../middlewares/response.js");
-const RoleMasterModel = require("../models/roleMasterModel.js");
+const { convertIdToObjectId, commonFilter } = require("../../middlewares/commonFilter.js");
+const { CustomError, errorHandler } = require("../../middlewares/error.js");
+const createResponse = require("../../middlewares/response.js");
+const RoleMasterModel = require("../../models/roleMasterModel.js");
 const roleMasterController = {};
 
 

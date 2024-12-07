@@ -10,10 +10,11 @@ const unitOfSalesRoute = require("./routes/unitOfSalesRoute")
 const ingredienceRoute = require("./routes/ingredience")
 const cuisineRoute = require("./routes/cuisineRoute")
 const roleMasterRoute = require("./routes/masterAdmin/roleMasterRoute")
+const masterMenuRoute = require("./routes/masterAdmin/masterMenuRoute")
 const modifierRoute = require("./routes/modifierRoute")
 const itemsRoute = require("./routes/itemsRoute")
 const masterAdminModuleMasterRoute = require("./routes/masterAdmin/moduleMasterRoute")
-const RestaurantMasterRoute = require("./routes/masterAdmin/restaurantMasterRoute")
+// const RestaurantMasterRoute = require("./routes/masterAdmin/restaurantMasterRoute")
 const { errorHandler } = require("./middlewares/error");
 const verifyToken = require("./middlewares/verifyToken");
 //const config = require("./environmentVariable.json");
@@ -93,6 +94,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 //master Admin 
 app.use("/api/master-users", cpUpload, userRoute);
+app.use("/api/master-menu", cpUpload, masterMenuRoute);
 app.use("/api/category", cpUpload, categoryRoute);
 app.use("/api/unitOfSalesRoute", cpUpload, unitOfSalesRoute);
 app.use("/api/ingredienceRoute", cpUpload, ingredienceRoute);
@@ -104,7 +106,7 @@ app.use("/api/modifier", cpUpload, modifierRoute);
 app.use("/api/item", cpUpload, itemsRoute);
 
 app.use("/api/masterAdmin/module", masterAdminModuleMasterRoute);
-app.use("/api/masterAdmin/restaurant", RestaurantMasterRoute);
+// app.use("/api/masterAdmin/restaurant", RestaurantMasterRoute);
 
 // Error handling
 app.use((err, req, res, next) => {

@@ -11,6 +11,13 @@ commonFilter.roleMasterObject = {
     status: 1,
     permissions: 1,
 }
+commonFilter.menuMasterObject = {
+    _id: 1,
+    name: 1,
+    url: 1,
+    icon: 1,
+    status: 1,
+}
 
 commonFilter.userMasterObject = {
     _id: 1,
