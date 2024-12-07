@@ -6,12 +6,12 @@ const moduleMasterModel = require('../../models/moduleMasterModel');
 const middleware = require("../../middlewares/middleware");
 
 
-router.post("/createNewModule", middleware, validateSchema(moduleMasterModel), moduleMasterCtrl.createNewModule);
-router.post('/updateModule', middleware, moduleMasterCtrl.updateModule);
-router.post('/getModuleList', middleware, moduleMasterCtrl.getModuleList);
-router.post('/toggleModuleStatus', middleware, moduleMasterCtrl.toggleModuleStatus);
-router.post('/getModuleById', middleware, moduleMasterCtrl.getModuleById);
-router.post('/moduleDelete', middleware, moduleMasterCtrl.moduleDelete);
+router.post("/create", middleware, validateSchema(moduleMasterModel), moduleMasterCtrl.createNewModule);
+router.post('/update', middleware, moduleMasterCtrl.updateModule);
+router.post('/list', middleware, moduleMasterCtrl.getModuleList);
+router.post('/toggle-status', middleware, moduleMasterCtrl.toggleModuleStatus);
+router.post('/get', middleware, moduleMasterCtrl.getModuleById);
+router.post('/delete', middleware, moduleMasterCtrl.moduleDelete);
 
 
 module.exports = router

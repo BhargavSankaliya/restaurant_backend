@@ -7,7 +7,7 @@ const MasterUserModel = require('../../models/userModel.js');
 const middleware = require("../../middlewares/middleware");
 
 
-router.post("/user-login", authController.userLogin);
+router.post("/login", authController.userLogin);
 
 // create and update user details
 router.post("", middleware, validateSchema(MasterUserModel), authController.createUser);
