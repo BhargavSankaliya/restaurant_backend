@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const commonSchema = require("../CommonModel");
+const commonSchema = require("./CommonModel");
 
 const masterAdminModuleMastersSchema = new mongoose.Schema(
   {

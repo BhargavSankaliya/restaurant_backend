@@ -1,6 +1,6 @@
 const { CustomError, errorHandler } = require("../../middlewares/error.js");
 const createResponse = require("../../middlewares/response.js");
-const masterAdminModuleMasterModel = require("../../models/masterAdmin/moduleMasterModel.js");
+const masterAdminModuleMasterModel = require("../../models/moduleMasterModel.js");
 const moduleMasterCtrl = {};
 
 

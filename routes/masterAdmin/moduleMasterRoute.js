@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router()
 const { validateSchema } = require("../../models/baseModel");
 const { moduleMasterCtrl } = require('../../controllers/masterAdmin/moduleMasterCtrl');
-const moduleMasterModel = require('../../models/masterAdmin/moduleMasterModel');
+const moduleMasterModel = require('../../models/moduleMasterModel');
 const middleware = require("../../middlewares/middleware");
 
 
