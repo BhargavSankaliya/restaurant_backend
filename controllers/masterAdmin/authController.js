@@ -33,7 +33,7 @@ authController.userLogin = async (req, res, next) => {
     }
 
     const token = jwt.sign(
-      { id: user?._id, email: user?.email ,roleId:user?.role},
+      { id: user?._id, email: user?.email, roleId: user?.role },
       process.env.JWT_SECRET,
       { expiresIn: process.env.expiresIn }
     );
@@ -218,7 +218,7 @@ authController.forgotPassword = async (req, res) => {
 
       // await otpHelper.sendOTPEmail(email, otp, req, res)
 
-      createResponse({}, 201, "OTP sent successfully", res);
+      createResponse({}, 200, "OTP sent successfully", res);
     } catch (error) {
       throw new CustomError("Error in sending email", 400);
     }
@@ -295,7 +295,7 @@ authController.resetPassword = async (req, res) => {
 // check verification code for forgot password 
 authController.changePassword = async (req, res) => {
   try {
-    let {   password } = req.body;
+    let { password } = req.body;
     const ObjValidation = new niv.Validator(req.body, {
       password: "required|minLength:6",
     });

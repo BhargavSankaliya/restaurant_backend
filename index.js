@@ -38,11 +38,11 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 //master Admin 
 app.use("/api/master-admin", userRoute);
-app.use("/api/master-admin/menu", masterMenuRoute);
-app.use("/api/master-admin/role", roleMasterRoute);
-app.use("/api/master-admin/restaurant", RestaurantMasterRoute);
-app.use("/api/master-admin/file-upload", fileUploadMaster)
-app.use("/api/master-admin/module", masterAdminModuleMasterRoute);
+app.use("/api/master-admin-menu", masterMenuRoute);
+app.use("/api/master-admin-role", roleMasterRoute);
+app.use("/api/master-admin-restaurant", RestaurantMasterRoute);
+app.use("/api/master-admin-file-upload", fileUploadMaster)
+app.use("/api/master-admin-module", masterAdminModuleMasterRoute);
 
 app.use("/api/unitOfSalesRoute", unitOfSalesRoute);
 app.use("/api/ingredienceRoute", ingredienceRoute);
