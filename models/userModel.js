@@ -64,7 +64,8 @@ const userSchema = new mongoose.Schema(
     isVerified: {
       type: Boolean,
       enum: [true, false],
-      required: true,
+      required: false,
+      default: false
     },
     gender: {
       type: String,

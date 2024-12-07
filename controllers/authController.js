@@ -68,7 +68,7 @@ authController.createUser = async (req, res, next) => {
   try {
 
     if (req.query.userId) {
-      const user = await MasterUserModel.findById(userId);
+      const user = await MasterUserModel.findById(req.query.userId);
       if (!user) {
         throw new CustomError("User not found!", 404);
       }
@@ -93,6 +93,8 @@ authController.createUser = async (req, res, next) => {
         throw new CustomError("Invalid Role ID provided!", 400);
       }
 
+      req.body.password = await bcrypt.hash(req.body.password, parseInt(saltRounds));
+
       let userCreated = await MasterUserModel.create(req?.body);
       return createResponse(null, 200, "User Created Successfully.", res);
     }
@@ -102,38 +104,6 @@ authController.createUser = async (req, res, next) => {
   }
 };
 
-authController.updateUserById = async (req, res, next) => {
-  try {
-    let updateData = req.body;
-    if (req?.files) {
-      if (req?.files?.coverPicture) {
-        updateData.coverPicture = req?.files?.coverPicture[0]?.filename;
-      }
-      if (req?.files?.profilePicture) {
-        updateData.profilePicture = req?.files?.profilePicture[0]?.filename;
-      }
-    }
-    const userId = updateData?.id;
-    const user = await MasterUserModel.findById(userId);
-    if (!user) {
-      throw new CustomError("User not found!", 404);
-    }
-    if (updateData?.email) {
-      const existingUser = await MasterUserModel.findOne({
-        email: updateData?.email,
-        _id: { $ne: userId },
-      });
-      if (existingUser) {
-        throw new CustomError("Email already exists!", 400);
-      }
-    }
-    Object.assign(user, updateData);
-    await user.save();
-    createResponse(user, 200, "User updated successfully.", res);
-  } catch (error) {
-    errorHandler(error, req, res);
-  }
-};
 
 authController.getUsersList = async (req, res, next) => {
   try {
