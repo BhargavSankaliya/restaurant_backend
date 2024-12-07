@@ -1,9 +1,11 @@
 const express = require('express');
+const FileUploadCtrl = require("../../controllers/masterAdmin/fileUpload");
+const router = express.Router();
+const middleware = require("../../middlewares/middleware");
+const cpUploads = require("../../middlewares/cpUpload")
 
-const router = express.Router()
-const { FileUpload } = require('../../controllers/masterAdmin/fileUpload');
+router.post('/', middleware, cpUploads, FileUploadCtrl.FileUpload);
 
-router.post("/file-upload",FileUpload)
 
 
 module.exports = router

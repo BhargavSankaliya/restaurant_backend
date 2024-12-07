@@ -6,7 +6,11 @@ const RestaurantMasterModel = require('../../models/restaurantModel');
 const middleware = require("../../middlewares/middleware");
 
 
-router.post("/restaurant", middleware, validateSchema(RestaurantMasterModel), RestaurantMasterCtrl.create);
+router.post("/", middleware, validateSchema(RestaurantMasterModel), RestaurantMasterCtrl.create);
+router.delete("/:restaurantId", middleware, RestaurantMasterCtrl.delete);
+router.get("/", middleware, RestaurantMasterCtrl.list);
+router.get("/:restaurantId", middleware, RestaurantMasterCtrl.get);
+router.put("/status/:restaurantId", middleware, RestaurantMasterCtrl.toggleStatus);
 
 
 module.exports = router

@@ -37,6 +37,24 @@ commonFilter.userMasterObject = {
 }
 
 
+commonFilter.restaurantMasterObj = {
+    _id: 1,
+    name: 1,
+    capacity: 1,
+    status: 1,
+    address: 1,
+    gstNumber: 1,
+    phoneNumber: 1,
+    email: 1,
+    website:1,
+    logo: 1,
+    media: 1,
+    legalDoc: 1,
+    openingHour: 1,
+    createdAt: 1,
+}
+
+
 // end
 
 // pagination setup start

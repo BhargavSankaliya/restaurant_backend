@@ -10,5 +10,6 @@
     "AUTHUSER": "noreply@vidhaninfotech.com",
     "AUTHPASSWORD": "iPKo3z!tpCSzrI5Sw",
     "TWILIO_ACCOUNT_SID": "AC361462dda9f0e8d052dc09026ad3ec09",
-    "TWILIO_AUTH_TOKEN": "41e98bba946231b12fc72ce9508b5817"
+    "TWILIO_AUTH_TOKEN": "41e98bba946231b12fc72ce9508b5817",
+    "URL":"http://localhost:3000/"
 }

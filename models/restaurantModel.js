@@ -9,12 +9,12 @@ const openingHourSchema = new mongoose.Schema(
       default: ""
     },
     startTime: {
-      type: Date,
-      default: null
+      type: String,
+      default: ""
     },
     endTime: {
-      type: Date,
-      default: null
+      type: String,
+      default: ""
     }
   },
   { _id: false }
@@ -95,11 +95,13 @@ const RestaurantAdminSchema = new mongoose.Schema(
     },
     logo: {
       type: String,
+      required: [true, 'Logo is required.'],
       default: ""
     },
     media: {
-      type: Array,
-      default: []
+      type: String,
+      required: [true, 'media is required.'],
+      default: ""
     },
     legalDoc: {
       type: String,

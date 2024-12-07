@@ -1,12 +1,19 @@
 const multer = require("multer")
-const fs=require("fs")
+const fs = require("fs")
+const path = require("path");
 
 // Configure multer storage
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         let dirPath = "uploads";
-        if (file.fieldname === "restaurantMedia" || file.fieldname === "restaurantLogo") {
-            dirPath = "uploads/admin/restaurant/";
+        if (file.fieldname === "restaurantLogo") {
+            dirPath = "uploads/admin/restaurant/logo";
+        }
+        if (file.fieldname === "restaurantMedia" ) {
+            dirPath = "uploads/admin/restaurant/restaurantMedia";
+        }
+        if (file.fieldname === "legalDoc") {
+            dirPath = "uploads/admin/restaurant/legalDoc";
         }
         if (file.fieldname === "cImage") {
             dirPath = "uploads/product/category";
@@ -43,6 +50,7 @@ const upload = multer({ storage: storage });
 // Define upload fields
 const cpUpload = upload.fields([
     { name: "photos", maxCount: 15 },
+    { name: "legalDoc", maxCount: 15 },
     { name: "restaurantMedia", maxCount: 15 },
     { name: "restaurantLogo", maxCount: 15 },
     { name: "storyphotos", maxCount: 15 },
@@ -65,4 +73,4 @@ const cpUpload = upload.fields([
     { name: "iImage", maxCount: 23 }
 ]);
 
-module.exports =cpUpload
+module.exports = cpUpload
