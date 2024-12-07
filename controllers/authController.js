@@ -18,12 +18,12 @@ authController.userLogin = async (req, res, next) => {
 
     const user = await UserModel.findOne({ email });
     if (!user) {
-      throw new CustomError("Invalid email or password", 401);
+      throw new CustomError("Invalid email or password", 400);
     }
 
     const isPasswordValid = await bcrypt.compare(password, user?.password);
     if (!isPasswordValid) {
-      throw new CustomError("Invalid email or password", 401);
+      throw new CustomError("Invalid email or password", 400);
     }
 
     const roleDetails = await RoleMasterModel.findById(user?.role);
@@ -149,12 +149,11 @@ authController.getUsersList = async (req, res, next) => {
 
     const users = await UserModel.find(queryCondition).skip(skip).limit(limit);
     const totalUsers = await UserModel.countDocuments(queryCondition);
+    let pagination = await commonFilter.paginationCalculation(users, limit, page)
 
     const response = {
-      totalUsers,
-      totalPages: Math.ceil(totalUsers / limit),
-      currentPage: page,
       users,
+      pagination
     };
 
     createResponse(response, 200, "Users retrieved successfully.", res);

@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const createResponse = require("./response");
 require('dotenv').config();
 
 async function auth(req, res, next) {
@@ -6,12 +7,7 @@ async function auth(req, res, next) {
         const token = req.headers.authorization.split(" ")[1];
         jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
             if (err) {
-                res.json({
-                    meta: {
-                        code: 404,
-                        message: "InValid Authoriza Token"
-                    }
-                })
+                return createResponse(null, 401, "Unauthorization", res)
             } else {
                 // req.userId = decoded.tokenDetailse._id
                 // req.email = decoded.tokenDetailse.email
@@ -21,12 +17,7 @@ async function auth(req, res, next) {
         });
     } else {
         console.log("Token", req.headers);
-        res.json({
-            meta: {
-                code: 404,
-                message: "Please Enter Authoriza Token"
-            }
-        })
+        return createResponse(null, 404, "Please enter authorization token", res)
     }
 }
 
