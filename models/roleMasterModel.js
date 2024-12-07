@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const commonSchema = require("./CommonModel");
 
 const permissionSchema = new mongoose.Schema({
-  module: { type: String, required: true },
+  menuId: { type: mongoose.Schema.Types.ObjectId, required: true },
   permission: { type: Boolean, default: false },
 });
 
@@ -25,6 +25,6 @@ const roleMasterSchema = new mongoose.Schema(
 
 roleMasterSchema.add(commonSchema);
 
-const roleMasterModel = mongoose.model("Roles", roleMasterSchema);
+const roleMasterModel = mongoose.model("MastersRole", roleMasterSchema);
 
 module.exports = roleMasterModel;

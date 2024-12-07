@@ -1,96 +1,80 @@
+const { convertIdToObjectId, commonFilter } = require("../middlewares/commonFilter.js");
 const { CustomError, errorHandler } = require("../middlewares/error.js");
 const createResponse = require("../middlewares/response.js");
 const RoleMasterModel = require("../models/roleMasterModel.js");
 const roleMasterController = {};
 
 
-roleMasterController.createNewRole = async (req, res, next) => {
+roleMasterController.roleCreateUpdate = async (req, res, next) => {
   try {
-    const { roleName, permissions } = req.body;
-    const findRole = await RoleMasterModel.findOne({ roleName, isDeleted: false });
-    if (findRole) {
-      throw new CustomError("Role already exists!", 400);
+
+    if (req.query.roleId) {
+
+      if (req.body.permissions && req.body.permissions.length > 0) {
+        req.body.permissions.map((x) => {
+          x.menuId = convertIdToObjectId(x.menuId);
+        })
+      }
+
+      let update = await RoleMasterModel.findOneAndUpdate(
+        { _id: convertIdToObjectId(req.query.roleId) },
+        { ...req.body },
+        { new: true }
+      );
+      return createResponse(null, 200, "Role Details Updated successfully.", res);
     }
-    const defaultPermissions = permissions
-    const newRoleData = {
-      roleName,
-      permissions: defaultPermissions,
-    };
-    const newRoleCreated = await RoleMasterModel.create(newRoleData);
-    createResponse(newRoleCreated, 200, "New role created successfully.", res);
-  } catch (error) {
-    errorHandler(error, req, res);
-  }
-};
+    else {
+      const { roleName, permissions } = req.body;
 
-roleMasterController.updateRoleById = async (req, res, next) => {
-  try {
-    let { id, roleName, permissions } = req.body;
+      if (req.body.permissions && req.body.permissions.length > 0) {
+        req.body.permissions.map((x) => {
+          x.menuId = convertIdToObjectId(x.menuId);
+        })
+      }
 
-    const Role = await RoleMasterModel.findById(id);
-    if (!Role) {
-      throw new CustomError("Role not found!", 404);
+      const findRole = await RoleMasterModel.findOne({ roleName, isDeleted: false });
+      if (findRole) {
+        throw new CustomError("Role already exists!", 400);
+      }
+
+      const newRoleCreated = await RoleMasterModel.create(req.body);
+      return createResponse(null, 200, "Role created successfully.", res);
     }
 
-    const existingRole = await RoleMasterModel.findOne({
-      roleName: roleName,
-      _id: { $ne: id },
-    });
-
-    if (existingRole) {
-      throw new CustomError("Role name already exists!", 400);
-    }
-
-    const defaultPermissions = permissions
-    let updatedRoleData = await RoleMasterModel.findOneAndUpdate(
-      { _id: id },
-      { roleName: roleName, permissions: defaultPermissions },
-      { new: true }
-    );
-
-    createResponse(updatedRoleData, 200, "Role updated successfully.", res);
   } catch (error) {
     errorHandler(error, req, res);
   }
 };
 
 
-roleMasterController.getRoleList = async (req, res, next) => {
+roleMasterController.roleList = async (req, res, next) => {
   try {
-    const { status, roleName } = req?.body;
-    const page = parseInt(req?.body?.page) || 1;
-    const limit = parseInt(req?.body?.limit) || 10;
-    const skip = (page - 1) * limit;
+    const { status } = req?.query;
 
-    let queryCondition = {
-      isDeleted: false
-    };
+    let query = !!status ? [
+      {
+        $match: {
+          status: status,
+          isDeleted: false
+        }
+      },
+      {
+        $project: commonFilter.roleMasterObject
+      }
+    ] : [
+      {
+        $match: {
+          isDeleted: false
+        }
+      },
+      {
+        $project: commonFilter.roleMasterObject
+      }
+    ]
 
-    if (status === 'Active') {
-      queryCondition = { status: 'Active' };
-    } else if (status === 'Inactive') {
-      queryCondition = { status: 'Inactive' };
-    } else if (status) {
-      throw new CustomError("Invalid status. Role 'active' or 'inactive'.", 400);
-    }
+    const roles = await RoleMasterModel.aggregate(query);
 
-    if (roleName) {
-      queryCondition = {
-        roleName: { $regex: roleName, $options: 'i' }
-      };
-    }
-
-    const users = await RoleMasterModel.find(queryCondition).skip(skip).limit(limit);
-    const totalUsers = await RoleMasterModel.countDocuments(queryCondition);
-
-    const response = {
-      totalUsers,
-      totalPages: Math.ceil(totalUsers / limit),
-      currentPage: page,
-      users,
-    };
-
-    createResponse(response, 200, "Roles retrieved successfully.", res);
+    createResponse(roles, 200, "Roles retrieved successfully.", res);
   } catch (error) {
     errorHandler(error, req, res);
   }
@@ -98,21 +82,23 @@ roleMasterController.getRoleList = async (req, res, next) => {
 
 roleMasterController.toggleRoleStatus = async (req, res, next) => {
   try {
-    const { status, id } = req?.body;
+    const { id } = req?.query;
 
-    if (status !== 'Active' && status !== 'Inactive') {
-      throw new CustomError("Invalid status. Use 'active' or 'inactive'.", 400);
+    if (!id) {
+      throw new CustomError("RoleID is required!", 404);
     }
-
     const Role = await RoleMasterModel.findById(id);
-    if (!Role) {
-      throw new CustomError("Role not found!", 404);
+
+    if (Role.status == 'Active') {
+      Role.status = 'Inactive'
+    }
+    else {
+      Role.status = 'Active'
     }
 
-    Role.status = status;
     await Role.save();
 
-    createResponse(Role, 200, "Role status updated successfully.", res);
+    createResponse(null, 200, `Role ${Role.status}d successfully.`, res);
   } catch (error) {
     errorHandler(error, req, res);
   }
@@ -120,14 +106,14 @@ roleMasterController.toggleRoleStatus = async (req, res, next) => {
 
 roleMasterController.getRoleById = async (req, res, next) => {
   try {
-    const { id } = req?.body;
+    const { id } = req?.params;
 
-    const user = await RoleMasterModel.findById(id);
-    if (!user) {
+    const role = await RoleMasterModel.findById(id);
+    if (!role) {
       throw new CustomError("Role not found!", 404);
     }
 
-    createResponse(user, 200, "Role retrieved successfully.", res);
+    createResponse(role, 200, "Role retrieved successfully.", res);
   } catch (error) {
     errorHandler(error, req, res);
   }

@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const config = require("../environmentVariable.json");
 const createResponse = require("../middlewares/response.js");
-const UserModel = require("../models/userModel.js");
+const MasterUserModel = require("../models/userModel.js");
 const RoleMasterModel = require("../models/roleMasterModel.js");
 const { commonFilter, convertIdToObjectId } = require("../middlewares/commonFilter.js");
 const authController = {};
@@ -16,7 +16,7 @@ authController.userLogin = async (req, res, next) => {
   try {
     const { email, password } = req?.body;
 
-    const user = await UserModel.findOne({ email });
+    const user = await MasterUserModel.findOne({ email });
     if (!user) {
       throw new CustomError("Invalid email or password", 400);
     }
@@ -36,6 +36,9 @@ authController.userLogin = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: process.env.expiresIn }
     );
+
+    user.token = token;
+    user.save()
 
     const response = {
       user: {
@@ -63,24 +66,37 @@ authController.userLogin = async (req, res, next) => {
 
 authController.createUser = async (req, res, next) => {
   try {
-    let { email, password, role, phone } = req?.body;
-    if (!!req?.files?.coverPicture) {
-      req.body.coverPicture = req?.files?.coverPicture[0]?.filename;
+
+    if (req.query.userId) {
+      const user = await MasterUserModel.findById(userId);
+      if (!user) {
+        throw new CustomError("User not found!", 404);
+      }
+
+      if (!!req.body.role) {
+        req.body.role = convertIdToObjectId(req.body.role)
+      }
+
+      const update = await MasterUserModel.findOneAndUpdate({ _id: convertIdToObjectId(req.query.userId) }, req.body)
+
+      return createResponse(null, 200, "User Details Updated Successfully.", res);
+
     }
-    if (!!req?.files?.profilePicture) {
-      req.body.profilePicture = req?.files?.profilePicture[0]?.filename;
+    else {
+      const findUser = await MasterUserModel.findOne({ email: req.body.email });
+      if (!!findUser) {
+        throw new CustomError("Email already exists!", 400);
+      }
+
+      const findRole = await RoleMasterModel.findById(req.body.role);
+      if (!findRole) {
+        throw new CustomError("Invalid Role ID provided!", 400);
+      }
+
+      let userCreated = await MasterUserModel.create(req?.body);
+      return createResponse(null, 200, "User Created Successfully.", res);
     }
-    const findUser = await UserModel.findOne({ email });
-    if (!!findUser) {
-      throw new CustomError("Email already exists!", 400);
-    }
-    const findRole = await RoleMasterModel.findById(role);
-    if (!findRole) {
-      throw new CustomError("Invalid Role ID provided!", 400);
-    }
-    req.body.password = await bcrypt.hash(password ? password : phone, saltRounds);
-    let userCreated = await UserModel.create(req?.body);
-    createResponse(userCreated, 200, "User Created Successfully.", res);
+
   } catch (error) {
     errorHandler(error, req, res);
   }
@@ -98,12 +114,12 @@ authController.updateUserById = async (req, res, next) => {
       }
     }
     const userId = updateData?.id;
-    const user = await UserModel.findById(userId);
+    const user = await MasterUserModel.findById(userId);
     if (!user) {
       throw new CustomError("User not found!", 404);
     }
     if (updateData?.email) {
-      const existingUser = await UserModel.findOne({
+      const existingUser = await MasterUserModel.findOne({
         email: updateData?.email,
         _id: { $ne: userId },
       });
@@ -121,42 +137,44 @@ authController.updateUserById = async (req, res, next) => {
 
 authController.getUsersList = async (req, res, next) => {
   try {
-    const { status, searchKeyword } = req?.body;
-    const page = parseInt(req?.body?.page) || 1;
-    const limit = parseInt(req?.body?.limit) || 10;
-    const skip = (page - 1) * limit;
+    const { status } = req?.query;
 
-    let queryCondition = {};
-
-    if (status) {
-      if (status === 'Active') {
-        queryCondition.status = 'Active';
-      } else if (status === 'Inactive') {
-        queryCondition.status = 'Inactive';
-      } else {
-        throw new CustomError("Invalid status. Use 'Active' or 'Inactive'.", 400);
+    let query = [
+      {
+        $lookup: {
+          from: "mastersroles",
+          localField: "role",
+          foreignField: "_id",
+          as: "roleDetails"
+        }
+      },
+      {
+        $unwind: {
+          path: "$roleDetails",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $addFields: {
+          roleName: "$roleDetails.roleName"
+        }
+      },
+      {
+        $project: commonFilter.userMasterObject
       }
+    ]
+
+    if (!!status) {
+      query.push({
+        $match: {
+          status: status
+        }
+      })
     }
 
-    if (searchKeyword) {
-      queryCondition.$or = [
-        { firstName: { $regex: searchKeyword, $options: 'i' } },
-        { lastName: { $regex: searchKeyword, $options: 'i' } },
-        { email: { $regex: searchKeyword, $options: 'i' } },
-        { phone: { $regex: searchKeyword, $options: 'i' } }
-      ];
-    }
+    const users = await MasterUserModel.aggregate(query);
 
-    const users = await UserModel.find(queryCondition).skip(skip).limit(limit);
-    const totalUsers = await UserModel.countDocuments(queryCondition);
-    let pagination = await commonFilter.paginationCalculation(users, limit, page)
-
-    const response = {
-      users,
-      pagination
-    };
-
-    createResponse(response, 200, "Users retrieved successfully.", res);
+    createResponse(users, 200, "Users retrieved successfully.", res);
   } catch (error) {
     errorHandler(error, req, res);
   }
@@ -164,21 +182,23 @@ authController.getUsersList = async (req, res, next) => {
 
 authController.toggleUserStatus = async (req, res, next) => {
   try {
-    const { status, id } = req?.body;
+    const { id } = req?.query;
 
-    if (status !== 'Active' && status !== 'Inactive') {
-      throw new CustomError("Invalid status. Use 'active' or 'inactive'.", 400);
+    if (!id) {
+      throw new CustomError("RoleID is required!", 404);
+    }
+    const userDetails = await MasterUserModel.findById(id);
+
+    if (userDetails.status == 'Active') {
+      userDetails.status = 'Inactive'
+    }
+    else {
+      userDetails.status = 'Active'
     }
 
-    const user = await UserModel.findById(id);
-    if (!user) {
-      throw new CustomError("User not found!", 404);
-    }
+    await userDetails.save();
 
-    user.status = status;
-    await user.save();
-
-    createResponse(user, 200, "User status updated successfully.", res);
+    createResponse(null, 200, `User ${userDetails.status}d successfully.`, res);
   } catch (error) {
     errorHandler(error, req, res);
   }
@@ -186,9 +206,9 @@ authController.toggleUserStatus = async (req, res, next) => {
 
 authController.getUserById = async (req, res, next) => {
   try {
-    const { id } = req?.body;
+    const { id } = req?.params;
 
-    const user = await UserModel.findById(id);
+    const user = await MasterUserModel.findById(id);
     if (!user) {
       throw new CustomError("User not found!", 404);
     }

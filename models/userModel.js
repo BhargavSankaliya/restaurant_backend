@@ -111,12 +111,17 @@ const userSchema = new mongoose.Schema(
       default: '',
     },
 
+    token: {
+      type: String,
+      default: '',
+    },
+
   },
   { timestamps: true }
 );
 
 userSchema.add(commonSchema);
 
-const UserModel = mongoose.model("Users", userSchema);
+const MasterUserModel = mongoose.model("MasterUsers", userSchema);
 
-module.exports = UserModel;
+module.exports = MasterUserModel;

@@ -4,12 +4,12 @@ const app = express();
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const path = require("path");
-const userRoute = require("./routes/userRoute");
+const userRoute = require("./routes/masterAdmin/userRoute");
 const categoryRoute = require("./routes/categoryRoute");
 const unitOfSalesRoute = require("./routes/unitOfSalesRoute")
 const ingredienceRoute = require("./routes/ingredience")
 const cuisineRoute = require("./routes/cuisineRoute")
-const roleMasterRoute = require("./routes/roleMasterRoute")
+const roleMasterRoute = require("./routes/masterAdmin/roleMasterRoute")
 const modifierRoute = require("./routes/modifierRoute")
 const itemsRoute = require("./routes/itemsRoute")
 const masterAdminModuleMasterRoute = require("./routes/masterAdmin/moduleMasterRoute")
@@ -88,7 +88,7 @@ const cpUpload = upload.fields([
 
 // Serve static files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use("/api/userRoute", cpUpload, userRoute);
+app.use("/api/master-users", cpUpload, userRoute);
 app.use("/api/category", cpUpload, categoryRoute);
 app.use("/api/unitOfSalesRoute", cpUpload, unitOfSalesRoute);
 app.use("/api/ingredienceRoute", cpUpload, ingredienceRoute);

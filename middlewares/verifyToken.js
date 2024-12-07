@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { CustomError, errorHandler } = require("../middlewares/error");
 const config = require("../environmentVariable.json");
-const UserModel = require("../models/userModel");
+const MasterUserModel = require("../models/userModel");
 
 const verifyToken = async (req, res, next) => {
   try {
@@ -20,7 +20,7 @@ const verifyToken = async (req, res, next) => {
       throw new CustomError("Invalid token", 401);
     }
     const storeId = decoded._id;
-    const store = await UserModel.findOne({
+    const store = await MasterUserModel.findOne({
       _id: storeId,
     });
 
