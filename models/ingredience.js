@@ -16,7 +16,7 @@ const ingredienceSchema = new mongoose.Schema(
       required: false,
       default: ''
     },
-    iImage: {
+    image: {
       type: String,
       require: false
     },

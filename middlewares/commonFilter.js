@@ -46,12 +46,34 @@ commonFilter.restaurantMasterObj = {
     gstNumber: 1,
     phoneNumber: 1,
     email: 1,
-    website:1,
+    website: 1,
     logo: 1,
     media: 1,
     legalDoc: 1,
     openingHour: 1,
     createdAt: 1,
+}
+
+commonFilter.unitOfSalesMasterObj = {
+    _id: 1,
+    name: 1,
+    description: 1,
+    status: 1,
+    isDeleted: 1,
+    createdAt: 1
+}
+
+commonFilter.ingredienceMasterObj = {
+    _id: 1,
+    name: 1,
+    description: 1,
+    status: 1,
+    image: 1,
+    isVegan: 1,
+    isSwaminarayan: 1,
+    isNonVeg: 1,
+    isDeleted: 1,
+    createdAt: 1
 }
 
 

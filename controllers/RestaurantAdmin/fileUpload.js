@@ -8,9 +8,6 @@ exports.FileUpload = async (req, res, next) => {
         const file = [];
         const configURL = config.URL;
 
-        let restaurantLogo = '';
-        let restaurantMedia = ""
-        let legalDoc = ""
         let ingredienceImage = ""
 
         if (!req?.files) {
@@ -18,32 +15,14 @@ exports.FileUpload = async (req, res, next) => {
 
         }
 
-        if (req.files && !!req.files.restaurantLogo && req.files.restaurantLogo.length > 0) {
-            req.files.restaurantLogo.map((x) => {
-                restaurantLogo = configURL + x.destination + "/" + x.filename
-            })
-        }
-        if (req.files && !!req.files.restaurantMedia && req.files.restaurantMedia.length > 0) {
-            req.files.restaurantMedia.map((x) => {
-                restaurantMedia = configURL + x.destination + "/" + x.filename
-            })
-        }
-        if (req.files && !!req.files.legalDoc && req.files.legalDoc.length > 0) {
-            req.files.legalDoc.map((x) => {
-
-                legalDoc = configURL + x.destination + "/" + x.filename
-            })
-        }
         if (req.files && !!req.files.ingredienceImage && req.files.ingredienceImage.length > 0) {
             req.files.ingredienceImage.map((x) => {
-
                 ingredienceImage = configURL + x.destination + "/" + x.filename
             })
         }
 
-
         createResponse({
-            restaurantLogo, restaurantMedia, legalDoc, ingredienceImage
+            ingredienceImage
         }, 200, 'File Upload Successfully.', res)
 
     } catch (error) {
