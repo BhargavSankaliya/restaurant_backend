@@ -5,11 +5,12 @@ const MasterUserModel = require("../../models/userModel.js");
 const RoleMasterModel = require("../../models/roleMasterModel.js");
 const { commonFilter, convertIdToObjectId } = require("../../middlewares/commonFilter.js");
 const authController = {};
+require('dotenv').config()
 const saltRounds = process.env.saltRounds;
 const niv = require("node-input-validator");
 const otpHelper = require("../../helper/otpHelper.js")
 const Helper = require("../../helper/helper.js")
-const LoginVerificationModel = require("../../models/loginVerification.js")
+const LoginVerificationModel = require("../../models/loginVerification.js");
 
 
 authController.userLogin = async (req, res, next) => {
@@ -83,18 +84,25 @@ authController.createUser = async (req, res, next) => {
         throw new CustomError("Email already exists!", 400);
       }
 
-      const findRole = await RoleMasterModel.findById(req.body.role);
+      const findRole = await RoleMasterModel.findById(req?.body?.role)
+
       if (!findRole) {
         throw new CustomError("Invalid Role ID provided!", 400);
       }
 
-      req.body.password = await bcrypt.hash(req.body.password, parseInt(saltRounds));
+      if (!!req?.body?.password) {
+        req.body.password = await bcrypt.hash(req?.body?.password, parseInt(saltRounds));
+      } else {
+        throw new CustomError("Password is required", 400);
+      }
 
       let userCreated = await MasterUserModel.create(req?.body);
       return createResponse(null, 200, "User Created Successfully.", res);
     }
 
   } catch (error) {
+    console.log("Error", error);
+
     errorHandler(error, req, res);
   }
 };
