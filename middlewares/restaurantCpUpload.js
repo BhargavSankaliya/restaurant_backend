@@ -9,6 +9,9 @@ const storage = multer.diskStorage({
         if (file.fieldname === "ingredienceImage") {
             dirPath = `uploads/restaurant/${req.restaurant._id.toString()}/ingredience`
         }
+        if (file.fieldname === "cuisineImage") {
+            dirPath = `uploads/restaurant/${req.restaurant._id.toString()}/cuisine`
+        }
 
         if (!fs.existsSync(dirPath)) {
             fs.mkdirSync(dirPath, { recursive: true });
@@ -26,6 +29,7 @@ const upload = multer({ storage: storage });
 // Define upload fields
 const restaurantCpUpload = upload.fields([
     { name: "ingredienceImage", maxCount: 15 },
+    { name: "cuisineImage", maxCount: 15 },
 ]);
 
 module.exports = restaurantCpUpload

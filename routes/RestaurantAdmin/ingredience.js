@@ -12,7 +12,7 @@ router.post("/", restaurantAuthCheck, validateSchema(ingredienceModel), restaura
 router.get("/:id", restaurantAuthCheck, ingredienceController.ingredienceGetById)
 router.get("/", restaurantAuthCheck, ingredienceController.IngredienceList)
 router.put("/status/:id", restaurantAuthCheck, ingredienceController.toggleStatus);
-router.delete("/:id", ingredienceController.delete);
+router.delete("/:id", restaurantAuthCheck, ingredienceController.delete);
 
 
 
