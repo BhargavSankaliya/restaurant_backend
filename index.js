@@ -7,7 +7,7 @@ const path = require("path");
 const categoryRoute = require("./routes/categoryRoute");
 const unitOfSalesRoute = require("./routes/RestaurantAdmin/unitOfSalesRoute")
 const ingredienceRoute = require("./routes/RestaurantAdmin/ingredience")
-const cuisineRoute = require("./routes/cuisineRoute")
+const cuisineRoute = require("./routes/RestaurantAdmin/cuisineRoute")
 const modifierRoute = require("./routes/modifierRoute")
 const itemsRoute = require("./routes/itemsRoute")
 const { errorHandler } = require("./middlewares/error");
@@ -26,7 +26,7 @@ const RestaurantMasterRoute = require("./routes/masterAdmin/restaurantMasterRout
 
 //Restaurant Admin
 const restaurantAuthRoute = require("./routes/RestaurantAdmin/restaurantAuthRoute")
-const restaurantFileUpload= require("./routes/RestaurantAdmin/fileUpload")
+const restaurantFileUpload = require("./routes/RestaurantAdmin/fileUpload")
 
 
 dotenv.config();
@@ -54,7 +54,7 @@ app.use("/api/restaurant-admin", restaurantAuthRoute)
 app.use("/api/restaurant-admin-unitOfSales", unitOfSalesRoute);
 app.use("/api/restaurant-admin-file-upload", restaurantFileUpload);
 app.use("/api/restaurant-admin-ingredience", ingredienceRoute);
-app.use("/api/cuisineRoute", cuisineRoute);
+app.use("/api/restaurant-admin-cuisine", cuisineRoute);
 app.use("/api/category", categoryRoute);
 
 // By Meet 

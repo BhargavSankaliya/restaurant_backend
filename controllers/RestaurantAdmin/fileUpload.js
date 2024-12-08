@@ -9,6 +9,7 @@ exports.FileUpload = async (req, res, next) => {
         const configURL = config.URL;
 
         let ingredienceImage = ""
+        let cuisineImage = ""
 
         if (!req?.files) {
             throw new CustomError("Please upload file", 400);
@@ -21,8 +22,14 @@ exports.FileUpload = async (req, res, next) => {
             })
         }
 
+        if (req.files && !!req.files.cuisineImage && req.files.cuisineImage.length > 0) {
+            req.files.cuisineImage.map((x) => {
+                cuisineImage = configURL + x.destination + "/" + x.filename
+            })
+        }
+
         createResponse({
-            ingredienceImage
+            ingredienceImage, cuisineImage
         }, 200, 'File Upload Successfully.', res)
 
     } catch (error) {

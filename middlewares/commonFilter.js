@@ -69,9 +69,21 @@ commonFilter.ingredienceMasterObj = {
     description: 1,
     status: 1,
     image: 1,
+    isVeg: 1,
     isVegan: 1,
+    isJain: 1,
     isSwaminarayan: 1,
     isNonVeg: 1,
+    isDeleted: 1,
+    createdAt: 1
+}
+
+commonFilter.cuisinesMasterObj = {
+    _id: 1,
+    name: 1,
+    description: 1,
+    image: 1,
+    status: 1,
     isDeleted: 1,
     createdAt: 1
 }
