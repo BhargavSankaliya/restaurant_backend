@@ -6,7 +6,6 @@ const RoleMasterModel = require("../../models/roleMasterModel.js");
 const { commonFilter, convertIdToObjectId } = require("../../middlewares/commonFilter.js");
 const authController = {};
 const saltRounds = process.env.saltRounds;
-const jwt = require("jsonwebtoken");
 const niv = require("node-input-validator");
 const otpHelper = require("../../helper/otpHelper.js")
 const Helper = require("../../helper/helper.js")
@@ -32,13 +31,8 @@ authController.userLogin = async (req, res, next) => {
       throw new CustomError("Role details not found", 404);
     }
 
-    const token = jwt.sign(
-      { id: user?._id, email: user?.email, roleId: user?.role },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.expiresIn }
-    );
 
-    user.token = token;
+    user.token = await Helper.createJWT(user?._id, user?.email, user?.role);
     user.save()
 
     const response = {

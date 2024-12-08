@@ -1,13 +1,18 @@
 const { CustomError, errorHandler } = require("../../middlewares/error.js");
 const createResponse = require("../../middlewares/response.js");
 const RestaurantModel = require("../../models/restaurantModel.js");
+const RoleModel = require("../../models/roleMasterModel.js");
 const { convertIdToObjectId, commonFilter } = require("../../middlewares/commonFilter.js");
 const Helper = require("../../helper/helper.js")
 
 exports.create = async (req, res) => {
     try {
-        let { name, capacity, address, gstNumber, phoneNumber, email, website, logo, media, legalDoc, openingHour, password } = req.body;
+        let { name, roleId, capacity, address, gstNumber, phoneNumber, email, website, logo, media, legalDoc, openingHour, password } = req.body;
 
+        let roleCheck = await RoleModel.findById(roleId)
+        if (!roleCheck || roleCheck?.status !== "Active" || roleCheck?.isDeleted !== false) {
+            throw new CustomError("Invalid role", 400);
+        }
         if (req?.query?.restaurantId) {
             let restaurantId = convertIdToObjectId(req?.query?.restaurantId)
             let phoneNumberCheck = await RestaurantModel.findOne({ _id: { $ne: restaurantId }, phoneNumber: phoneNumber })
@@ -63,9 +68,11 @@ exports.toggleStatus = async (req, res) => {
             throw new CustomError("Restaurant not found", 404);
         }
         await RestaurantModel.findByIdAndUpdate(restaurantId, { $set: { status: restaurantCheck.status == "Active" ? "Inactive" : "Active" } })
-        createResponse(result, 200, "Restaurant status updated successfully.", res);
+        createResponse({}, 200, "Restaurant status updated successfully.", res);
 
     } catch (error) {
+        console.log(error);
+
         errorHandler(error, req, res);
     }
 }
@@ -78,7 +85,7 @@ exports.delete = async (req, res) => {
             throw new CustomError("Restaurant not found", 404);
         }
         await RestaurantModel.findByIdAndUpdate(restaurantId, { $set: { isDeleted: true } })
-        createResponse(result, 200, "Restaurant deleted successfully.", res);
+        createResponse({}, 200, "Restaurant deleted successfully.", res);
     } catch (error) {
         errorHandler(error, req, res);
     }
@@ -86,9 +93,8 @@ exports.delete = async (req, res) => {
 
 exports.list = async (req, res) => {
     try {
-        console.log("hhhhhhhhhhhh");
-        
-        const { status, limit, page } = req?.query;
+
+        let { status, limit, page } = req?.query;
         let matchObj = {}
         matchObj.isDeleted = false
         if (!limit) {
@@ -97,11 +103,7 @@ exports.list = async (req, res) => {
         if (!page) {
             page = 1
         }
-        let skip = (page - 1) * limit
-        let filterObj = {
-            $skip: skip,
-            $limit: limit
-        }
+        let skip = (Number(page) - 1) * Number(limit)
         if (status) {
             matchObj.status = status
         }
@@ -117,7 +119,12 @@ exports.list = async (req, res) => {
             {
                 $project: commonFilter.restaurantMasterObj
             },
-            filterObj
+            {
+                $skip: Number(skip),
+            },
+            {
+                $limit: Number(limit)
+            }
         ]);
         let result = {
             data: restaurant,
@@ -127,7 +134,7 @@ exports.list = async (req, res) => {
         createResponse(result, 200, "Restaurant retrieved successfully.", res);
     } catch (error) {
         console.log(error);
-        
+
         errorHandler(error, req, res);
     }
 }

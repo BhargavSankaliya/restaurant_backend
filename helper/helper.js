@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt")
-
+require("dotenv").config()
+const jwt =require("jsonwebtoken")
 
 exports.bcyptPass = async (password) => {
     try {
@@ -9,10 +10,18 @@ exports.bcyptPass = async (password) => {
     }
 }
 
-exports.comparePassword = async (data) => {
+exports.comparePassword = async (password,bcyptPass) => {
+    try {
+        return await bcrypt.compare(password, bcyptPass);
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+exports.createJWT = async (id, email, role) => {
     try {
         return jwt.sign(
-            data,
+            { id: id, email: email, roleId: role },
             process.env.JWT_SECRET,
             { expiresIn: process.env.expiresIn }
         );
@@ -24,15 +33,14 @@ exports.comparePassword = async (data) => {
 exports.generateRandomString = (length, isNumber = false) => {
     var result = "";
     if (isNumber) {
-      var characters = "0123456789";
+        var characters = "0123456789";
     } else {
-      var characters =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var characters =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     }
     var charactersLength = characters.length;
     for (var i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
-  };
-  
+};

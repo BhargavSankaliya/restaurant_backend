@@ -24,7 +24,8 @@ const roleMasterRoute = require("./routes/masterAdmin/roleMasterRoute")
 const fileUploadMaster = require("./routes/masterAdmin/fileUpload")
 const RestaurantMasterRoute = require("./routes/masterAdmin/restaurantMasterRoute")
 
-//Restaurant
+//Restaurant Admin
+const restaurantAuthRoute = require("./routes/RestaurantAdmin/restaurantAuthRoute")
 
 dotenv.config();
 app.use(cors());
@@ -46,6 +47,8 @@ app.use("/api/master-admin-file-upload", fileUploadMaster)
 app.use("/api/master-admin-module", masterAdminModuleMasterRoute);
 
 
+//Restaurant Admin
+app.use("/api/restaurant-admin", restaurantAuthRoute)
 app.use("/api/unitOfSalesRoute", unitOfSalesRoute);
 app.use("/api/ingredienceRoute", ingredienceRoute);
 app.use("/api/cuisineRoute", cuisineRoute);

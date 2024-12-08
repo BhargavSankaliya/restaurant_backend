@@ -54,11 +54,10 @@ const RestaurantAdminSchema = new mongoose.Schema(
       required: true,
       validate: {
         validator: function (value) {
-          const isValidIndian = validator.isMobilePhone(value, 'en-IN', { strictMode: false });
-          const isValidAustralian = validator.isMobilePhone(value, 'en-AU', { strictMode: false });
-          return isValidIndian || isValidAustralian;
+          const isValid = validator.isMobilePhone(value);
+          return isValid
         },
-        message: 'Please provide a valid Indian or Australian phone number',
+        message: 'Please provide a valid  phone number',
       },
       unique: true,
     },
