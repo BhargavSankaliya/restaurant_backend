@@ -14,6 +14,8 @@ router.post("", middleware, validateSchema(MasterUserModel), authController.crea
 
 router.get("", middleware, authController.getUsersList);
 
+router.get("/getSideMenuList", middleware, authController.getSideMenuList);
+
 router.put('/status', middleware, authController.toggleUserStatus);
 
 router.get('/:id', middleware, authController.getUserById);

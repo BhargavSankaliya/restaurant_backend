@@ -11,6 +11,17 @@ commonFilter.roleMasterObject = {
     status: 1,
     permissions: 1,
 }
+commonFilter.roleMasterPermissionsObject = {
+    menuId: "$permissions.menuId",
+    permission: "$permissions.permission",
+    name: "$menuDetails.name",
+    icon: "$menuDetails.icon",
+    url: "$menuDetails.url",
+    status: "$menuDetails.status",
+    isDeleted: "$menuDetails.isDeleted",
+    createdAt: "$menuDetails.createdAt",
+    updatedAt: "$menuDetails.updatedAt",
+}
 commonFilter.menuMasterObject = {
     _id: 1,
     name: 1,

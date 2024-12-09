@@ -153,6 +153,48 @@ authController.getUsersList = async (req, res, next) => {
   }
 };
 
+authController.getSideMenuList = async (req, res, next) => {
+  try {
+    const role = req?.masterUser?.role;
+    if (!role) {
+      return res.status(400).json({ error: "Role not found in user data." });
+    }
+    const query = [
+      { $match: { _id: convertIdToObjectId(role) } },
+      { $unwind: "$permissions" },
+      {
+        $lookup: {
+          from: "mastersmenus",
+          localField: "permissions.menuId",
+          foreignField: "_id",
+          as: "menuDetails",
+        },
+      },
+      { $unwind: "$menuDetails" },
+      {
+        $project: {
+          ...commonFilter.roleMasterObject,
+          permissions: {
+            ...commonFilter.roleMasterPermissionsObject,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          roleName: { $first: "$roleName" },
+          status: { $first: "$status" },
+          permissions: { $push: "$permissions" },
+        },
+      },
+    ];
+    const users = await RoleMasterModel.aggregate(query);
+    createResponse(users, 200, "Users retrieved successfully.", res);
+  } catch (error) {
+    errorHandler(error, req, res);
+  }
+};
+
 authController.toggleUserStatus = async (req, res, next) => {
   try {
     const { id } = req?.query;
