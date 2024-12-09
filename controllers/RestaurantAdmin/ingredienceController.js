@@ -6,22 +6,24 @@ const ingredienceController = {};
 
 ingredienceController.creatIengredience = async (req, res, next) => {
   try {
+    let restaurantId = convertIdToObjectId(req.restaurant._id)
     if (!req?.query?.id) {
       let { name } = req?.body;
-      const findIngredience = await IngredienceModel.findOne({ name });
-      if (!!findIngredience) {
-        if (findIngredience.name === name) {
-          throw new CustomError("Ingredience already exists!", 400);
-        }
+      const findIngredience = await IngredienceModel.findOne({ name, restaurantId ,isDeleted: false});
+      if (findIngredience) {
+        throw new CustomError("Ingredience already exists!", 400);
       }
+      let createObj={...req.body,restaurantId}
       let ingredienceCreated = await IngredienceModel.create(
-        req?.body
+        createObj
       );
       createResponse(ingredienceCreated, 200, "Ingredience created successfully.", res);
     } else {
       const { id } = req?.query
       const existing = await IngredienceModel.findOne({
         _id: { $ne: id },
+        restaurantId:restaurantId,
+        isDeleted: false,
         $or: [
           { name: req?.body?.name?.trim() },
         ]

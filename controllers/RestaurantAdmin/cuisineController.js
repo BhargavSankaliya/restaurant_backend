@@ -7,18 +7,21 @@ const cuisineController = {};
 
 cuisineController.createCuisine = async (req, res, next) => {
   try {
+    let restaurantId = convertIdToObjectId(req.restaurant._id)
     if (!req?.query?.id) {
       let { name } = req?.body;
-      const findCuisine = await CuisineModel.findOne({ name });
+      const findCuisine = await CuisineModel.findOne({ name, restaurantId });
       if (findCuisine) {
         throw new CustomError("Cuisine already exists!", 400);
       }
-      let cuisineCreated = await CuisineModel.create(req?.body);
+      let createObj = { ...req.body, restaurantId }
+      let cuisineCreated = await CuisineModel.create(createObj);
       createResponse(cuisineCreated, 200, "Cuisine Created Successfully.", res);
     } else {
       const { id } = req?.query;
       const existing = await CuisineModel.findOne({
-        _id: { $ne: id },
+        _id: { $ne: convertIdToObjectId(id) },
+        restaurantId: restaurantId,
         name: req?.body?.name.trim(),
       });
       if (existing) {

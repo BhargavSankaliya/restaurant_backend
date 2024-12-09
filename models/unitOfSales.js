@@ -16,6 +16,11 @@ const unitOfSalesSchema = new mongoose.Schema(
       required: false,
       default: ''
     },
+    restaurantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "restaurants",
+      default: null
+    },
     status: {
       type: String,
       enum: ["Active", "Inactive"],

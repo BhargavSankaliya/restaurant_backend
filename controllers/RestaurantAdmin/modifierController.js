@@ -6,22 +6,23 @@ const modifierController = {};
 
 modifierController.createNewModifier = async (req, res, next) => {
   try {
+    let restaurantId = convertIdToObjectId(req.restaurant._id)
     if (!req?.query?.id) {
       let { additionalItemName, } = req.body;
-      const findModifire = await ModifierModel.findOne({ additionalItemName: additionalItemName, isDeleted: false });
-      if (!!findModifire) {
-        if (findModifire.additionalItemName == additionalItemName) {
-          throw new CustomError("Modifire already exists!", 400);
-        }
+      const findModifire = await ModifierModel.findOne({ additionalItemName: additionalItemName, isDeleted: false, restaurantId: restaurantId });
+      if (findModifire) {
+        throw new CustomError("Modifire already exists!", 400);
       }
+      let createObj={...req.body,restaurantId}
       let newRoleCreated = await ModifierModel.create(
-        req?.body
+        createObj
       );
       createResponse(newRoleCreated, 200, "New modifire created successfully.", res);
     } else {
       const { id } = req?.query;
       const existingModifier = await ModifierModel.findOne({
         additionalItemName: req?.body?.additionalItemName,
+        restaurantId:restaurantId,
         _id: { $ne: id },
       });
       if (existingModifier) {

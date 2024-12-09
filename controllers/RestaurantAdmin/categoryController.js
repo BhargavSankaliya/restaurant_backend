@@ -1,27 +1,29 @@
 const { CustomError, errorHandler } = require("../../middlewares/error.js");
 const createResponse = require("../../middlewares/response.js");
-const CategoryModel = require("../../models/category.js");
+const CategoryModel = require("../../models/categoryModel.js");
 const categoryController = {};
 const { convertIdToObjectId, commonFilter } = require("../../middlewares/commonFilter.js");
 
 categoryController.createCategory = async (req, res, next) => {
   try {
+    let restaurantId = convertIdToObjectId(req.restaurant._id)
     if (!req?.query?.id) {
       let { name } = req?.body;
-      const findCategory = await CategoryModel.findOne({ name });
+      const findCategory = await CategoryModel.findOne({ name, restaurantId, isDeleted: false });
       if (!!findCategory) {
         if (findCategory?.name === name) {
           throw new CustomError("Category already exists!", 400);
         }
       }
+      let createObj = { ...req.body, restaurantId }
       let categoryCreated = await CategoryModel.create(
-        req?.body
+        createObj
       );
       createResponse(categoryCreated, 200, "Category Created Successfully.", res);
     } else {
       const { id } = req?.query;
       const existing = await CategoryModel.findOne({
-        _id: { $ne: id },
+        _id: { $ne: convertIdToObjectId(id) },
         $or: [
           { name: req?.body?.name.trim() },
         ]
@@ -29,7 +31,7 @@ categoryController.createCategory = async (req, res, next) => {
       if (existing) {
         throw new CustomError("category already exist!", 400);
       }
-      const category = await CategoryModel.findOneAndUpdate({ _id: id }, req?.body, { new: true })
+      const category = await CategoryModel.findOneAndUpdate({ _id: convertIdToObjectId(id) }, req?.body, { new: true })
       if (!category) {
         throw new CustomError("Category could not be edited!!", 400);
       }

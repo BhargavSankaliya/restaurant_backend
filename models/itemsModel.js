@@ -5,7 +5,7 @@ const commonSchema = require("./CommonModel");
 
 const itemsSchema = new mongoose.Schema(
   {
-    itemName: {
+    name: {
       type: String,
       required: [true, 'Item Name is requied.'],
       default: ''
@@ -15,45 +15,45 @@ const itemsSchema = new mongoose.Schema(
       required: [true, 'Description is requied.'],
       default: ''
     },
+    image: {
+      type: String,
+      required: [true, 'Image is requied.'],
+    },
     price: {
       type: Number,
       required: [true, 'Price is requied.'],
-      default: 0
+      min: [1, 'Price must be greater than or equal to 1']
+    },
+    spiceLevel: {
+      type: String,
+      required: [true, "Spicy field is required."],
+      enum: ["NA", "1x", "2x", "3x"],
     },
     status: {
       type: String,
       enum: ["Active", "Inactive"],
       default: "Active"
     },
-    itemImage: {
-      type: String,
-      default: '',
-    },
-    cuisine: {
+    restaurantId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: [true, 'Cuisine is required.']
+      default: null
     },
-    category: {
+    categoryId: {
       type: mongoose.Schema.Types.ObjectId,
       required: [true, 'Category is required.']
     },
-    unitOfSale: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: [true, 'UnitOfSale is required.']
-    },
-    additionalItem: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: [true, 'AdditionalItem is required.']
-    },
-    ingredient: {
+    ingredientId: {
       type: mongoose.Schema.Types.ObjectId,
       required: [true, 'Ingredient is required.']
     },
-    spicy: {
-      type: String,
-      required: [true, "Spicy field is required."],
-      enum: ["NA", "1x", "2x", "3x"],
+    options: {
+      type: Array,
+      default: []
     },
+    choices: {
+      type: Array,
+      default: []
+    }
 
   },
   { timestamps: true }
@@ -61,6 +61,5 @@ const itemsSchema = new mongoose.Schema(
 
 itemsSchema.add(commonSchema);
 
-const modifierModel = mongoose.model("Items", itemsSchema);
+module.exports = mongoose.model("Items", itemsSchema);
 
-module.exports = modifierModel;

@@ -16,6 +16,11 @@ const ingredienceSchema = new mongoose.Schema(
       required: false,
       default: ''
     },
+    restaurantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "restaurants",
+      default: null
+    },
     image: {
       type: String,
       require: false

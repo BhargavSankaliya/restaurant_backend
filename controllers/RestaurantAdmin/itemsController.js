@@ -1,63 +1,53 @@
-const { CustomError, errorHandler } = require("../middlewares/error.js");
-const createResponse = require("../middlewares/response.js");
-const ItemsModel = require("../models/itemsModel.js");
+const { CustomError, errorHandler } = require("../../middlewares/error.js");
+const createResponse = require("../../middlewares/response.js");
+const ItemsModel = require("../../models/itemsModel.js");
+const CategoryModel = require("../../models/category.js");
+const IngredientModel = require("../../models/ingredience.js");
 const itemsController = {};
+const commonFilter = require("../../middlewares/commonFilter.js")
 
-itemsController.createNewItem = async (req, res, next) => {
+itemsController.createUpdate = async (req, res, next) => {
   try {
-    let { itemName, } = req.body;
-    const findItems = await ItemsModel.findOne({ itemName: itemName, isDeleted: false });
-    if (!!findItems) {
-      if (findItems.itemName == itemName) {
+    let { name, description, image, price, spiceLevel, categoryId, ingredientId, choices, options } = req.body;
+    let restaurantId = commonFilter.convertIdToObjectId(req.restaurant._id)
+
+    if (req?.query?.itemId) {
+      const findItems = await ItemsModel.findOne({ _id: { $ne: commonFilter.convertIdToObjectId(req.query.itemId) }, name: name, restaurantId: restaurantId, isDeleted: false });
+      if (findItems) {
         throw new CustomError("Item already exists!", 400);
       }
+      let categoryCheck = await CategoryModel.findOne({ _id: commonFilter.convertIdToObjectId(categoryId), isDeleted: false, restaurantId: restaurantId })
+      if (!categoryCheck) {
+        throw new CustomError("Please enter valid category", 400);
+      }
+      let ingredientCheck = await IngredientModel.findOne({ _id: commonFilter.convertIdToObjectId(categoryId), isDeleted: false, restaurantId: restaurantId })
+      if (!ingredientCheck) {
+        throw new CustomError("Please enter valid ingredient", 400);
+      }
+      let result = await ItemsModel.findByIdAndUpdate(commonFilter.convertIdToObjectId(req?.query?.itemId), { $set: req.body })
+      createResponse(result, 200, "Item updated successfully.", res);
+    } else {
+      const findItems = await ItemsModel.findOne({ name: name, restaurantId: restaurantId, isDeleted: false });
+      if (findItems) {
+        throw new CustomError("Item already exists!", 400);
+      }
+      let categoryCheck = await CategoryModel.findOne({ _id: commonFilter.convertIdToObjectId(categoryId), isDeleted: false, restaurantId: restaurantId })
+      if (!categoryCheck) {
+        throw new CustomError("Please enter valid category", 400);
+      }
+      let ingredientCheck = await IngredientModel.findOne({ _id: commonFilter.convertIdToObjectId(categoryId), isDeleted: false, restaurantId: restaurantId })
+      if (!ingredientCheck) {
+        throw new CustomError("Please enter valid ingredient", 400);
+      }
+      let createObj = { ...req.body, restaurantId }
+      let result = await ItemsModel(createObj).save()
+
+      createResponse(result, 200, "Item created successfully.", res);
     }
-    if (!!req?.files?.itemImage) {
-      req.body.itemImage = req?.files?.itemImage[0]?.filename;
-    }
-    let newRoleCreated = await ItemsModel.create(
-      req?.body
-    );
-    createResponse(newRoleCreated, 200, "New modifire created successfully.", res);
   } catch (error) {
     errorHandler(error, req, res)
   }
 }
-
-itemsController.updateItemById = async (req, res, next) => {
-  try {
-    let { id, price, description, itemName } = req.body;
-    const Modifier = await ItemsModel.findById(id);
-    if (!Modifier) {
-      throw new CustomError("Modifier not found!", 404);
-    }
-    const existingModifier = await ItemsModel.findOne({
-      itemName: itemName,
-      _id: { $ne: id },
-    });
-    if (existingModifier) {
-      throw new CustomError("Additional Item Name already exists!", 400);
-    }
-    let updateData = {
-      price: price,
-      description: description,
-      itemName: itemName
-    }
-    if (req?.files) {
-      if (req?.files?.itemImage) {
-        updateData.itemImage = req?.files?.itemImage[0]?.filename;
-      }
-    }
-    const updatedItemsData = await ItemsModel.findOneAndUpdate(
-      { _id: id },
-      updateData,
-      { new: true }
-    );
-    createResponse(updatedItemsData, 200, "Item updated successfully.", res);
-  } catch (error) {
-    errorHandler(error, req, res);
-  }
-};
 
 itemsController.getItemList = async (req, res, next) => {
   try {

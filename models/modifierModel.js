@@ -15,6 +15,11 @@ const modifierSchema = new mongoose.Schema(
       required: [true, 'Description is requied.'],
       default: ''
     },
+    restaurantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "restaurants",
+      default: null
+    },
     price: {
       type: Number,
       required: [true, 'Price is requied.'],

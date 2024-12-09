@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router()
 const { validateSchema } = require('../../models/baseModel');
 const { categoryController } = require('../../controllers/RestaurantAdmin/categoryController');
-const categoryModel = require('../../models/category');
+const categoryModel = require('../../models/categoryModel');
 const RestaurantAuthCheck = require("../../middlewares/restaurantAuthCheck");
 
 

@@ -9,7 +9,7 @@ const unitOfSalesRoute = require("./routes/RestaurantAdmin/unitOfSalesRoute")
 const ingredienceRoute = require("./routes/RestaurantAdmin/ingredience")
 const cuisineRoute = require("./routes/RestaurantAdmin/cuisineRoute")
 const modifierRoute = require("./routes/RestaurantAdmin/modifierRoute")
-const itemsRoute = require("./routes/itemsRoute")
+const itemsRoute = require("./routes/RestaurantAdmin/itemsRoute")
 const { errorHandler } = require("./middlewares/error");
 const verifyToken = require("./middlewares/verifyToken");
 //const config = require("./environmentVariable.json");
@@ -56,10 +56,8 @@ app.use("/api/restaurant-admin-file-upload", restaurantFileUpload);
 app.use("/api/restaurant-admin-ingredience", ingredienceRoute);
 app.use("/api/restaurant-admin-cuisine", cuisineRoute);
 app.use("/api/restaurant-admin-category", categoryRoute);
-
-// By Meet 
 app.use("/api/restaurant-admin-modifier", modifierRoute);
-app.use("/api/item", itemsRoute);
+// app.use("/api/restaurant-admin-item", itemsRoute);
 
 
 // Error handling

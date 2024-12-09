@@ -6,17 +6,20 @@ const unitofsalesController = {};
 
 unitofsalesController.createUnitOfSales = async (req, res, next) => {
   try {
+    let restaurantId = convertIdToObjectId(req.restaurant._id)
     if (!req?.query?.id) {
-      const existingUnit = await unitOfSalesModel.findOne({ name: req?.body?.name });
+      const existingUnit = await unitOfSalesModel.findOne({ name: req?.body?.name, restaurantId: restaurantId, isDeleted: false });
       if (existingUnit) {
         throw new CustomError("Unit of Sales already exists!", 400);
       }
-      let unitOfSales = await unitOfSalesModel.create(req?.body);
+      let createObj = { ...req.body, restaurantId }
+      let unitOfSales = await unitOfSalesModel.create(createObj);
       createResponse(unitOfSales, 200, "Unit of Sales Created Successfully.", res);
     } else {
       const { id } = req.query;
       const existing = await unitOfSalesModel.findOne({
         _id: { $ne: id },
+        restaurantId: restaurantId,
         $or: [
           { name: req?.body?.name?.trim() },
         ]
