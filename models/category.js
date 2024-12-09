@@ -14,7 +14,7 @@ const categorySchema = new mongoose.Schema(
       required: false,
       default: ''
     },
-    cImage: {
+    image: {
       type: String,
       required: false
     },

@@ -4,7 +4,7 @@ const app = express();
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const path = require("path");
-const categoryRoute = require("./routes/categoryRoute");
+const categoryRoute = require("./routes/RestaurantAdmin/categoryRoute");
 const unitOfSalesRoute = require("./routes/RestaurantAdmin/unitOfSalesRoute")
 const ingredienceRoute = require("./routes/RestaurantAdmin/ingredience")
 const cuisineRoute = require("./routes/RestaurantAdmin/cuisineRoute")
@@ -55,7 +55,7 @@ app.use("/api/restaurant-admin-unitOfSales", unitOfSalesRoute);
 app.use("/api/restaurant-admin-file-upload", restaurantFileUpload);
 app.use("/api/restaurant-admin-ingredience", ingredienceRoute);
 app.use("/api/restaurant-admin-cuisine", cuisineRoute);
-app.use("/api/category", categoryRoute);
+app.use("/api/restaurant-admin-category", categoryRoute);
 
 // By Meet 
 app.use("/api/modifier", modifierRoute);
