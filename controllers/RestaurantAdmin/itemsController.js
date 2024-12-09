@@ -1,7 +1,7 @@
 const { CustomError, errorHandler } = require("../../middlewares/error.js");
 const createResponse = require("../../middlewares/response.js");
 const ItemsModel = require("../../models/itemsModel.js");
-const CategoryModel = require("../../models/category.js");
+const CategoryModel = require("../../models/categoryModel.js");
 const IngredientModel = require("../../models/ingredience.js");
 const itemsController = {};
 const commonFilter = require("../../middlewares/commonFilter.js")

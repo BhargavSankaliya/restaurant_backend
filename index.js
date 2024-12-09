@@ -9,7 +9,6 @@ const unitOfSalesRoute = require("./routes/RestaurantAdmin/unitOfSalesRoute")
 const ingredienceRoute = require("./routes/RestaurantAdmin/ingredience")
 const cuisineRoute = require("./routes/RestaurantAdmin/cuisineRoute")
 const modifierRoute = require("./routes/RestaurantAdmin/modifierRoute")
-const itemsRoute = require("./routes/RestaurantAdmin/itemsRoute")
 const { errorHandler } = require("./middlewares/error");
 const verifyToken = require("./middlewares/verifyToken");
 //const config = require("./environmentVariable.json");
@@ -27,6 +26,7 @@ const RestaurantMasterRoute = require("./routes/masterAdmin/restaurantMasterRout
 //Restaurant Admin
 const restaurantAuthRoute = require("./routes/RestaurantAdmin/restaurantAuthRoute")
 const restaurantFileUpload = require("./routes/RestaurantAdmin/fileUpload")
+const itemsRoute = require("./routes/RestaurantAdmin/itemsRoute")
 
 
 dotenv.config();
@@ -57,7 +57,7 @@ app.use("/api/restaurant-admin-ingredience", ingredienceRoute);
 app.use("/api/restaurant-admin-cuisine", cuisineRoute);
 app.use("/api/restaurant-admin-category", categoryRoute);
 app.use("/api/restaurant-admin-modifier", modifierRoute);
-// app.use("/api/restaurant-admin-item", itemsRoute);
+app.use("/api/restaurant-admin-item", itemsRoute);
 
 
 // Error handling
