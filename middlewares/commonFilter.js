@@ -98,6 +98,18 @@ commonFilter.cuisinesMasterObj = {
     isDeleted: 1,
     createdAt: 1
 }
+
+commonFilter.modifierMasterObj = {
+    _id: 1,
+    additionalItemName: 1,
+    description: 1,
+    price: 1,
+    image: 1,
+    status: 1,
+    isDeleted: 1,
+    createdAt: 1
+}
+
 commonFilter.categoryMasterObj = {
     _id: 1,
     name: 1,

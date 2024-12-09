@@ -8,7 +8,7 @@ const categoryRoute = require("./routes/RestaurantAdmin/categoryRoute");
 const unitOfSalesRoute = require("./routes/RestaurantAdmin/unitOfSalesRoute")
 const ingredienceRoute = require("./routes/RestaurantAdmin/ingredience")
 const cuisineRoute = require("./routes/RestaurantAdmin/cuisineRoute")
-const modifierRoute = require("./routes/modifierRoute")
+const modifierRoute = require("./routes/RestaurantAdmin/modifierRoute")
 const itemsRoute = require("./routes/itemsRoute")
 const { errorHandler } = require("./middlewares/error");
 const verifyToken = require("./middlewares/verifyToken");
@@ -58,7 +58,7 @@ app.use("/api/restaurant-admin-cuisine", cuisineRoute);
 app.use("/api/restaurant-admin-category", categoryRoute);
 
 // By Meet 
-app.use("/api/modifier", modifierRoute);
+app.use("/api/restaurant-admin-modifier", modifierRoute);
 app.use("/api/item", itemsRoute);
 
 

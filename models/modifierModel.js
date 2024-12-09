@@ -23,13 +23,11 @@ const modifierSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["Active", "Inactive"],
-      // required: [true, 'Status is required.'],
       default: "Active"
     },
-    modifierImage: {
+    image: {
       type: String,
       default: '',
-      //required: true
     },
   },
   { timestamps: true }
