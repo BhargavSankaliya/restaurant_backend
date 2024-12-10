@@ -50,11 +50,12 @@ authController.userLogin = async (req, res, next) => {
           permissions: roleDetails?.permissions,
         },
       },
-      token,
+      token: user.token,
     };
 
     createResponse(response, 200, "Login successful", res);
   } catch (error) {
+    console.log("Error", error)
     errorHandler(error, req, res);
   }
 };
