@@ -142,12 +142,13 @@ exports.list = async (req, res) => {
 
 exports.get = async (req, res) => {
     try {
-
+        const { restaurantId } = req?.params;
         const restaurant = await RestaurantModel.aggregate([
             {
                 $match: {
                     isDeleted: false,
-                    status: "Active"
+                    status: "Active",
+                    _id: convertIdToObjectId(restaurantId)
                 }
             },
             {
