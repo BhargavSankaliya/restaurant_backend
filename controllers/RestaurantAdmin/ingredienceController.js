@@ -137,6 +137,16 @@ ingredienceController.delete = async (req, res) => {
   }
 }
 
+ingredienceController.dropDown = async (req, res) => {
+  try {
+    let restaurantId =  convertIdToObjectId(req.restaurant._id)
+    let result = await IngredienceModel.find({ restaurantId: restaurantId,status:"Active",isDeleted:false },{ name: 1, _id: 1 })
+    createResponse(result, 200, "Success", res);
+  } catch (error) {
+    errorHandler(error, req, res);
+  }
+}
+
 
 
 module.exports = { ingredienceController }

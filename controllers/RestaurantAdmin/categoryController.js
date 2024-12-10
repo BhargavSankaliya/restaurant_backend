@@ -136,5 +136,16 @@ categoryController.delete = async (req, res) => {
   }
 }
 
+categoryController.dropDown = async (req, res) => {
+  try {
+
+    let restaurantId =  convertIdToObjectId(req.restaurant._id)
+    let result = await CategoryModel.find({ restaurantId: restaurantId,status:"Active",isDeleted:false },{ name: 1, _id: 1 })
+    createResponse(result, 200, "Success", res);
+  } catch (error) {
+    errorHandler(error, req, res);
+  }
+}
+
 
 module.exports = { categoryController }

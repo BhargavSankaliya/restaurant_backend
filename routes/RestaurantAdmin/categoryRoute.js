@@ -8,6 +8,7 @@ const RestaurantAuthCheck = require("../../middlewares/restaurantAuthCheck");
 
 
 router.post("/", RestaurantAuthCheck, validateSchema(categoryModel), categoryController.createCategory)
+router.get("/dropdown", RestaurantAuthCheck, categoryController.dropDown);
 router.get("/:id", RestaurantAuthCheck, categoryController.categoryGetById)
 router.get("/", RestaurantAuthCheck, categoryController.categoryList)
 router.put("/status/:id", RestaurantAuthCheck, categoryController.toggleStatus);

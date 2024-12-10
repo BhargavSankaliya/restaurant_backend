@@ -6,6 +6,7 @@ const CuisineModel = require('../../models/cuisineModel');
 const RestaurantAuthCheck = require("../../middlewares/restaurantAuthCheck");
 
 router.post("/", RestaurantAuthCheck, validateSchema(CuisineModel), cuisineController.createCuisine);
+router.get("/dropdown", RestaurantAuthCheck, cuisineController.dropDown);
 router.get("/:id", RestaurantAuthCheck, cuisineController.cuisineGetById);
 router.get("/", RestaurantAuthCheck, cuisineController.cuisineList);
 router.put("/status/:id", RestaurantAuthCheck, cuisineController.toggleStatus);

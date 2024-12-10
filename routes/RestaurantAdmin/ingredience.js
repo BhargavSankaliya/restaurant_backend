@@ -9,11 +9,11 @@ const restaurantCpUpload = require("../../middlewares/restaurantCpUpload")
 
 
 router.post("/", restaurantAuthCheck, validateSchema(ingredienceModel), restaurantCpUpload, ingredienceController.creatIengredience)
+router.get("/dropdown",restaurantAuthCheck,ingredienceController.dropDown)
 router.get("/:id", restaurantAuthCheck, ingredienceController.ingredienceGetById)
 router.get("/", restaurantAuthCheck, ingredienceController.IngredienceList)
 router.put("/status/:id", restaurantAuthCheck, ingredienceController.toggleStatus);
 router.delete("/:id", restaurantAuthCheck, ingredienceController.delete);
-
 
 
 module.exports = router
