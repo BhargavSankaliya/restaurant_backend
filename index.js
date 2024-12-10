@@ -4,11 +4,6 @@ const app = express();
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const path = require("path");
-const categoryRoute = require("./routes/RestaurantAdmin/categoryRoute");
-const unitOfSalesRoute = require("./routes/RestaurantAdmin/unitOfSalesRoute")
-const ingredienceRoute = require("./routes/RestaurantAdmin/ingredience")
-const cuisineRoute = require("./routes/RestaurantAdmin/cuisineRoute")
-const modifierRoute = require("./routes/RestaurantAdmin/modifierRoute")
 const { errorHandler } = require("./middlewares/error");
 const verifyToken = require("./middlewares/verifyToken");
 //const config = require("./environmentVariable.json");
@@ -27,6 +22,12 @@ const RestaurantMasterRoute = require("./routes/masterAdmin/restaurantMasterRout
 const restaurantAuthRoute = require("./routes/RestaurantAdmin/restaurantAuthRoute")
 const restaurantFileUpload = require("./routes/RestaurantAdmin/fileUpload")
 const itemsRoute = require("./routes/RestaurantAdmin/itemsRoute")
+const categoryRoute = require("./routes/RestaurantAdmin/categoryRoute");
+const unitOfSalesRoute = require("./routes/RestaurantAdmin/unitOfSalesRoute")
+const ingredienceRoute = require("./routes/RestaurantAdmin/ingredience")
+const cuisineRoute = require("./routes/RestaurantAdmin/cuisineRoute")
+const modifierRoute = require("./routes/RestaurantAdmin/modifierRoute")
+const kdsRoute = require("./routes/RestaurantAdmin/kdsRoute")
 
 
 dotenv.config();
@@ -58,6 +59,7 @@ app.use("/api/restaurant-admin-cuisine", cuisineRoute);
 app.use("/api/restaurant-admin-category", categoryRoute);
 app.use("/api/restaurant-admin-modifier", modifierRoute);
 app.use("/api/restaurant-admin-item", itemsRoute);
+app.use("/api/restaurant-admin-kds", kdsRoute);
 
 
 // Error handling
