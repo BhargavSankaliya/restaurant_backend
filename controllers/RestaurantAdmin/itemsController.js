@@ -20,7 +20,7 @@ itemsController.createUpdate = async (req, res, next) => {
       if (!categoryCheck) {
         throw new CustomError("Please enter valid category", 400);
       }
-      let ingredientCheck = await IngredientModel.findOne({ _id: commonFilter.convertIdToObjectId(categoryId), isDeleted: false, restaurantId: restaurantId })
+      let ingredientCheck = await IngredientModel.findOne({ _id: commonFilter.convertIdToObjectId(ingredientId), isDeleted: false, restaurantId: restaurantId })
       if (!ingredientCheck) {
         throw new CustomError("Please enter valid ingredient", 400);
       }
@@ -35,7 +35,7 @@ itemsController.createUpdate = async (req, res, next) => {
       if (!categoryCheck) {
         throw new CustomError("Please enter valid category", 400);
       }
-      let ingredientCheck = await IngredientModel.findOne({ _id: commonFilter.convertIdToObjectId(categoryId), isDeleted: false, restaurantId: restaurantId })
+      let ingredientCheck = await IngredientModel.findOne({ _id: commonFilter.convertIdToObjectId(ingredientId), isDeleted: false, restaurantId: restaurantId })
       if (!ingredientCheck) {
         throw new CustomError("Please enter valid ingredient", 400);
       }
