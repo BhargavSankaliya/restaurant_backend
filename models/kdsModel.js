@@ -10,6 +10,23 @@ const kdsSchema = new mongoose.Schema(
       required: [true, 'Name is requied.'],
       default: ''
     },
+    location: {
+      type: String,
+      required: [true, 'Location is requied.'],
+      default: ''
+    },
+    isDefault: {
+      type: Boolean,
+      required: [true, 'IsDefault is requied.'],
+      default: true
+    },
+    foodCategory: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        required: [true, 'FoodCategory is requied.'],
+        default: null
+      }
+    ],
     restaurantId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "restaurants",

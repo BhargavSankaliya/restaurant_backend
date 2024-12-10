@@ -110,6 +110,36 @@ commonFilter.modifierMasterObj = {
     createdAt: 1
 }
 
+commonFilter.kdsLookUp = {
+    $lookup: {
+        from: "categories",
+        localField: "foodCategory",
+        foreignField: "_id",
+        as: "foodCategoryDetails",
+    },
+}
+
+commonFilter.kdsMap = {
+    foodCategory: {
+        $map: {
+            input: "$foodCategoryDetails",
+            as: "category",
+            in: { _id: "$$category._id", name: "$$category.name" },
+        },
+    },
+}
+
+commonFilter.kdsMasterObj = {
+    _id: 1,
+    name: 1,
+    location: 1,
+    isDefault: 1,
+    foodCategory: 1,
+    status: 1,
+    isDeleted: 1,
+    createdAt: 1
+}
+
 commonFilter.categoryMasterObj = {
     _id: 1,
     name: 1,
