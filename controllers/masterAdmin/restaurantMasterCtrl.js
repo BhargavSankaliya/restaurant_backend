@@ -7,7 +7,7 @@ const Helper = require("../../helper/helper.js")
 
 exports.create = async (req, res) => {
     try {
-        let { name, roleId, capacity, address, gstNumber, phoneNumber, email, website, logo, media, legalDoc, openingHour, password } = req.body;
+        let { roleId, phoneNumber, password } = req.body;
 
         let roleCheck = await RoleModel.findById(roleId)
         if (!roleCheck || roleCheck?.status !== "Active" || roleCheck?.isDeleted !== false) {
@@ -23,19 +23,12 @@ exports.create = async (req, res) => {
             if (emailCheck) {
                 throw new CustomError("Email already exists!", 400);
             }
-            if (password) {
-                try {
-                    password = await Helper.bcyptPass(password)
-                    req.body.password = password
-                } catch (error) {
-                    throw new CustomError("Bcrypt password error", 400)
-                }
-            }
             await RestaurantModel.findByIdAndUpdate(restaurantId, { $set: req.body })
             createResponse({}, 200, "Restaurant updated successfully.", res);
 
         }
         else {
+            await validateSchema(RestaurantMasterModel)
             let phoneNumberCheck = await RestaurantModel.findOne({ phoneNumber: phoneNumber })
             if (phoneNumberCheck) {
                 throw new CustomError("Phoone number already exists!", 400);
@@ -120,11 +113,30 @@ exports.list = async (req, res) => {
                 $project: commonFilter.restaurantMasterObj
             },
             {
-                $skip: Number(skip),
+                $lookup: {
+                    from: "mastersroles",
+                    localField: "roleId",
+                    foreignField: "_id",
+                    as: "roleDetails"
+                }
             },
             {
-                $limit: Number(limit)
-            }
+                $unwind: {
+                    path: "$roleDetails",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $addFields: {
+                    roleName: "$roleDetails.roleName"
+                }
+            },
+            // {
+            //     $skip: Number(skip),
+            // },
+            // {
+            //     $limit: Number(limit)
+            // }
         ]);
         let result = {
             data: restaurant,

@@ -46,8 +46,7 @@ const RestaurantAdminSchema = new mongoose.Schema(
     },
     gstNumber: {
       type: String,
-      required: true,
-      match: [/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[A-Z0-9]{1}[A-Z0-9]{1}$/, "Invalid GST Number format"],
+      required: false,
     },
     phoneNumber: {
       type: String,
@@ -94,12 +93,12 @@ const RestaurantAdminSchema = new mongoose.Schema(
     },
     logo: {
       type: String,
-      required: [true, 'Logo is required.'],
+      required: [false, 'Logo is required.'],
       default: ""
     },
     media: {
       type: String,
-      required: [true, 'media is required.'],
+      required: [false, 'media is required.'],
       default: ""
     },
     legalDoc: {

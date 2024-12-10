@@ -52,6 +52,7 @@ commonFilter.restaurantMasterObj = {
     _id: 1,
     name: 1,
     capacity: 1,
+    roleId: 1,
     status: 1,
     address: 1,
     gstNumber: 1,
