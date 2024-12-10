@@ -3,7 +3,8 @@ const createResponse = require("../../middlewares/response.js");
 const RestaurantModel = require("../../models/restaurantModel.js");
 const RoleModel = require("../../models/roleMasterModel.js");
 const { convertIdToObjectId, commonFilter } = require("../../middlewares/commonFilter.js");
-const Helper = require("../../helper/helper.js")
+const Helper = require("../../helper/helper.js");
+const { validateSchema } = require("../../models/baseModel.js");
 
 exports.create = async (req, res) => {
     try {
@@ -15,20 +16,16 @@ exports.create = async (req, res) => {
         }
         if (req?.query?.restaurantId) {
             let restaurantId = convertIdToObjectId(req?.query?.restaurantId)
-            let phoneNumberCheck = await RestaurantModel.findOne({ _id: { $ne: restaurantId }, phoneNumber: phoneNumber })
-            if (phoneNumberCheck) {
-                throw new CustomError("Phoone number already exists!", 400);
-            }
-            let emailCheck = await RestaurantModel.findOne({ _id: { $ne: restaurantId }, phoneNumber: phoneNumber })
-            if (emailCheck) {
-                throw new CustomError("Email already exists!", 400);
+            let restaurantCheck = await RestaurantModel.findOne({ _id: restaurantId })
+            if (!restaurantCheck) {
+                throw new CustomError("Restaurant Not Found!", 400);
             }
             await RestaurantModel.findByIdAndUpdate(restaurantId, { $set: req.body })
             createResponse({}, 200, "Restaurant updated successfully.", res);
 
         }
         else {
-            await validateSchema(RestaurantMasterModel)
+            await validateSchema(RestaurantModel)
             let phoneNumberCheck = await RestaurantModel.findOne({ phoneNumber: phoneNumber })
             if (phoneNumberCheck) {
                 throw new CustomError("Phoone number already exists!", 400);
