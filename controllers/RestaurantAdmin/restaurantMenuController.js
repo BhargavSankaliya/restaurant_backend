@@ -44,7 +44,7 @@ restaurantMenuController.menuList = async (req, res, next) => {
         }
       },
       {
-        $project: commonFilter.menuMasterObject
+        $project: commonFilter.restaurantMenuObject
       }
     ] : [
       {
@@ -54,7 +54,7 @@ restaurantMenuController.menuList = async (req, res, next) => {
         }
       },
       {
-        $project: commonFilter.menuMasterObject
+        $project: commonFilter.restaurantMenuObject
       }
     ]
 

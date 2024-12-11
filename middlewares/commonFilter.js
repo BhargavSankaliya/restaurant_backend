@@ -35,6 +35,13 @@ commonFilter.menuMasterObject = {
     icon: 1,
     status: 1,
 }
+commonFilter.restaurantMenuObject = {
+    _id: 1,
+    name: 1,
+    url: 1,
+    icon: 1,
+    status: 1,
+}
 
 commonFilter.userMasterObject = {
     _id: 1,
