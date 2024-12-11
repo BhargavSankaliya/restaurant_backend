@@ -11,6 +11,12 @@ commonFilter.roleMasterObject = {
     status: 1,
     permissions: 1,
 }
+commonFilter.restaurantRoleObject = {
+    _id: 1,
+    roleName: 1,
+    status: 1,
+    permissions: 1,
+}
 commonFilter.roleMasterPermissionsObject = {
     menuId: "$permissions.menuId",
     permission: "$permissions.permission",
