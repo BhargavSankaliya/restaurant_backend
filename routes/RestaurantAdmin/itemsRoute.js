@@ -7,10 +7,10 @@ const ItemsModel = require("../../models/itemsModel");
 const RestaurantAuthCheck = require("../../middlewares/restaurantAuthCheck");
 
 router.post("/", RestaurantAuthCheck, validateSchema(ItemsModel), itemsController.createUpdate );
-// router.post('/getItemList', middleware, itemsController.getItemList);
-// router.post('/toggleItemStatus', middleware, itemsController.toggleItemStatus);
-// router.post('/getItemById', middleware, itemsController.getItemById);
-// router.post('/itemDelete', middleware, itemsController.itemDelete);
+router.get('/',RestaurantAuthCheck, itemsController.list);
+router.get('/status/:id', RestaurantAuthCheck, itemsController.toggleStatus);
+router.get('/:id', RestaurantAuthCheck, itemsController.getItemById);
+router.delete('/:id', RestaurantAuthCheck, itemsController.delete);
 
 
 module.exports = router

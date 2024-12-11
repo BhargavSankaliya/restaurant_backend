@@ -117,6 +117,15 @@ commonFilter.modifierMasterObj = {
     createdAt: 1
 }
 
+commonFilter.itemObj = {
+    _id: 1,
+    name: 1,
+    price: 1,
+    image: 1,
+    status: 1,
+    categoryName:"$categoryData.name"
+}
+
 commonFilter.kdsLookUp = {
     $lookup: {
         from: "categories",
