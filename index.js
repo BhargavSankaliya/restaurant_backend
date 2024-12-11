@@ -29,6 +29,7 @@ const cuisineRoute = require("./routes/RestaurantAdmin/cuisineRoute")
 const modifierRoute = require("./routes/RestaurantAdmin/modifierRoute")
 const kdsRoute = require("./routes/RestaurantAdmin/kdsRoute")
 const restaurantRole = require("./routes/RestaurantAdmin/restaurantRoleRoute")
+const restaurantMenuRoute = require("./routes/RestaurantAdmin/restaurantMenuRoute")
 
 
 dotenv.config();
@@ -62,6 +63,7 @@ app.use("/api/restaurant-admin-modifier", modifierRoute);
 app.use("/api/restaurant-admin-item", itemsRoute);
 app.use("/api/restaurant-admin-kds", kdsRoute);
 app.use("/api/restaurant-admin-role", restaurantRole);
+app.use("/api/restaurant-admin-menu", restaurantMenuRoute);
 
 
 // Error handling
