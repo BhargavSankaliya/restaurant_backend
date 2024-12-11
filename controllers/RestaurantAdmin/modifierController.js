@@ -46,6 +46,7 @@ modifierController.getModifierList = async (req, res) => {
     let { status, limit, page } = req?.query;
     let matchObj = {}
     matchObj.isDeleted = false
+    matchObj.restaurantId = convertIdToObjectId(req.restaurant._id)
     if (!limit) {
       limit = 10
     }

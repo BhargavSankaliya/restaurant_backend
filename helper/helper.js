@@ -1,6 +1,10 @@
 const bcrypt = require("bcrypt")
+const { json } = require("express")
 require("dotenv").config()
-const jwt =require("jsonwebtoken")
+const jwt = require("jsonwebtoken")
+let QRCode = require('qrcode')
+let fs = require("fs")
+let path = require("path")
 
 exports.bcyptPass = async (password) => {
     try {
@@ -10,7 +14,7 @@ exports.bcyptPass = async (password) => {
     }
 }
 
-exports.comparePassword = async (password,bcyptPass) => {
+exports.comparePassword = async (password, bcyptPass) => {
     try {
         return await bcrypt.compare(password, bcyptPass);
     } catch (error) {
@@ -43,4 +47,35 @@ exports.generateRandomString = (length, isNumber = false) => {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
+};
+
+
+
+
+exports.QRCodeGen = async (data) => {
+    try {
+        let startPoint = "./";
+        let filePath = `uploads/restaurant/${data.restaurantId}/QR/`;
+        let filename = `${Date.now()}_qr.png`
+        let file = startPoint + filePath + filename;
+
+        const dirPath = startPoint + filePath;
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath, { recursive: true });
+        }
+
+        const jsonData = JSON.stringify(data);
+
+        await QRCode.toFile(file, jsonData, {
+            color: {
+                dark: '#000000',
+                light: '#ffffff'
+            }
+        });
+
+        let fileUrl = process.env.URL + filePath + filename;
+        return fileUrl;
+    } catch (error) {
+        throw new Error(error.message);
+    }
 };

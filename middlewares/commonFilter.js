@@ -125,6 +125,16 @@ commonFilter.itemObj = {
     status: 1,
     categoryName:"$categoryData.name"
 }
+commonFilter.reastaurantTable = {
+    _id: 1,
+    tableNumber: 1,
+    name: 1,
+    capacity: 1,
+    openTime: 1,
+    qrcode: 1,
+    status: 1,
+}
+
 
 commonFilter.kdsLookUp = {
     $lookup: {

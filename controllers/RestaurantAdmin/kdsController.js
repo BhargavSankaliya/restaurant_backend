@@ -68,6 +68,7 @@ kdsController.getKdsList = async (req, res) => {
     if (status) {
       matchObj.status = status;
     }
+    matchObj.restaurantId = convertIdToObjectId(req.restaurant._id)
     const Cuisines = await kdsModel.aggregate([
       {
         $match: matchObj,

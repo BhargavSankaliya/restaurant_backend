@@ -38,6 +38,7 @@ restaurantMenuController.menuList = async (req, res, next) => {
     let query = !!status ? [
       {
         $match: {
+          restaurantId : convertIdToObjectId(req.restaurant._id),
           status: status,
           isDeleted: false
         }
@@ -48,6 +49,7 @@ restaurantMenuController.menuList = async (req, res, next) => {
     ] : [
       {
         $match: {
+          restaurantId : convertIdToObjectId(req.restaurant._id),
           isDeleted: false
         }
       },
