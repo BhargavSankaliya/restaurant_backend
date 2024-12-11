@@ -39,7 +39,7 @@ exports.login = async (req, res) => {
             throw new CustomError("Role details not found", 404);
         }
 
-        let token = await Helper.createJWT(user._id, user.email, user.roleId);
+        user.token = await Helper.createJWT(user._id, user.email, user.roleId);
         user.save()
 
         const response = {
@@ -57,7 +57,7 @@ exports.login = async (req, res) => {
                 media: user?.media,
                 openingHour: user?.openingHour,
             },
-            token,
+            token: user.token,
         };
 
         createResponse(response, 200, "Login successful", res);

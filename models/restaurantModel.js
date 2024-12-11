@@ -107,7 +107,12 @@ const RestaurantAdminSchema = new mongoose.Schema(
     openingHour: {
       type: [openingHourSchema],
       default: []
-    }
+    },
+    token: {
+      type: String,
+      default: '',
+    },
+
   },
 );
 
