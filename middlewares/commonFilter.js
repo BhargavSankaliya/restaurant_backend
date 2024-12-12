@@ -113,6 +113,26 @@ commonFilter.cuisinesMasterObj = {
     createdAt: 1
 }
 
+commonFilter.staffMasterObj = {
+    _id: 1,
+    firstName: 1,
+    lastName: 1,
+    email: 1,
+    mobile: 1,
+    gender: 1,
+    address: 1,
+    country: 1,
+    state: 1,
+    city: 1,
+    postCode: 1,
+    userId: 1,
+    pin: 1,
+    salary: 1,
+    salaryType: 1,
+    status: 1,
+    createdAt: 1
+}
+
 commonFilter.modifierMasterObj = {
     _id: 1,
     additionalItemName: 1,
@@ -130,7 +150,7 @@ commonFilter.itemObj = {
     price: 1,
     image: 1,
     status: 1,
-    categoryName:"$categoryData.name"
+    categoryName: "$categoryData.name"
 }
 commonFilter.reastaurantTable = {
     _id: 1,
