@@ -113,6 +113,22 @@ commonFilter.cuisinesMasterObj = {
     createdAt: 1
 }
 
+commonFilter.restaurantStockManagementObj = {
+    _id: 1,
+    name: 1,
+    description: 1,
+    image: 1,
+    quantity: 1,
+    unit: 1,
+    minThreshold: 1,
+    purchasePrice: 1,
+    sellPrice: 1,
+    expiryDate: 1,
+    status: 1,
+    isDeleted: 1,
+    createdAt: 1
+}
+
 commonFilter.serviceMasterObj = {
     _id: 1,
     name: 1,
