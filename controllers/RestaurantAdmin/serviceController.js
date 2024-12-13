@@ -51,7 +51,7 @@ serviceController.serviceGetById = async (req, res) => {
         $match: { _id: convertIdToObjectId(id) }
       },
       {
-        $project: commonFilter.cuisinesMasterObj
+        $project: commonFilter.serviceMasterObj
       }
     ]);
     createResponse(Service?.length > 0 ? Service[0] : [], 200, "Service found Successfully.", res);
@@ -88,7 +88,7 @@ serviceController.serviceList = async (req, res) => {
         }
       },
       {
-        $project: commonFilter.cuisinesMasterObj
+        $project: commonFilter.serviceMasterObj
       },
       {
         $skip: Number(skip),

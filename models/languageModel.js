@@ -2,24 +2,21 @@ const mongoose = require('mongoose');
 const validator = require("validator");
 const commonSchema = require("./CommonModel");
 
-const serviceSchema = new mongoose.Schema({
+const languageSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
     unique: true,
   },
-  description: {
+  direction: {
     type: String,
-    required: true,
+    required: false,
+    default: null
   },
   restaurantId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "restaurants",
     default: null
-  },
-  image: {
-    type: String,
-    required: false,
   },
   status: {
     type: String,
@@ -28,8 +25,8 @@ const serviceSchema = new mongoose.Schema({
   }
 });
 
-serviceSchema.add(commonSchema);
+languageSchema.add(commonSchema);
 
-const ServiceModel = mongoose.model('restaurantService', serviceSchema);
+const LanguageModel = mongoose.model('restaurantLanguage', languageSchema);
 
-module.exports = ServiceModel;
+module.exports = LanguageModel;

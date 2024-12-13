@@ -113,6 +113,25 @@ commonFilter.cuisinesMasterObj = {
     createdAt: 1
 }
 
+commonFilter.serviceMasterObj = {
+    _id: 1,
+    name: 1,
+    description: 1,
+    image: 1,
+    status: 1,
+    isDeleted: 1,
+    createdAt: 1
+}
+
+commonFilter.languageMasterObj = {
+    _id: 1,
+    name: 1,
+    direction: 1,
+    status: 1,
+    isDeleted: 1,
+    createdAt: 1
+}
+
 commonFilter.staffMasterObj = {
     _id: 1,
     firstName: 1,
