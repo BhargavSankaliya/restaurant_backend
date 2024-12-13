@@ -33,6 +33,7 @@ const restaurantMenuRoute = require("./routes/RestaurantAdmin/restaurantMenuRout
 const restaurantTableRoute = require("./routes/RestaurantAdmin/restaurantTableRoute")
 const restaurantStaffRoute = require("./routes/RestaurantAdmin/restaurantStaffRoute")
 const paymentMethodRoute = require("./routes/RestaurantAdmin/paymentMethodRoute")
+const serviceMethodRoute = require("./routes/RestaurantAdmin/serviceRoute")
 
 
 dotenv.config();
@@ -70,6 +71,7 @@ app.use("/api/restaurant-admin-menu", restaurantMenuRoute);
 app.use("/api/restaurant-admin-table", restaurantTableRoute);
 app.use("/api/restaurant-admin-staff", restaurantStaffRoute);
 app.use("/api/restaurant-admin-payment-method", paymentMethodRoute);
+app.use("/api/restaurant-admin-service", serviceMethodRoute);
 
 
 // Error handling
