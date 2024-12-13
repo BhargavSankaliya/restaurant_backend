@@ -37,7 +37,8 @@ kdsController.createNewKds = async (req, res, next) => {
       const existingKds = await kdsModel.findOne({
         name: req?.body?.name,
         restaurantId: restaurantId,
-        _id: { $ne: id },
+        isDeleted: false,
+        _id: { $ne: convertIdToObjectId(id) },
       });
 
       if (existingKds) {

@@ -22,7 +22,7 @@ serviceController.createService = async (req, res, next) => {
       const existing = await ServiceModel.findOne({
         _id: { $ne: convertIdToObjectId(id) },
         restaurantId: restaurantId,
-        name: req?.body?.name.trim(),
+        name: req?.body?.name,
         isDeleted: false
       });
       if (existing) {

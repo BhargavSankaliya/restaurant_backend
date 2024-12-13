@@ -10,7 +10,7 @@ cuisineController.createCuisine = async (req, res, next) => {
     let restaurantId = convertIdToObjectId(req.restaurant._id)
     if (!req?.query?.id) {
       let { name } = req?.body;
-      const findCuisine = await CuisineModel.findOne({ name, restaurantId });
+      const findCuisine = await CuisineModel.findOne({ name, restaurantId, isDeleted: false, });
       if (findCuisine) {
         throw new CustomError("Cuisine already exists!", 400);
       }
@@ -22,7 +22,8 @@ cuisineController.createCuisine = async (req, res, next) => {
       const existing = await CuisineModel.findOne({
         _id: { $ne: convertIdToObjectId(id) },
         restaurantId: restaurantId,
-        name: req?.body?.name.trim(),
+        isDeleted: false,
+        name: req?.body?.name
       });
       if (existing) {
         throw new CustomError("Cuisine already exists!", 400);
@@ -141,8 +142,8 @@ cuisineController.delete = async (req, res) => {
 cuisineController.dropDown = async (req, res) => {
   try {
 
-    let restaurantId =  convertIdToObjectId(req.restaurant._id)
-    let result = await CuisineModel.find({ restaurantId: restaurantId,status:"Active",isDeleted:false },{ name: 1, _id: 1 })
+    let restaurantId = convertIdToObjectId(req.restaurant._id)
+    let result = await CuisineModel.find({ restaurantId: restaurantId, status: "Active", isDeleted: false }, { name: 1, _id: 1 })
     createResponse(result, 200, "Success", res);
   } catch (error) {
     errorHandler(error, req, res);

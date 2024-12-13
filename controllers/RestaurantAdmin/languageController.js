@@ -10,7 +10,7 @@ languageController.createLanguage = async (req, res, next) => {
     let restaurantId = convertIdToObjectId(req.restaurant._id)
     if (!req?.query?.id) {
       let { name } = req?.body;
-      const findLanguage = await LanguageModel.findOne({ name, restaurantId });
+      const findLanguage = await LanguageModel.findOne({ name, restaurantId, isDeleted: false, });
       if (findLanguage) {
         throw new CustomError("Language already exists!", 400);
       }
@@ -22,7 +22,8 @@ languageController.createLanguage = async (req, res, next) => {
       const existing = await LanguageModel.findOne({
         _id: { $ne: convertIdToObjectId(id) },
         restaurantId: restaurantId,
-        name: req?.body?.name.trim(),
+        isDeleted: false,
+        name: req?.body?.name,
       });
       if (existing) {
         throw new CustomError("Language already exists!", 400);

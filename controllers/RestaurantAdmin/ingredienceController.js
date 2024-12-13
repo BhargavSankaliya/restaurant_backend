@@ -9,11 +9,11 @@ ingredienceController.creatIengredience = async (req, res, next) => {
     let restaurantId = convertIdToObjectId(req.restaurant._id)
     if (!req?.query?.id) {
       let { name } = req?.body;
-      const findIngredience = await IngredienceModel.findOne({ name, restaurantId ,isDeleted: false});
+      const findIngredience = await IngredienceModel.findOne({ name, restaurantId, isDeleted: false });
       if (findIngredience) {
         throw new CustomError("Ingredience already exists!", 400);
       }
-      let createObj={...req.body,restaurantId}
+      let createObj = { ...req.body, restaurantId }
       let ingredienceCreated = await IngredienceModel.create(
         createObj
       );
@@ -21,12 +21,10 @@ ingredienceController.creatIengredience = async (req, res, next) => {
     } else {
       const { id } = req?.query
       const existing = await IngredienceModel.findOne({
-        _id: { $ne: id },
-        restaurantId:restaurantId,
+        _id: { $ne: convertIdToObjectId(id) },
+        restaurantId: restaurantId,
         isDeleted: false,
-        $or: [
-          { name: req?.body?.name?.trim() },
-        ]
+        name: req?.body?.name
       })
       if (existing) {
         throw new CustomError("Ingredience already exist!", 400);
@@ -140,8 +138,8 @@ ingredienceController.delete = async (req, res) => {
 
 ingredienceController.dropDown = async (req, res) => {
   try {
-    let restaurantId =  convertIdToObjectId(req.restaurant._id)
-    let result = await IngredienceModel.find({ restaurantId: restaurantId,status:"Active",isDeleted:false },{ name: 1, _id: 1 })
+    let restaurantId = convertIdToObjectId(req.restaurant._id)
+    let result = await IngredienceModel.find({ restaurantId: restaurantId, status: "Active", isDeleted: false }, { name: 1, _id: 1 })
     createResponse(result, 200, "Success", res);
   } catch (error) {
     errorHandler(error, req, res);
