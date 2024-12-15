@@ -129,6 +129,16 @@ commonFilter.restaurantStockManagementObj = {
     createdAt: 1
 }
 
+commonFilter.restaurantHistoryObj = {
+    _id: 1,
+    quantityConsumed: 1,
+    remarks: 1,
+    performedBy: 1,
+    status: 1,
+    isDeleted: 1,
+    createdAt: 1
+}
+
 commonFilter.serviceMasterObj = {
     _id: 1,
     name: 1,
