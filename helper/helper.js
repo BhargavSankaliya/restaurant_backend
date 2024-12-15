@@ -22,7 +22,7 @@ exports.comparePassword = async (password, bcyptPass) => {
     }
 }
 
-exports.createJWT = async (id, email, role) => {
+exports.createJWT = async (id, email = "", role) => {
     try {
         return jwt.sign(
             { id: id, email: email, roleId: role },

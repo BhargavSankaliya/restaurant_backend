@@ -39,6 +39,11 @@ const languageMethodRoute = require("./routes/RestaurantAdmin/languageRoute")
 const stockManagementMethodRoute = require("./routes/RestaurantAdmin/stockManagementRoute")
 const stockHistoryRoute = require("./routes/RestaurantAdmin/stockHistoryRoute")
 
+//customer 
+const CustomerAuthRoute = require("./routes/Customer/customerAuthRoutes.js")
+const CustomerCategoryRoute = require("./routes/Customer/categoryRoutes.js")
+const CustomerItemRoute = require("./routes/Customer/ItemRoutes.js")
+const CustomerModifierRoute = require("./routes/Customer/modifierRoutes.js")
 
 dotenv.config();
 app.use(cors());
@@ -80,6 +85,12 @@ app.use("/api/restaurant-admin-language", languageMethodRoute);
 app.use("/api/restaurant-admin-stock-management", stockManagementMethodRoute);
 app.use("/api/restaurant-admin-stock-history", stockHistoryRoute);
 
+
+//Customer Rooutes
+app.use("/api/customer", CustomerAuthRoute)
+app.use("/api/customer-category", CustomerCategoryRoute)
+app.use("/api/customer-item", CustomerItemRoute)
+app.use("/api/customer-modifier", CustomerModifierRoute)
 
 // Error handling
 app.use((err, req, res, next) => {
