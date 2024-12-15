@@ -9,6 +9,7 @@ const verifyToken = require("./middlewares/verifyToken");
 //const config = require("./environmentVariable.json");
 const config = require('./config/index')
 const cors = require("cors");
+const { socketConnection, io } = require('./socket.js')
 
 //Master Admin
 const userRoute = require("./routes/masterAdmin/userRoute");
@@ -101,6 +102,8 @@ app.use(express.static(path.join(__dirname, 'frontend')));
 const http = require("http");
 let server = http.createServer(app);
 app.set("port", process.env.PORT || config.PORT);
+
+socketConnection(server)
 
 server.listen(config.server.port, () => {
   connectDB();
