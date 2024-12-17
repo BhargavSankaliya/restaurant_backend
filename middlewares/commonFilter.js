@@ -128,6 +128,21 @@ commonFilter.couponMasterObj = {
     updatedAt: 1
 }
 
+commonFilter.OfferMasterObj = {
+    _id: 1,
+    description: 1,
+    code: 1,
+    type: 1,
+    limit: 1,
+    start_date: 1,
+    end_date: 1,
+    min_order_value: 1,
+    discount_percentage: 1,
+    max_discounted_amount: 1,
+    createdAt: 1,
+    updatedAt: 1
+}
+
 commonFilter.restaurantStockManagementObj = {
     _id: 1,
     name: 1,
