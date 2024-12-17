@@ -38,6 +38,7 @@ const serviceMethodRoute = require("./routes/RestaurantAdmin/serviceRoute")
 const languageMethodRoute = require("./routes/RestaurantAdmin/languageRoute")
 const stockManagementMethodRoute = require("./routes/RestaurantAdmin/stockManagementRoute")
 const stockHistoryRoute = require("./routes/RestaurantAdmin/stockHistoryRoute")
+const couponRoute = require("./routes/RestaurantAdmin/couponRoute")
 
 //customer 
 const CustomerAuthRoute = require("./routes/Customer/customerAuthRoutes.js")
@@ -84,6 +85,7 @@ app.use("/api/restaurant-admin-service", serviceMethodRoute);
 app.use("/api/restaurant-admin-language", languageMethodRoute);
 app.use("/api/restaurant-admin-stock-management", stockManagementMethodRoute);
 app.use("/api/restaurant-admin-stock-history", stockHistoryRoute);
+app.use("/api/restaurant-admin-coupon", couponRoute);
 
 
 //Customer Rooutes
