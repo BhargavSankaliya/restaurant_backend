@@ -46,6 +46,7 @@ const CustomerAuthRoute = require("./routes/Customer/customerAuthRoutes.js")
 const CustomerCategoryRoute = require("./routes/Customer/categoryRoutes.js")
 const CustomerItemRoute = require("./routes/Customer/ItemRoutes.js")
 const CustomerModifierRoute = require("./routes/Customer/modifierRoutes.js")
+const CustomerAddToCartRoute = require("./routes/Customer/addToCartRoutes.js")
 
 dotenv.config();
 app.use(cors());
@@ -95,6 +96,7 @@ app.use("/api/customer", CustomerAuthRoute)
 app.use("/api/customer-category", CustomerCategoryRoute)
 app.use("/api/customer-item", CustomerItemRoute)
 app.use("/api/customer-modifier", CustomerModifierRoute)
+app.use("/api/customer-add-to-cart", CustomerAddToCartRoute)
 
 // Error handling
 app.use((err, req, res, next) => {
