@@ -52,6 +52,7 @@ const CustomerPosterRoute=require("./routes/Customer/PosterRoutes.js")
 
 //Cashier
 const CashierRestaurantRoute=require("./routes/Cashier/CashierRestaurantRoute.js")
+const CustomerPlaceOrderRoute = require("./routes/Customer/orderRoutes.js")
 
 dotenv.config();
 app.use(cors());
@@ -105,6 +106,7 @@ app.use("/api/customer-modifier", CustomerModifierRoute)
 app.use("/api/customer-add-to-cart", CustomerAddToCartRoute)
 app.use("/api/customer-poster", CustomerPosterRoute)
 app.use("/api/customer-restaurant", CashierRestaurantRoute)
+app.use("/api/customer-place-order", CustomerPlaceOrderRoute)
 
 // Error handling
 app.use((err, req, res, next) => {
