@@ -39,6 +39,7 @@ couponController.createCoupon = async (req, res, next) => {
       createResponse(Coupon, 200, "Coupon Updated Successfully.", res);
     }
   } catch (error) {
+    console.log("error", error)
     errorHandler(error, req, res);
   }
 };

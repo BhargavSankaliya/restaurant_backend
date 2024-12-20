@@ -9,6 +9,7 @@ const couponSchema = new mongoose.Schema({
     default: null
   },
   name: { type: String, required: false, default: "" },
+  file: { type: String, required: false, default: "" },
   code: { type: String, required: false, unique: false, default: "" },
   type: { type: String, enum: ["datewise", "limit", "both"], required: false },
   limit: { type: Number, default: null },
