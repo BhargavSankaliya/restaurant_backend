@@ -8,7 +8,7 @@ const { convertIdToObjectId, commonFilter } = require("../../middlewares/commonF
 
 exports.placeOrder = async (req, res) => {
     try {
-        const { restaurantId, items, totalAmount, couponCode, couponId } = req.body;
+        const { restaurantId, items, totalAmount, couponCode, couponId, tableId, tableNumber, dining, takeaway, pickupAddress, deliveryAddress, altogether } = req.body;
         const userId = req.customer._id;
 
         if (!items || items.length === 0) {
@@ -54,17 +54,30 @@ exports.placeOrder = async (req, res) => {
             }
         }
 
+        if (altogether) {
+            items.forEach((val) => {
+                val.status = "Preparing";
+            });
+        }
+
+
         const order = new OrderModel({
             userId: convertIdToObjectId(userId),
             restaurantId: convertIdToObjectId(restaurantId),
+            tableId: tableId ? convertIdToObjectId(tableId) : null,
+            tableNumber,
+            dining,
+            takeaway,
+            pickupAddress,
+            deliveryAddress,
+            altogether,
             items,
             totalAmount,
             discount,
             finalAmount,
             couponId: couponId ? convertIdToObjectId(couponId) : null,
             couponCode: couponCode || null,
-            status: "Pending",
-            createdAt: new Date(),
+            status: altogether ? "Preparing" : "Pending"
         });
 
         await order.save();
