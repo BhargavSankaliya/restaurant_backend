@@ -9,7 +9,8 @@ const verifyToken = require("./middlewares/verifyToken");
 //const config = require("./environmentVariable.json");
 const config = require('./config/index')
 const cors = require("cors");
-const { socketConnection, io } = require('./socket.js')
+const { socketConnection } = require('./socket.js')
+const { startEventListener } = require('./events/eventListners.js')
 
 //Master Admin
 const userRoute = require("./routes/masterAdmin/userRoute");
@@ -40,7 +41,7 @@ const stockManagementMethodRoute = require("./routes/RestaurantAdmin/stockManage
 const stockHistoryRoute = require("./routes/RestaurantAdmin/stockHistoryRoute")
 const couponRoute = require("./routes/RestaurantAdmin/couponRoute")
 const OfferRoute = require("./routes/RestaurantAdmin/OfferRoute")
-const RestaurantPosterRoute =require("./routes/RestaurantAdmin/restaurantPosterRoute.js")
+const RestaurantPosterRoute = require("./routes/RestaurantAdmin/restaurantPosterRoute.js")
 
 //customer 
 const CustomerAuthRoute = require("./routes/Customer/customerAuthRoutes.js")
@@ -48,10 +49,10 @@ const CustomerCategoryRoute = require("./routes/Customer/categoryRoutes.js")
 const CustomerItemRoute = require("./routes/Customer/ItemRoutes.js")
 const CustomerModifierRoute = require("./routes/Customer/modifierRoutes.js")
 const CustomerAddToCartRoute = require("./routes/Customer/addToCartRoutes.js")
-const CustomerPosterRoute=require("./routes/Customer/PosterRoutes.js")
+const CustomerPosterRoute = require("./routes/Customer/PosterRoutes.js")
 
 //Cashier
-const CashierRestaurantRoute=require("./routes/Cashier/CashierRestaurantRoute.js")
+const CashierRestaurantRoute = require("./routes/Cashier/CashierRestaurantRoute.js")
 const CustomerPlaceOrderRoute = require("./routes/Customer/orderRoutes.js")
 
 dotenv.config();
@@ -130,7 +131,10 @@ const http = require("http");
 let server = http.createServer(app);
 app.set("port", process.env.PORT || config.PORT);
 
-socketConnection(server)
+Promise.all([
+  socketConnection(server),
+  startEventListener()
+]);
 
 server.listen(config.server.port, () => {
   connectDB();

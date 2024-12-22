@@ -4,11 +4,28 @@ const OrderModel = require("../../models/orderModel.js");
 const CouponModel = require("../../models/couponModel.js");
 const AddToCartModel = require("../../models/addToCartModel.js");
 const { convertIdToObjectId, commonFilter } = require("../../middlewares/commonFilter.js");
+const { Emitter } = require('../../events/eventEmmiter.js');
+const { userSockets } = require('../../socket.js');
+const { EVENTS } = require('../../middlewares/events.js');
 
 
 exports.placeOrder = async (req, res) => {
     try {
-        const { restaurantId, items, totalAmount, couponCode, couponId, tableId, tableNumber, dining, takeaway, pickupAddress, deliveryAddress, altogether } = req.body;
+        const {
+            restaurantId,
+            items,
+            totalAmount,
+            couponCode,
+            couponId,
+            tableId,
+            tableNumber,
+            dining,
+            takeaway,
+            pickupAddress,
+            deliveryAddress,
+            altogether
+        } = req.body;
+
         const userId = req.customer._id;
 
         if (!items || items.length === 0) {
@@ -60,7 +77,6 @@ exports.placeOrder = async (req, res) => {
             });
         }
 
-
         const order = new OrderModel({
             userId: convertIdToObjectId(userId),
             restaurantId: convertIdToObjectId(restaurantId),
@@ -84,8 +100,21 @@ exports.placeOrder = async (req, res) => {
 
         await AddToCartModel.deleteMany({ userId: convertIdToObjectId(userId), restaurantId: convertIdToObjectId(restaurantId) });
 
+        const staticUserId = '675ed4470d6aecc98c38cb6d';
+        const socketId = userSockets.get(staticUserId);
+        console.log("socketIdGet", socketId)
+
+        if (socketId) {
+            Emitter.emit(EVENTS.ORDER_PLACED, {
+                socketId: socketId || null,
+                data: order,
+                message: "Order placed successfully."
+            });
+        }
+
         createResponse(order, 200, "Order placed successfully.", res);
     } catch (error) {
+        console.log("Error", error)
         errorHandler1(error, req, res);
     }
 };

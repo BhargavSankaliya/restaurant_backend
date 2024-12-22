@@ -1,5 +1,5 @@
 let EVENTS = {
-    SIGN_UP: 'SIGN_UP',
+    ORDER_PLACED: 'ORDER_PLACED',
     DISCONNECT: 'disconnect',
 }
 

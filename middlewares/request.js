@@ -9,10 +9,8 @@ const requestHandler = async (client) => {
 
             let data = value;
             switch (eventName) {
-                case 'SIGN_UP':
-                // return await signup(data, client, ACK);
-                case 'CLICK':
-                // return await click(client);
+                case 'ORDER_PLACED':
+                    return await orderPlace(data, client, ACK);
                 default:
                     console.log("[requestHandler] Wrong Event call form Frontend Side : ", eventName);
                     break;
