@@ -9,7 +9,7 @@ const { userSockets } = require('../../socket.js');
 const { EVENTS } = require('../../middlewares/events.js');
 
 
-exports.customerPlaceOrder = async (req, res) => {
+exports.cashierPlaceOrder = async (req, res) => {
     try {
         const {
             restaurantId,
@@ -26,7 +26,11 @@ exports.customerPlaceOrder = async (req, res) => {
             altogether
         } = req.body;
 
-        const userId = req.customer._id;
+        const userId = req?.cashier?._id;
+
+        if (!userId) {
+            throw new CustomError1(400, "cashier not found");
+        }
 
         if (!items || items.length === 0) {
             throw new CustomError1(400, "Cart is empty. Cannot place order.");
@@ -121,9 +125,13 @@ exports.customerPlaceOrder = async (req, res) => {
 };
 
 
-exports.getCustomerOrderHistory = async (req, res) => {
+exports.getCashierOrderHistory = async (req, res) => {
     try {
-        const userId = req.customer._id;
+        const userId = req?.cashier?._id;
+
+        if (!userId) {
+            throw new CustomError1(400, "cashier not found");
+        }
 
         const orders = await OrderModel.aggregate([
             {
