@@ -9,7 +9,7 @@ const { userSockets } = require('../../socket.js');
 const { EVENTS } = require('../../middlewares/events.js');
 
 
-exports.placeOrder = async (req, res) => {
+exports.customerPlaceOrder = async (req, res) => {
     try {
         const {
             restaurantId,

@@ -5,7 +5,7 @@ const orderCtrl = require('../../controllers/Customer/orderCtrl');
 
 const CutomerAuthCheck = require("../../middlewares/cutomerAuthCheck");
 
-router.post("/", CutomerAuthCheck, orderCtrl.placeOrder);
+router.post("/", CutomerAuthCheck, orderCtrl.customerPlaceOrder);
 router.get("/", CutomerAuthCheck, orderCtrl.getCustomerOrderHistory);
 
 
