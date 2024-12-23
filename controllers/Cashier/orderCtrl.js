@@ -104,7 +104,7 @@ exports.cashierPlaceOrder = async (req, res) => {
 
         await AddToCartModel.deleteMany({ userId: convertIdToObjectId(userId), restaurantId: convertIdToObjectId(restaurantId) });
 
-        const staticUserId = '675ed4470d6aecc98c38cb6d';
+        const staticUserId = '6769b374cc4b33393e59a199';
         const socketIds = userSockets.get(staticUserId);
 
         if (socketIds) {
