@@ -13,20 +13,32 @@ const socketConnection = async (httpORhttpsServer) => {
 
     io.on('connection', (socket) => {
         const userId = socket.handshake.query.userId;
+
         if (userId) {
-            userSockets.set(userId, socket.id);
+            if (!userSockets.has(userId)) {
+                userSockets.set(userId, new Set());
+            }
+            userSockets.get(userId).add(socket.id);
         }
+
+        console.log("userSockets", userSockets);
 
         socket.on('registerUser', (userId) => {
             if (userId) {
-                userSockets.set(userId, socket.id);
+                if (!userSockets.has(userId)) {
+                    userSockets.set(userId, new Set());
+                }
+                userSockets.get(userId).add(socket.id);
             }
         });
 
         socket.on('disconnect', () => {
-            for (const [userId, socketId] of userSockets.entries()) {
-                if (socketId === socket.id) {
-                    userSockets.delete(userId);
+            for (const [userId, socketIds] of userSockets.entries()) {
+                if (socketIds.has(socket.id)) {
+                    socketIds.delete(socket.id);
+                    if (socketIds.size === 0) {
+                        userSockets.delete(userId);
+                    }
                     break;
                 }
             }
@@ -42,9 +54,11 @@ const getSocketInstance = () => {
 };
 
 const sendNotification = (userId, message) => {
-    const socketId = userSockets.get(userId);
-    if (socketId) {
-        getSocketInstance().to(socketId).emit('notification', message);
+    const socketIds = userSockets.get(userId);
+    if (socketIds) {
+        for (const socketId of socketIds) {
+            getSocketInstance().to(socketId).emit('notification', message);
+        }
     }
 };
 
@@ -52,5 +66,5 @@ module.exports = {
     socketConnection,
     getSocketInstance,
     sendNotification,
-    userSockets
+    userSockets,
 };

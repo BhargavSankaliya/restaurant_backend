@@ -101,23 +101,25 @@ exports.placeOrder = async (req, res) => {
         await AddToCartModel.deleteMany({ userId: convertIdToObjectId(userId), restaurantId: convertIdToObjectId(restaurantId) });
 
         const staticUserId = '675ed4470d6aecc98c38cb6d';
-        const socketId = userSockets.get(staticUserId);
-        console.log("socketIdGet", socketId)
+        const socketIds = userSockets.get(staticUserId);
 
-        if (socketId) {
-            Emitter.emit(EVENTS.ORDER_PLACED, {
-                socketId: socketId || null,
-                data: order,
-                message: "Order placed successfully."
-            });
+        if (socketIds) {
+            for (const socketId of socketIds) {
+                Emitter.emit(EVENTS.ORDER_PLACED, {
+                    socketId,
+                    data: order,
+                    message: "Order placed successfully."
+                });
+            }
         }
 
         createResponse(order, 200, "Order placed successfully.", res);
     } catch (error) {
-        console.log("Error", error)
+        console.log("Error", error);
         errorHandler1(error, req, res);
     }
 };
+
 
 exports.getCustomerOrderHistory = async (req, res) => {
     try {
