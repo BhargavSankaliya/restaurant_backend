@@ -1,7 +1,6 @@
 const { CustomError, errorHandler } = require("../../middlewares/error.js");
 const createResponse = require("../../middlewares/response.js");
-const RestaurantModel = require("../../models/restaurantModel.js");
-const RoleMasterModel = require("../../models/roleMasterModel.js")
+const CashierModel = require("../../models/CashierModel.js");
 const niv = require("node-input-validator");
 const LoginVerificationModel = require("../../models/loginVerification.js")
 const otpHelper = require("../../helper/otpHelper.js")
@@ -21,43 +20,31 @@ exports.login = async (req, res) => {
                 .send({ message: "Validation error", errors: objValidation.errors });
         }
 
-        const user = await RestaurantModel.findOne({ email });
-        if (!user || user?.isDeleted == true) {
+        const cashier = await CashierModel.findOne({ email });
+        if (!cashier || cashier?.isDeleted == true) {
             throw new CustomError("Invalid email or password", 400);
         }
-        if (user.status != "Active") {
-            throw new CustomError("Restaurnat is not active please contact administration", 400);
+        if (cashier.status != "Active") {
+            throw new CustomError("Cashier is not active please contact restaurant", 400);
         }
 
-        const isPasswordValid = await Helper.comparePassword(password, user?.password);
+        const isPasswordValid = await Helper.comparePassword(password, cashier?.password);
         if (!isPasswordValid) {
             throw new CustomError("Invalid email or password", 400);
         }
 
-        const roleDetails = await RoleMasterModel.findById(user?.roleId);
-        if (!roleDetails) {
-            throw new CustomError("Role details not found", 404);
-        }
 
-        user.token = await Helper.createJWT(user._id, user.email, user.roleId);
-        user.save()
+        cashier.token = await Helper.createJWT(cashier._id, cashier.email);
+        cashier.save()
 
         const response = {
-            user: {
-                id: user?._id,
-                name: user?.name,
-                capacity: user?.capacity,
-                address: user?.address,
-                gstNumber: user?.gstNumber,
-                email: user?.email,
-                phoneNumber: user?.phoneNumber,
-                website: user?.website,
-                legalDoc: user?.legalDoc,
-                logo: user?.logo,
-                media: user?.media,
-                openingHour: user?.openingHour,
+            data: {
+                id: cashier?._id,
+                name: cashier?.name,
+                email: cashier?.email,
+                image: cashier?.image,
             },
-            token: user.token,
+            token: cashier.token,
         };
 
         createResponse(response, 200, "Login successful", res);
@@ -82,9 +69,9 @@ exports.forgotPassword = async (req, res) => {
                 .send({ message: "Validation error", errors: objValidation.errors });
         }
 
-        const restaurant = await RestaurantModel.findOne({ email: email });
-        if (!restaurant || restaurant?.status != "Active" || restaurant?.isDeleted == true) {
-            throw new CustomError("Restaurant not found!", 404);
+        const cashier = await CashierModel.findOne({ email: email });
+        if (!cashier || cashier?.status != "Active" || cashier?.isDeleted == true) {
+            throw new CustomError("Cashier not found!", 404);
         }
         try {
             const otp = await Helper.generateRandomString(6, true)
@@ -160,10 +147,12 @@ exports.resetPassword = async (req, res) => {
         password = await Helper.bcyptPass(password)
         await deleteOTP(email, otp);
 
-        await RestaurantModel.updateOne({ email: email }, { $set: { password: password } })
+        await CashierModel.updateOne({ email: email }, { $set: { password: password } })
         createResponse({}, 200, "Password updated successfully", res);
 
     } catch (error) {
+        console.log(error);
+        
         errorHandler(error, req, res);
 
     }
@@ -185,7 +174,7 @@ exports.changePassword = async (req, res) => {
         }
         password = await Helper.bcyptPass(password)
 
-        await RestaurantModel.findByIdAndUpdate(req.restaurant._id, { $set: { password: password } })
+        await CashierModel.findByIdAndUpdate(req.cashier._id, { $set: { password: password } })
         createResponse({}, 200, "Password updated successfully", res);
 
     } catch (error) {

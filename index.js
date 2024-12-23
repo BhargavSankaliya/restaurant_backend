@@ -42,6 +42,7 @@ const stockHistoryRoute = require("./routes/RestaurantAdmin/stockHistoryRoute")
 const couponRoute = require("./routes/RestaurantAdmin/couponRoute")
 const OfferRoute = require("./routes/RestaurantAdmin/OfferRoute")
 const RestaurantPosterRoute = require("./routes/RestaurantAdmin/restaurantPosterRoute.js")
+const RestaurantCashierRoute=require("./routes/RestaurantAdmin/CashierRoute.js")
 
 //customer 
 const CustomerAuthRoute = require("./routes/Customer/customerAuthRoutes.js")
@@ -50,10 +51,11 @@ const CustomerItemRoute = require("./routes/Customer/ItemRoutes.js")
 const CustomerModifierRoute = require("./routes/Customer/modifierRoutes.js")
 const CustomerAddToCartRoute = require("./routes/Customer/addToCartRoutes.js")
 const CustomerPosterRoute = require("./routes/Customer/PosterRoutes.js")
+const CustomerPlaceOrderRoute = require("./routes/Customer/orderRoutes.js")
 
 //Cashier
+const CashierAuthRoute = require("./routes/Cashier/CashierAuthRoute.js")
 const CashierRestaurantRoute = require("./routes/Cashier/CashierRestaurantRoute.js")
-const CustomerPlaceOrderRoute = require("./routes/Customer/orderRoutes.js")
 
 dotenv.config();
 app.use(cors());
@@ -97,6 +99,7 @@ app.use("/api/restaurant-admin-stock-history", stockHistoryRoute);
 app.use("/api/restaurant-admin-coupon", couponRoute);
 app.use("/api/restaurant-admin-offer", OfferRoute);
 app.use("/api/restaurant-admin-poster", RestaurantPosterRoute);
+app.use("/api/restaurant-admin-cashier", RestaurantCashierRoute);
 
 
 //Customer Rooutes
@@ -106,8 +109,13 @@ app.use("/api/customer-item", CustomerItemRoute)
 app.use("/api/customer-modifier", CustomerModifierRoute)
 app.use("/api/customer-add-to-cart", CustomerAddToCartRoute)
 app.use("/api/customer-poster", CustomerPosterRoute)
-app.use("/api/customer-restaurant", CashierRestaurantRoute)
 app.use("/api/customer-place-order", CustomerPlaceOrderRoute)
+
+//Cashier
+app.use("/api/cashier",CashierAuthRoute )
+app.use("/api/cashier-restaurant", CashierRestaurantRoute)
+
+
 
 // Error handling
 app.use((err, req, res, next) => {

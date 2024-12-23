@@ -39,7 +39,10 @@ const storage = multer.diskStorage({
         if (file.fieldname === "staffProfileImage") {
             dirPath = `uploads/restaurant/${req.restaurant._id.toString()}/staffProfileImage`
         }
-        console.log("hhhhhhhhhhhhhhhhhhhhh");
+        if (file.fieldname === "cashierImage") {
+            dirPath = `uploads/restaurant/${req.restaurant._id.toString()}/cashier`
+        }
+        
 
         if (!fs.existsSync(dirPath)) {
             fs.mkdirSync(dirPath, { recursive: true });
@@ -66,6 +69,7 @@ const restaurantCpUpload = upload.fields([
     { name: "posterImage", maxCount: 15 },
     { name: "couponFile", maxCount: 15 },
     { name: "staffDocument", maxCount: 15 },
+    { name: "cashierImage", maxCount: 15 },
     { name: "staffProfileImage", maxCount: 15 },
 ]);
 

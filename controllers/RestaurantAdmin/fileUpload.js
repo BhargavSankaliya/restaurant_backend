@@ -19,6 +19,7 @@ exports.FileUpload = async (req, res, next) => {
         let couponFile = ""
         let staffDocument = ""
         let staffProfileImage = ""
+        let cashierImage = ""
 
         if (!req?.files) {
             throw new CustomError("Please upload file", 400);
@@ -86,9 +87,14 @@ exports.FileUpload = async (req, res, next) => {
                 staffProfileImage = configURL + x.destination + "/" + x.filename
             })
         }
+        if (req.files && !!req.files.cashierImage && req.files.cashierImage.length > 0) {
+            req.files.cashierImage.map((x) => {
+                cashierImage = configURL + x.destination + "/" + x.filename
+            })
+        }
 
         createResponse({
-            ingredienceImage, cuisineImage, categoryImage, modifierImage, restaurantMenuIcon, restaurantServiceImage, restaurantStockImage, posterImage, couponFile, staffDocument, staffProfileImage
+            ingredienceImage, cuisineImage, categoryImage, modifierImage, restaurantMenuIcon, restaurantServiceImage, restaurantStockImage, posterImage, couponFile, staffDocument, staffProfileImage, cashierImage
         }, 200, 'File Upload Successfully.', res)
 
     } catch (error) {
