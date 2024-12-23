@@ -114,6 +114,8 @@ app.use("/api/customer-poster", CustomerPosterRoute)
 app.use("/api/customer-place-order", CustomerPlaceOrderRoute)
 
 // Cashier Routes
+app.use("/api/cashier", CashierAuthRoute)
+app.use("/api/cashier-restaurant", CashierRestaurantRoute)
 app.use("/api/cashier-place-order", CashierPlaceOrderRoute)
 app.use("/api/cashier-add-to-cart", CashierAddToCartRoute)
 
