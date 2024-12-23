@@ -3,12 +3,12 @@ const router = express.Router();
 
 const addToCart = require('../../controllers/Cashier/addToCartCtrl');
 
-const CutomerAuthCheck = require("../../middlewares/cutomerAuthCheck");
+const CashierAuthCheck = require("../../middlewares/cashierAuthCheck");
 
-router.put("/incrementDecrement", CutomerAuthCheck, addToCart.incrementDecrement);
-router.post("/", CutomerAuthCheck, addToCart.AddToCart);
-router.put("/", CutomerAuthCheck, addToCart.UpdateQuantity);
-router.delete("/", CutomerAuthCheck, addToCart.RemoveItem);
-router.get("/:restaurantId", CutomerAuthCheck, addToCart.GetCartItems);
+router.put("/incrementDecrement", CashierAuthCheck, addToCart.incrementDecrement);
+router.post("/", CashierAuthCheck, addToCart.AddToCart);
+router.put("/", CashierAuthCheck, addToCart.UpdateQuantity);
+router.delete("/", CashierAuthCheck, addToCart.RemoveItem);
+router.get("/:restaurantId", CashierAuthCheck, addToCart.GetCartItems);
 
 module.exports = router;
