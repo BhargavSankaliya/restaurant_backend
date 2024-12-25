@@ -32,7 +32,7 @@ const restaurantTableSchema = new mongoose.Schema(
         },
         openTime: {
             type: String,
-            required: [true, 'Open time is requied.'],
+            required: [false, 'Open time is requied.'],
             default: '',
         },
         qrcode: {

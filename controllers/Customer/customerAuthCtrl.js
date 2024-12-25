@@ -10,11 +10,11 @@ const LoginVerificationModel = require("../../models/loginVerification.js");
 
 exports.SendOtp = async (req, res) => {
     try {
-        const { firstName, lastName, phoneNumber, conutryCode, roleId } = req?.body;
+        const { firstName, lastName, phoneNumber, dialCode, roleId } = req?.body;
         const ObjValidation = new niv.Validator(req.body, {
             firstName: "required",
             lastName: "required",
-            conutryCode: "required|minLength:2|maxLength:4",
+            dialCode: "required|minLength:2|maxLength:4",
             phoneNumber: "required|minLength:6|maxLength:16",
         });
         const matched = await ObjValidation.check();
@@ -26,30 +26,29 @@ exports.SendOtp = async (req, res) => {
         }
         let otp = Helper.generateRandomString(6, true)
         let smsData = {
-            phoneNumber, conutryCode, otp
+            phoneNumber, dialCode, otp
         }
         let otpObj = {}
         otpObj.phoneNumber = phoneNumber
-        otpObj.conutryCode = conutryCode
+        otpObj.dialCode = dialCode
         otpObj.otp = otp
 
-        let otpModelCheck = await LoginVerificationModel.findOne({ phoneNumber: phoneNumber, conutryCode: conutryCode })
+        let otpModelCheck = await LoginVerificationModel.findOne({ phoneNumber: phoneNumber, dialCode: dialCode })
         if (otpModelCheck) {
             await LoginVerificationModel.findByIdAndUpdate(otpModelCheck._id, { $set: { otp: otp } })
         } else {
             await LoginVerificationModel(otpObj).save()
         }
         // await smsHelper.sendSms(smsData, req, res)
-        let dataCheck = await CustomerModel.findOne({ phoneNumber: phoneNumber, conutryCode: conutryCode })
+        let dataCheck = await CustomerModel.findOne({ phoneNumber: phoneNumber, dialCode: dialCode })
 
         if (!dataCheck) {
             let newObj = {}
             newObj.phoneNumber = phoneNumber
-            newObj.conutryCode = conutryCode
+            newObj.dialCode = dialCode
             newObj.firstName = firstName
             newObj.lastName = lastName
-            newObj.roleId = roleId
-            await CustomerModel(newObj).save()
+            await CustomerModel.create(newObj)
         }
 
         createResponse({}, 200, "Otp sent successfully", res);
@@ -64,10 +63,10 @@ exports.SendOtp = async (req, res) => {
 // check verification code for forgot password 
 exports.verifyOTP = async (req, res) => {
     try {
-        const { conutryCode, phoneNumber, otp ,restaurantId} = req.body;
+        const { dialCode, phoneNumber, otp } = req.body;
         const ObjValidation = new niv.Validator(req.body, {
-            conutryCode: "required|minLength:2|maxLength:4",
-            restaurantId: "required",
+            dialCode: "required|minLength:2|maxLength:6",
+            otp: "required",
             phoneNumber: "required|minLength:6|maxLength:16",
         });
         const matched = await ObjValidation.check();
@@ -79,7 +78,7 @@ exports.verifyOTP = async (req, res) => {
         }
 
         const checkOTP = await LoginVerificationModel.findOne({
-            phoneNumber: phoneNumber, conutryCode: conutryCode
+            phoneNumber: phoneNumber, dialCode: dialCode
         });
         if (!checkOTP) {
             throw new CustomError("Invalid phone number or country code", 400);
@@ -87,25 +86,20 @@ exports.verifyOTP = async (req, res) => {
         if (checkOTP?.otp !== Number(otp)) {
             throw new CustomError("Invalid OTP", 400);
         }
-        let restaurant =await RestaurantModel.findById(restaurantId)
-        if(!restaurant){
-            throw new CustomError("Restaurant not found" ,400)
-        }
-        let data = await CustomerModel.findOne({ phoneNumber: phoneNumber, conutryCode: conutryCode })
+
+        let data = await CustomerModel.findOne({ phoneNumber: phoneNumber, dialCode: dialCode })
         if (!data) {
             throw new CustomError("Something went wrong!", 400);
         }
-        let token = await Helper.createJWT(data._id, "", data.roleId)
+        let token = await Helper.createJWT(data._id, "", "")
         let result = {
             token,
             firstName: data.firstName,
             lastName: data.lastName,
-            conutryCode: data.conutryCode,
+            dialCode: data.dialCode,
             phoneNumber: data.phoneNumber,
-            restaurantName:restaurant.name,
-            restaurantAddress:restaurant.address,
         }
-        deleteOTP(phoneNumber, conutryCode, otp)
+        await deleteOTP(phoneNumber, dialCode, otp)
 
         createResponse(result, 200, "Login successful", res);
 
@@ -117,9 +111,9 @@ exports.verifyOTP = async (req, res) => {
 
 exports.resendOTP = async (req, res) => {
     try {
-        const { conutryCode, phoneNumber } = req.body;
+        const { dialCode, phoneNumber } = req.body;
         const ObjValidation = new niv.Validator(req.body, {
-            conutryCode: "required|minLength:2|maxLength:4",
+            dialCode: "required|minLength:2|maxLength:4",
             phoneNumber: "required|minLength:6|maxLength:16",
         });
         const matched = await ObjValidation.check();
@@ -131,14 +125,14 @@ exports.resendOTP = async (req, res) => {
         }
         let otp = Helper.generateRandomString(6, true)
         let smsData = {
-            phoneNumber, conutryCode, otp
+            phoneNumber, dialCode, otp
         }
         let otpObj = {}
         otpObj.phoneNumber = phoneNumber
-        otpObj.conutryCode = conutryCode
+        otpObj.dialCode = dialCode
         otpObj.otp = otp
 
-        let otpModelCheck = await LoginVerificationModel.findOne({ phoneNumber: phoneNumber, conutryCode: conutryCode })
+        let otpModelCheck = await LoginVerificationModel.findOne({ phoneNumber: phoneNumber, dialCode: dialCode })
         if (otpModelCheck) {
             await LoginVerificationModel.findByIdAndUpdate(otpModelCheck._id, { $set: { otp: otp } })
         } else {
@@ -154,10 +148,10 @@ exports.resendOTP = async (req, res) => {
     }
 }
 
-const deleteOTP = async (phoneNumber, conutryCode, otp) => {
+const deleteOTP = async (phoneNumber, dialCode, otp) => {
     let deleteOTP = await LoginVerificationModel.findOneAndDelete({
         phoneNumber: phoneNumber,
-        conutryCode: conutryCode,
+        dialCode: dialCode,
         otp: otp,
     });
     if (!deleteOTP) {

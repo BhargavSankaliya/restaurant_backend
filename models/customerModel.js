@@ -12,18 +12,13 @@ const CustomerSchema = new mongoose.Schema(
             type: String,
             required: [true, 'Last Name is required.'],
         },
-        conutryCode: {
+        dialCode: {
             type: String,
-            required: [true, 'Last Name is required.'],
+            required: [true, 'Country Code is required.'],
         },
         phoneNumber: {
             type: String,
-            required: [true, 'Last Name is required.'],
-            unique: true
-        },
-        roleId: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: [true, 'Role is required.']
+            required: [true, 'Phone Number is required.'],
         },
         status: {
             type: String,

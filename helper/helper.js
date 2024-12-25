@@ -68,9 +68,11 @@ exports.QRCodeGen = async (data) => {
             fs.mkdirSync(dirPath, { recursive: true });
         }
 
+        let qrcode = process.env.FRONTENDURL + `?tableId=${data._id}&restaurantId=${data.restaurantId}`
+
         const jsonData = JSON.stringify(data);
 
-        await QRCode.toFile(file, jsonData, {
+        await QRCode.toFile(file, qrcode, {
             color: {
                 dark: '#000000',
                 light: '#ffffff'

@@ -37,10 +37,16 @@ exports.createUpdate = async (req, res, next) => {
             if (existing) {
                 throw new CustomError("Table already exist!", 400);
             }
-            body.qrcode = await Helper.QRCodeGen(body)
+
             let result = await RestaurantTableModel.create(
                 body
             );
+
+            let getTable = await RestaurantTableModel.findById(result._id);
+
+            getTable.qrcode = await Helper.QRCodeGen(result);
+            getTable.save();
+
             createResponse(result, 200, "Table Created Successfully.", res);
 
         }
@@ -115,7 +121,7 @@ exports.toggleStatus = async (req, res, next) => {
 exports.getItemById = async (req, res, next) => {
     try {
         let id = convertIdToObjectId(req.params.id)
-        const table = await RestaurantTableModel.findOne({ _id: id }, { _id: 1, name: 1, tableNumber: 1, capacity: 1, status: 1, openTime: 1, qrcode: 1});
+        const table = await RestaurantTableModel.findOne({ _id: id }, { _id: 1, name: 1, tableNumber: 1, capacity: 1, status: 1, openTime: 1, qrcode: 1 });
         if (!table) {
             throw new CustomError("Table not found!", 404);
         }

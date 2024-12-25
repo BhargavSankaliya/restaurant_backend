@@ -11,7 +11,7 @@ const LoginVerificationSchema = mongoose.Schema(
       type: Number,
       require: true
     },
-    conutryCode: {
+    dialCode: {
       type: String,
       default: ""
     },
