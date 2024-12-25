@@ -41,6 +41,7 @@ commonFilter.restaurantMenuObject = {
     url: 1,
     icon: 1,
     status: 1,
+    parentName: 1
 }
 
 commonFilter.userMasterObject = {
