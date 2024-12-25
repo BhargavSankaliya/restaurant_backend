@@ -5,6 +5,7 @@ const niv = require("node-input-validator");
 const LoginVerificationModel = require("../../models/loginVerification.js")
 const otpHelper = require("../../helper/otpHelper.js")
 const Helper = require("../../helper/helper.js")
+const {convertIdToObjectId} =require("../../middlewares/commonFilter.js")
 
 exports.login = async (req, res) => {
     try {
@@ -151,8 +152,6 @@ exports.resetPassword = async (req, res) => {
         createResponse({}, 200, "Password updated successfully", res);
 
     } catch (error) {
-        console.log(error);
-        
         errorHandler(error, req, res);
 
     }
@@ -183,9 +182,43 @@ exports.changePassword = async (req, res) => {
     }
 }
 
+
+//Drop down
+exports.list = async (req, res) => {
+    try {
+        let matchObj = {}
+        matchObj.isDeleted = false
+        matchObj.restaurantId=convertIdToObjectId(req.params.restaurantId)
+        matchObj.status="Active"
+        const result = await CashierModel.aggregate([
+            {
+                $match: matchObj
+            },
+            {
+                $sort: {
+                    createdAt: -1
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    image: 1,
+                }
+            },
+        ]);
+        createResponse(result, 200, "Cashier retrive Successfully.", res);
+
+
+    } catch (error) {
+        errorHandler(error, req, res);
+
+    }
+}
+
 const deleteOTP = async (email, otp) => {
     let deleteOTP = await LoginVerificationModel.findOneAndDelete({
-        email:email,
+        email: email,
         otp,
     });
     if (!deleteOTP) {
