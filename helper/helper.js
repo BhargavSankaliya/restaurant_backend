@@ -22,10 +22,14 @@ exports.comparePassword = async (password, bcyptPass) => {
     }
 }
 
-exports.createJWT = async (id, email, role) => {
+exports.createJWT = async (id, email = "", role = "") => {
     try {
+        let data = {
+            id: id, email: email,
+        }
+        if (role) data.roleId = role
         return jwt.sign(
-            { id: id, email: email, roleId: role },
+            data,
             process.env.JWT_SECRET,
             { expiresIn: process.env.expiresIn }
         );

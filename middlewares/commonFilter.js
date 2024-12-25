@@ -43,6 +43,7 @@ commonFilter.restaurantMenuObject = {
     url: 1,
     icon: 1,
     status: 1,
+    parentName: 1
 }
 
 commonFilter.userMasterObject = {
@@ -112,6 +113,102 @@ commonFilter.cuisinesMasterObj = {
     image: 1,
     status: 1,
     isDeleted: 1,
+    createdAt: 1
+}
+
+commonFilter.couponMasterObj = {
+    _id: 1,
+    name: 1,
+    code: 1,
+    type: 1,
+    limit: 1,
+    start_date: 1,
+    end_date: 1,
+    min_order_value: 1,
+    discount_percentage: 1,
+    max_discounted_amount: 1,
+    createdAt: 1,
+    updatedAt: 1
+}
+
+commonFilter.OfferMasterObj = {
+    _id: 1,
+    description: 1,
+    code: 1,
+    type: 1,
+    limit: 1,
+    start_date: 1,
+    end_date: 1,
+    min_order_value: 1,
+    discount_percentage: 1,
+    max_discounted_amount: 1,
+    createdAt: 1,
+    updatedAt: 1
+}
+
+commonFilter.restaurantStockManagementObj = {
+    _id: 1,
+    name: 1,
+    description: 1,
+    image: 1,
+    quantity: 1,
+    unit: 1,
+    minThreshold: 1,
+    purchasePrice: 1,
+    sellPrice: 1,
+    expiryDate: 1,
+    status: 1,
+    isDeleted: 1,
+    createdAt: 1
+}
+
+commonFilter.restaurantHistoryObj = {
+    _id: 1,
+    quantityConsumed: 1,
+    remarks: 1,
+    performedBy: 1,
+    status: 1,
+    isDeleted: 1,
+    createdAt: 1
+}
+
+commonFilter.serviceMasterObj = {
+    _id: 1,
+    name: 1,
+    description: 1,
+    image: 1,
+    status: 1,
+    isDeleted: 1,
+    createdAt: 1
+}
+
+commonFilter.languageMasterObj = {
+    _id: 1,
+    name: 1,
+    direction: 1,
+    status: 1,
+    isDeleted: 1,
+    createdAt: 1
+}
+
+commonFilter.staffMasterObj = {
+    _id: 1,
+    firstName: 1,
+    lastName: 1,
+    image: 1,
+    email: 1,
+    mobile: 1,
+    gender: 1,
+    address: 1,
+    country: 1,
+    state: 1,
+    city: 1,
+    postCode: 1,
+    userId: 1,
+    pin: 1,
+    salary: 1,
+    salaryType: 1,
+    status: 1,
     createdAt: 1
 }
 

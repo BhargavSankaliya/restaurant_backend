@@ -64,4 +64,24 @@ class CustomError extends Error {
 // ------------------------------------------------------------------- NEW END -----------------------------------------------------------------------------
 
 
-module.exports = { errorHandler, CustomError }
+class CustomError1 extends Error {
+    constructor(statusCode, message) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+}
+
+const errorHandler1 = (error, req, res) => {
+    const statusCode = error.statusCode || 500;
+    const message = error.message || "Internal Server Error";
+    
+    res.status(statusCode).json({
+        meta: {
+            code: statusCode,
+            success: false,
+            message: message,
+        },
+    });
+};
+
+module.exports = { errorHandler, CustomError, errorHandler1, CustomError1 }

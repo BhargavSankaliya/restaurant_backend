@@ -29,7 +29,7 @@ const restaurantStaffSchema = new mongoose.Schema({
   },
   mobile: {
     type: String,
-    required: true,
+    required: false,
     validate: {
       validator: function (value) {
         const isValid = validator.isMobilePhone(value);
@@ -37,7 +37,7 @@ const restaurantStaffSchema = new mongoose.Schema({
       },
       message: 'Please provide a valid  mobile number',
     },
-    // unique: true,
+    default: null
   },
   gender: {
     type: String,
@@ -111,6 +111,25 @@ const restaurantStaffSchema = new mongoose.Schema({
 });
 
 restaurantStaffSchema.add(commonSchema);
+
+restaurantStaffSchema.pre('save', async function (next) {
+  if (!this.userId) {
+    let isUnique = false;
+    while (!isUnique) {
+      const newUserId = generate6DigitNumber();
+      const existingUser = await this.constructor.findOne({ userId: newUserId });
+      if (!existingUser) {
+        this.userId = newUserId;
+        isUnique = true;
+      }
+    }
+  }
+  next();
+});
+
+function generate6DigitNumber() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
 
 const restaurantStaffModel = mongoose.model('restaurantStaff', restaurantStaffSchema);
 

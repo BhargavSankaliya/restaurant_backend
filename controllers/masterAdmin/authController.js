@@ -362,13 +362,10 @@ authController.changePassword = async (req, res) => {
   }
 }
 
-const deleteOTP = async (email, code) => {
+const deleteOTP = async (email, otp) => {
   let deleteOTP = await LoginVerificationModel.findOneAndDelete({
-    email: {
-      $regex: email,
-      $options: "i",
-    },
-    code,
+    email: email,
+    otp,
   });
   if (!deleteOTP) {
     console.log("Unable to delete OTP");

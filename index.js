@@ -9,6 +9,8 @@ const verifyToken = require("./middlewares/verifyToken");
 //const config = require("./environmentVariable.json");
 const config = require('./config/index')
 const cors = require("cors");
+const { socketConnection } = require('./socket.js')
+const { startEventListener } = require('./events/eventListners.js')
 
 //Master Admin
 const userRoute = require("./routes/masterAdmin/userRoute");
@@ -32,7 +34,30 @@ const restaurantRole = require("./routes/RestaurantAdmin/restaurantRoleRoute")
 const restaurantMenuRoute = require("./routes/RestaurantAdmin/restaurantMenuRoute")
 const restaurantTableRoute = require("./routes/RestaurantAdmin/restaurantTableRoute")
 const restaurantStaffRoute = require("./routes/RestaurantAdmin/restaurantStaffRoute")
+const paymentMethodRoute = require("./routes/RestaurantAdmin/paymentMethodRoute")
+const serviceMethodRoute = require("./routes/RestaurantAdmin/serviceRoute")
+const languageMethodRoute = require("./routes/RestaurantAdmin/languageRoute")
+const stockManagementMethodRoute = require("./routes/RestaurantAdmin/stockManagementRoute")
+const stockHistoryRoute = require("./routes/RestaurantAdmin/stockHistoryRoute")
+const couponRoute = require("./routes/RestaurantAdmin/couponRoute")
+const OfferRoute = require("./routes/RestaurantAdmin/OfferRoute")
+const RestaurantPosterRoute = require("./routes/RestaurantAdmin/restaurantPosterRoute.js")
+const RestaurantCashierRoute=require("./routes/RestaurantAdmin/CashierRoute.js")
 
+//customer 
+const CustomerAuthRoute = require("./routes/Customer/customerAuthRoutes.js")
+const CustomerCategoryRoute = require("./routes/Customer/categoryRoutes.js")
+const CustomerItemRoute = require("./routes/Customer/ItemRoutes.js")
+const CustomerModifierRoute = require("./routes/Customer/modifierRoutes.js")
+const CustomerAddToCartRoute = require("./routes/Customer/addToCartRoutes.js")
+const CustomerPosterRoute = require("./routes/Customer/PosterRoutes.js")
+const CustomerPlaceOrderRoute = require("./routes/Customer/orderRoutes.js")
+
+//Cashier
+const CashierAuthRoute = require("./routes/Cashier/CashierAuthRoute.js")
+const CashierRestaurantRoute = require("./routes/Cashier/CashierRestaurantRoute.js")
+const CashierPlaceOrderRoute = require("./routes/Cashier/orderRoutes.js")
+const CashierAddToCartRoute = require("./routes/Cashier/addToCartRoutes.js")
 
 dotenv.config();
 app.use(cors());
@@ -68,7 +93,31 @@ app.use("/api/restaurant-admin-role", restaurantRole);
 app.use("/api/restaurant-admin-menu", restaurantMenuRoute);
 app.use("/api/restaurant-admin-table", restaurantTableRoute);
 app.use("/api/restaurant-admin-staff", restaurantStaffRoute);
+app.use("/api/restaurant-admin-payment-method", paymentMethodRoute);
+app.use("/api/restaurant-admin-service", serviceMethodRoute);
+app.use("/api/restaurant-admin-language", languageMethodRoute);
+app.use("/api/restaurant-admin-stock-management", stockManagementMethodRoute);
+app.use("/api/restaurant-admin-stock-history", stockHistoryRoute);
+app.use("/api/restaurant-admin-coupon", couponRoute);
+app.use("/api/restaurant-admin-offer", OfferRoute);
+app.use("/api/restaurant-admin-poster", RestaurantPosterRoute);
+app.use("/api/restaurant-admin-cashier", RestaurantCashierRoute);
 
+
+//Customer Rooutes
+app.use("/api/customer", CustomerAuthRoute)
+app.use("/api/customer-category", CustomerCategoryRoute)
+app.use("/api/customer-item", CustomerItemRoute)
+app.use("/api/customer-modifier", CustomerModifierRoute)
+app.use("/api/customer-add-to-cart", CustomerAddToCartRoute)
+app.use("/api/customer-poster", CustomerPosterRoute)
+app.use("/api/customer-place-order", CustomerPlaceOrderRoute)
+
+// Cashier Routes
+app.use("/api/cashier", CashierAuthRoute)
+app.use("/api/cashier-restaurant", CashierRestaurantRoute)
+app.use("/api/cashier-place-order", CashierPlaceOrderRoute)
+app.use("/api/cashier-add-to-cart", CashierAddToCartRoute)
 
 // Error handling
 app.use((err, req, res, next) => {
@@ -91,6 +140,11 @@ app.use(express.static(path.join(__dirname, 'frontend')));
 const http = require("http");
 let server = http.createServer(app);
 app.set("port", process.env.PORT || config.PORT);
+
+Promise.all([
+  socketConnection(server),
+  startEventListener()
+]);
 
 server.listen(config.server.port, () => {
   connectDB();

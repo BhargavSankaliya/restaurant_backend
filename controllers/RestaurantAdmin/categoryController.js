@@ -24,9 +24,9 @@ categoryController.createCategory = async (req, res, next) => {
       const { id } = req?.query;
       const existing = await CategoryModel.findOne({
         _id: { $ne: convertIdToObjectId(id) },
-        $or: [
-          { name: req?.body?.name.trim() },
-        ]
+        restaurantId: restaurantId,
+        name: req?.body?.name,
+        isDeleted: false
       })
       if (existing) {
         throw new CustomError("category already exist!", 400);
@@ -140,8 +140,8 @@ categoryController.delete = async (req, res) => {
 categoryController.dropDown = async (req, res) => {
   try {
 
-    let restaurantId =  convertIdToObjectId(req.restaurant._id)
-    let result = await CategoryModel.find({ restaurantId: restaurantId,status:"Active",isDeleted:false },{ name: 1, _id: 1 })
+    let restaurantId = convertIdToObjectId(req.restaurant._id)
+    let result = await CategoryModel.find({ restaurantId: restaurantId, status: "Active", isDeleted: false }, { name: 1, _id: 1 })
     createResponse(result, 200, "Success", res);
   } catch (error) {
     errorHandler(error, req, res);

@@ -21,6 +21,28 @@ const storage = multer.diskStorage({
         if (file.fieldname === "restaurantMenuIcon") {
             dirPath = `uploads/restaurant/${req.restaurant._id.toString()}/restaurantMenu`
         }
+        if (file.fieldname === "restaurantServiceImage") {
+            dirPath = `uploads/restaurant/${req.restaurant._id.toString()}/restaurantServiceImage`
+        }
+        if (file.fieldname === "restaurantStockImage") {
+            dirPath = `uploads/restaurant/${req.restaurant._id.toString()}/restaurantStockImage`
+        }
+        if (file.fieldname === "posterImage") {
+            dirPath = `uploads/restaurant/${req.restaurant._id.toString()}/posterImage`
+        }
+        if (file.fieldname === "couponFile") {
+            dirPath = `uploads/restaurant/${req.restaurant._id.toString()}/couponFile`
+        }
+        if (file.fieldname === "staffDocument") {
+            dirPath = `uploads/restaurant/${req.restaurant._id.toString()}/staffDocument`
+        }
+        if (file.fieldname === "staffProfileImage") {
+            dirPath = `uploads/restaurant/${req.restaurant._id.toString()}/staffProfileImage`
+        }
+        if (file.fieldname === "cashierImage") {
+            dirPath = `uploads/restaurant/${req.restaurant._id.toString()}/cashier`
+        }
+        
 
         if (!fs.existsSync(dirPath)) {
             fs.mkdirSync(dirPath, { recursive: true });
@@ -42,6 +64,13 @@ const restaurantCpUpload = upload.fields([
     { name: "categoryImage", maxCount: 15 },
     { name: "modifierImage", maxCount: 15 },
     { name: "restaurantMenuIcon", maxCount: 15 },
+    { name: "restaurantServiceImage", maxCount: 15 },
+    { name: "restaurantStockImage", maxCount: 15 },
+    { name: "posterImage", maxCount: 15 },
+    { name: "couponFile", maxCount: 15 },
+    { name: "staffDocument", maxCount: 15 },
+    { name: "cashierImage", maxCount: 15 },
+    { name: "staffProfileImage", maxCount: 15 },
 ]);
 
 module.exports = restaurantCpUpload

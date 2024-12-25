@@ -8,6 +8,11 @@ const restaurantMenuSchema = new mongoose.Schema(
       required: [true, "Menu name is required."],
       default: "",
     },
+    parentName: {
+      type: String,
+      required: false,
+      default: "",
+    },
     icon: {
       type: String,
       required: [true, "Icon is required."],

@@ -13,6 +13,13 @@ exports.FileUpload = async (req, res, next) => {
         let categoryImage = ""
         let modifierImage = ""
         let restaurantMenuIcon = ""
+        let restaurantServiceImage = ""
+        let restaurantStockImage = ""
+        let posterImage = ""
+        let couponFile = ""
+        let staffDocument = ""
+        let staffProfileImage = ""
+        let cashierImage = ""
 
         if (!req?.files) {
             throw new CustomError("Please upload file", 400);
@@ -49,8 +56,45 @@ exports.FileUpload = async (req, res, next) => {
             })
         }
 
+        if (req.files && !!req.files.restaurantServiceImage && req.files.restaurantServiceImage.length > 0) {
+            req.files.restaurantServiceImage.map((x) => {
+                restaurantServiceImage = configURL + x.destination + "/" + x.filename
+            })
+        }
+
+        if (req.files && !!req.files.restaurantStockImage && req.files.restaurantStockImage.length > 0) {
+            req.files.restaurantStockImage.map((x) => {
+                restaurantStockImage = configURL + x.destination + "/" + x.filename
+            })
+        }
+        if (req.files && !!req.files.posterImage && req.files.posterImage.length > 0) {
+            req.files.posterImage.map((x) => {
+                posterImage = configURL + x.destination + "/" + x.filename
+            })
+        }
+        if (req.files && !!req.files.couponFile && req.files.couponFile.length > 0) {
+            req.files.couponFile.map((x) => {
+                couponFile = configURL + x.destination + "/" + x.filename
+            })
+        }
+        if (req.files && !!req.files.staffDocument && req.files.staffDocument.length > 0) {
+            req.files.staffDocument.map((x) => {
+                staffDocument = configURL + x.destination + "/" + x.filename
+            })
+        }
+        if (req.files && !!req.files.staffProfileImage && req.files.staffProfileImage.length > 0) {
+            req.files.staffProfileImage.map((x) => {
+                staffProfileImage = configURL + x.destination + "/" + x.filename
+            })
+        }
+        if (req.files && !!req.files.cashierImage && req.files.cashierImage.length > 0) {
+            req.files.cashierImage.map((x) => {
+                cashierImage = configURL + x.destination + "/" + x.filename
+            })
+        }
+
         createResponse({
-            ingredienceImage, cuisineImage, categoryImage, modifierImage, restaurantMenuIcon
+            ingredienceImage, cuisineImage, categoryImage, modifierImage, restaurantMenuIcon, restaurantServiceImage, restaurantStockImage, posterImage, couponFile, staffDocument, staffProfileImage, cashierImage
         }, 200, 'File Upload Successfully.', res)
 
     } catch (error) {

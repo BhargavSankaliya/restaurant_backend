@@ -1,15 +1,24 @@
 const mongoose = require("mongoose");
+const { CountryCodes } = require("validator/lib/isISO31661Alpha2");
 
 const LoginVerificationSchema = mongoose.Schema(
   {
     email: {
       type: String,
-      require: true
+      default: ""
     },
     otp: {
       type: Number,
+      require: true
+    },
+    conutryCode: {
+      type: String,
       default: ""
     },
+    phoneNumber: {
+      type: String,
+      default: ""
+    }
   },
   { timestamps: true }
 );
