@@ -23,6 +23,7 @@ commonFilter.roleMasterPermissionsObject = {
     name: "$menuDetails.name",
     icon: "$menuDetails.icon",
     url: "$menuDetails.url",
+    parentName: "$menuDetails.parentName",
     status: "$menuDetails.status",
     isDeleted: "$menuDetails.isDeleted",
     createdAt: "$menuDetails.createdAt",
@@ -32,6 +33,7 @@ commonFilter.menuMasterObject = {
     _id: 1,
     name: 1,
     url: 1,
+    parentName: 1,
     icon: 1,
     status: 1,
 }
@@ -130,7 +132,7 @@ commonFilter.itemObj = {
     price: 1,
     image: 1,
     status: 1,
-    categoryName:"$categoryData.name"
+    categoryName: "$categoryData.name"
 }
 commonFilter.reastaurantTable = {
     _id: 1,

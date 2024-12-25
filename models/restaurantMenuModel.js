@@ -18,6 +18,7 @@ const restaurantMenuSchema = new mongoose.Schema(
       required: [true, "URL is required."],
       default: "",
     },
+   
     restaurantId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "restaurants",

@@ -189,8 +189,8 @@ authController.getSideMenuList = async (req, res, next) => {
         },
       },
     ];
-    const users = await RoleMasterModel.aggregate(query);
-    createResponse(users, 200, "Users retrieved successfully.", res);
+    const menList = await RoleMasterModel.aggregate(query);
+    createResponse(menList[0] && menList[0].permissions.length > 0 ? menList[0].permissions : [], 200, "Menu List retrieved successfully.", res);
   } catch (error) {
     errorHandler(error, req, res);
   }

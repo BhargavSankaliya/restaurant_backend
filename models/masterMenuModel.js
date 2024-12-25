@@ -15,7 +15,12 @@ const masterMenuSchema = new mongoose.Schema(
     },
     url: {
       type: String,
-      required: [true, "URL is required."],
+      required: [false, "URL is required."],
+      default: "",
+    },
+    parentName: {
+      type: String,
+      required: [false, "Parent Name is required."],
       default: "",
     },
     status: {
