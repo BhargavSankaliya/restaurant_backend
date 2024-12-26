@@ -42,7 +42,6 @@ const stockHistoryRoute = require("./routes/RestaurantAdmin/stockHistoryRoute")
 const couponRoute = require("./routes/RestaurantAdmin/couponRoute")
 const OfferRoute = require("./routes/RestaurantAdmin/OfferRoute")
 const RestaurantPosterRoute = require("./routes/RestaurantAdmin/restaurantPosterRoute.js")
-const RestaurantCashierRoute=require("./routes/RestaurantAdmin/CashierRoute.js")
 
 //customer 
 const CustomerAuthRoute = require("./routes/Customer/customerAuthRoutes.js")
@@ -101,7 +100,6 @@ app.use("/api/restaurant-admin-stock-history", stockHistoryRoute);
 app.use("/api/restaurant-admin-coupon", couponRoute);
 app.use("/api/restaurant-admin-offer", OfferRoute);
 app.use("/api/restaurant-admin-poster", RestaurantPosterRoute);
-app.use("/api/restaurant-admin-cashier", RestaurantCashierRoute);
 
 
 //Customer Rooutes
