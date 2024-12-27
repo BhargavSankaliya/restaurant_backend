@@ -43,7 +43,7 @@ const stockHistoryRoute = require("./routes/RestaurantAdmin/stockHistoryRoute")
 const couponRoute = require("./routes/RestaurantAdmin/couponRoute")
 const OfferRoute = require("./routes/RestaurantAdmin/OfferRoute")
 const RestaurantPosterRoute = require("./routes/RestaurantAdmin/restaurantPosterRoute.js")
-const RestaurantCashierRoute = require("./routes/RestaurantAdmin/CashierRoute.js")
+// const RestaurantCashierRoute = require("./routes/RestaurantAdmin/CashierRoute.js")
 
 //customer 
 const CustomerAuthRoute = require("./routes/Customer/customerAuthRoutes.js")
