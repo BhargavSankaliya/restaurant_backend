@@ -9,6 +9,6 @@ router.put("/incrementDecrement", CutomerAuthCheck, addToCart.incrementDecrement
 router.post("/", CutomerAuthCheck, addToCart.AddToCart);
 router.put("/", CutomerAuthCheck, addToCart.UpdateQuantity);
 router.delete("/", CutomerAuthCheck, addToCart.RemoveItem);
-router.get("/:restaurantId", CutomerAuthCheck, addToCart.GetCartItems);
+router.get("/", CutomerAuthCheck, addToCart.GetCartItems);
 
 module.exports = router;
