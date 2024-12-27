@@ -1,50 +1,52 @@
 const mongoose = require("mongoose");
-const validator = require("validator");
 const commonSchema = require("./CommonModel");
+
+const optionSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    default: "Default",
+  },
+  price: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  isDefault: {
+    type: Boolean,
+    required: true,
+    default: true,
+  },
+});
 
 const itemSchema = new mongoose.Schema(
   {
     itemId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: [true, "Item ID is required."],
+      required: true,
       ref: "Items",
     },
     quantity: {
       type: Number,
-      required: [true, "Quantity is required."],
-      min: [1, "Quantity must be at least 1."],
+      required: true,
+      min: 1,
       default: 1,
     },
     option: {
-      name: {
-        type: String,
-        required: true
-      },
-      price: {
-        type: String,
-        required: true
-      }
+      type: [optionSchema],
+      default: [],
     },
-    choices: [
-      {
-        name: {
-          type: String,
-          required: false
-        },
-        itemId: [
-          {
-            type: mongoose.Schema.Types.ObjectId,
-            required: false
-          }
-        ]
-      }
-    ],
+    choices: {
+      type: [String],
+      default: [],
+    },
     modifiers: [
       {
         type: mongoose.Schema.Types.ObjectId,
         required: false,
+        default: null,
       },
-    ]
+    ],
   },
   { timestamps: true }
 );
@@ -53,15 +55,18 @@ const addToCartSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: [true, "User ID is required."],
+      required: true,
       ref: "User",
     },
     restaurantId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: [true, "Restaurant ID is required."],
+      required: true,
       ref: "Restaurant",
     },
-    items: [itemSchema],
+    items: {
+      type: [itemSchema],
+      default: [],
+    },
   },
   { timestamps: true }
 );

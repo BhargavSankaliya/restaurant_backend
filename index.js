@@ -103,7 +103,6 @@ app.use("/api/restaurant-admin-stock-history", stockHistoryRoute);
 app.use("/api/restaurant-admin-coupon", couponRoute);
 app.use("/api/restaurant-admin-offer", OfferRoute);
 app.use("/api/restaurant-admin-poster", RestaurantPosterRoute);
-app.use("/api/restaurant-admin-cashier", RestaurantCashierRoute);
 
 
 //Customer Rooutes

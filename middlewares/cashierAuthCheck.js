@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const createResponse = require("./response");
-const CashierModel = require("../models/CashierModel");
+const CashierModel = require("../models/restaurantStaffModel");
 require('dotenv').config();
 
 async function auth(req, res, next) {
