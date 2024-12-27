@@ -13,6 +13,11 @@ const languageSchema = new mongoose.Schema({
     required: false,
     default: null
   },
+  localeField: {
+    type: String,
+    required: false,
+    default: null
+  },
   restaurantId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "restaurants",
