@@ -3,7 +3,7 @@ const createResponse = require("./response");
 const CustomerModel = require("../models/customerModel");
 require('dotenv').config();
 
-async function auth(req, res, next) {
+async function customerAuth(req, res, next) {
     if (!!req.headers.authorization) {
         const token = req.headers.authorization.split(" ")[1];
         jwt.verify(token, process.env.JWT_SECRET, async function (err, decoded) {
@@ -25,4 +25,4 @@ async function auth(req, res, next) {
     }
 }
 
-module.exports = auth;
+module.exports = customerAuth;

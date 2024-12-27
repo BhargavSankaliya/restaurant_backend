@@ -124,6 +124,7 @@ commonFilter.couponMasterObj = {
     limit: 1,
     start_date: 1,
     end_date: 1,
+    file: 1,
     min_order_value: 1,
     discount_percentage: 1,
     max_discounted_amount: 1,

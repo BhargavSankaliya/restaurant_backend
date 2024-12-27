@@ -91,17 +91,9 @@ couponController.couponList = async (req, res) => {
       {
         $project: commonFilter.couponMasterObj
       },
-      {
-        $skip: Number(skip),
-      },
-      {
-        $limit: Number(limit)
-      }
     ]);
-    let result = {
-      data: Coupon,
-      pagination: await commonFilter.paginationCalculation(Coupon, limit, page)
-    }
+
+    let result = Coupon
     createResponse(result, 200, "Coupon found Successfully.", res);
   } catch (error) {
     console.log(error);
