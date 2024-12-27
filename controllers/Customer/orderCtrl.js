@@ -8,15 +8,13 @@ const { Emitter } = require('../../events/eventEmmiter.js');
 const { userSockets } = require('../../socket.js');
 const { EVENTS } = require('../../middlewares/events.js');
 
-
 exports.customerPlaceOrder = async (req, res) => {
     try {
         const {
             restaurantId,
             items,
             totalAmount,
-            couponCode,
-            couponId,
+            coupons,
             tableId,
             tableNumber,
             dining,
@@ -35,40 +33,48 @@ exports.customerPlaceOrder = async (req, res) => {
         let discount = 0;
         let finalAmount = totalAmount;
 
-        if (couponCode && couponId) {
-            const coupon = await CouponModel.findOne({
-                _id: convertIdToObjectId(couponId),
-                code: couponCode,
-                status: "Active",
-                $or: [{ restaurantId: null }, { restaurantId: convertIdToObjectId(restaurantId) }],
-            });
+        if (coupons && coupons.length > 0) {
+            for (const { couponId, couponCode } of coupons) {
+                const coupon = await CouponModel.findOne({
+                    _id: convertIdToObjectId(couponId),
+                    code: couponCode,
+                    status: "Active",
+                    $or: [{ restaurantId: null }, { restaurantId: convertIdToObjectId(restaurantId) }],
+                });
 
-            if (!coupon) {
-                throw new CustomError1(400, "Invalid or inactive coupon.");
-            }
+                if (!coupon) {
+                    throw new CustomError1(400, "Invalid or inactive coupon.");
+                }
 
-            if (["datewise", "both"].includes(coupon.type)) {
-                const now = new Date();
-                if (coupon.start_date && coupon.end_date && (now < coupon.start_date || now > coupon.end_date)) {
-                    throw new CustomError1(400, "Coupon has expired or is not yet active.");
+                if (["datewise", "both"].includes(coupon.type)) {
+                    const now = new Date();
+                    if (coupon.start_date && coupon.end_date && (now < coupon.start_date || now > coupon.end_date)) {
+                        throw new CustomError1(400, "Coupon has expired or is not yet active.");
+                    }
+                }
+
+                if (["limit", "both"].includes(coupon.type) && coupon.limit <= 0) {
+                    throw new CustomError1(400, "Coupon usage limit has been reached.");
+                }
+
+                if (coupon.min_order_value > 0 && totalAmount < coupon.min_order_value) {
+                    throw new CustomError1(400, `Minimum order value for this coupon is ${coupon.min_order_value}.`);
+                }
+
+                const currentDiscount = Math.min(
+                    (totalAmount * (coupon.discount_percentage / 100)),
+                    coupon.max_discounted_amount > 0 ? coupon.max_discounted_amount : totalAmount
+                );
+
+                discount += currentDiscount;
+
+                if (["limit", "both"].includes(coupon.type)) {
+                    coupon.limit -= 1;
+                    await coupon.save();
                 }
             }
 
-            if (["limit", "both"].includes(coupon.type) && coupon.limit <= 0) {
-                throw new CustomError1(400, "Coupon usage limit has been reached.");
-            }
-
-            if (totalAmount < coupon.min_order_value) {
-                throw new CustomError1(400, `Minimum order value for this coupon is ${coupon.min_order_value}.`);
-            }
-
-            discount = Math.min((totalAmount * (coupon.discount_percentage / 100)), coupon.max_discounted_amount || totalAmount);
             finalAmount = totalAmount - discount;
-
-            if (["limit", "both"].includes(coupon.type)) {
-                coupon.limit -= 1;
-                await coupon.save();
-            }
         }
 
         if (altogether) {
@@ -88,12 +94,19 @@ exports.customerPlaceOrder = async (req, res) => {
             deliveryAddress,
             altogether,
             items,
-            totalAmount,
-            discount,
-            finalAmount,
-            couponId: couponId ? convertIdToObjectId(couponId) : null,
-            couponCode: couponCode || null,
-            status: altogether ? "Preparing" : "Pending"
+            coupons: coupons.map(({ couponId, couponCode }) => ({
+                couponId: couponId ? convertIdToObjectId(couponId) : null,
+                couponCode: couponCode || null,
+            })),
+            payment: {
+                totalAmount,
+                discountAmount: discount,
+                finalAmount,
+                tipAmount: 0,
+                gst: 0,
+            },
+            status: altogether ? "Preparing" : "Pending",
+            orderBy: req.customer.source || "customer",
         });
 
         await order.save();
@@ -120,7 +133,6 @@ exports.customerPlaceOrder = async (req, res) => {
     }
 };
 
-
 exports.getCustomerOrderHistory = async (req, res) => {
     try {
         const userId = req.customer._id;
@@ -146,92 +158,131 @@ exports.getCustomerOrderHistory = async (req, res) => {
                 },
             },
             {
+                $lookup: {
+                    from: "coupons",
+                    localField: "coupons.couponId",
+                    foreignField: "_id",
+                    as: "appliedCoupons",
+                },
+            },
+            {
+                $lookup: {
+                    from: "tables",
+                    localField: "tableId",
+                    foreignField: "_id",
+                    as: "tableDetails",
+                },
+            },
+            {
+                $lookup: {
+                    from: "modifiers",
+                    localField: "items.modifiers",
+                    foreignField: "_id",
+                    as: "modifierDetails",
+                },
+            },
+            {
                 $sort: { createdAt: -1 },
             },
             {
                 $project: {
                     orderId: "$_id",
                     restaurantName: { $arrayElemAt: ["$restaurant.name", 0] },
+                    tableNumber: { $arrayElemAt: ["$tableDetails.tableNumber", 0] },
+                    pickupAddress: 1,
+                    deliveryAddress: 1,
+                    dining: 1,
+                    takeaway: 1,
+                    altogether: 1,
+                    orderBy: 1,
+                    status: 1,
+                    payment: 1,
+                    coupons: {
+                        $map: {
+                            input: "$appliedCoupons",
+                            as: "coupon",
+                            in: {
+                                couponId: "$$coupon._id",
+                                name: "$$coupon.name",
+                                file: "$$coupon.file",
+                                couponCode: "$$coupon.code",
+                                discountType: "$$coupon.type",
+                                min_order_value: "$$coupon.min_order_value",
+                                discount_percentage: "$$coupon.discount_percentage",
+                                max_discounted_amount: "$$coupon.max_discounted_amount",
+                                expirationDate: "$$coupon.expirationDate",
+                                description: "$$coupon.description",
+                            },
+                        },
+                    },
                     items: {
                         $map: {
                             input: "$items",
                             as: "orderItem",
                             in: {
                                 name: {
-                                    $arrayElemAt: [
-                                        {
-                                            $map: {
-                                                input: {
-                                                    $filter: {
-                                                        input: "$menuItems",
-                                                        as: "menuItem",
-                                                        cond: { $eq: ["$$menuItem._id", "$$orderItem.itemId"] },
+                                    $let: {
+                                        vars: {
+                                            item: {
+                                                $arrayElemAt: [
+                                                    "$menuItems",
+                                                    {
+                                                        $indexOfArray: ["$menuItems._id", "$$orderItem.itemId"],
                                                     },
-                                                },
-                                                as: "menuItem",
-                                                in: "$$menuItem.name",
+                                                ],
                                             },
                                         },
-                                        0,
-                                    ],
+                                        in: "$$item.name",
+                                    },
                                 },
                                 description: {
-                                    $arrayElemAt: [
-                                        {
-                                            $map: {
-                                                input: {
-                                                    $filter: {
-                                                        input: "$menuItems",
-                                                        as: "menuItem",
-                                                        cond: { $eq: ["$$menuItem._id", "$$orderItem.itemId"] },
+                                    $let: {
+                                        vars: {
+                                            item: {
+                                                $arrayElemAt: [
+                                                    "$menuItems",
+                                                    {
+                                                        $indexOfArray: ["$menuItems._id", "$$orderItem.itemId"],
                                                     },
-                                                },
-                                                as: "menuItem",
-                                                in: "$$menuItem.description",
+                                                ],
                                             },
                                         },
-                                        0,
-                                    ],
+                                        in: "$$item.description",
+                                    },
                                 },
                                 image: {
-                                    $arrayElemAt: [
-                                        {
-                                            $map: {
-                                                input: {
-                                                    $filter: {
-                                                        input: "$menuItems",
-                                                        as: "menuItem",
-                                                        cond: { $eq: ["$$menuItem._id", "$$orderItem.itemId"] },
+                                    $let: {
+                                        vars: {
+                                            item: {
+                                                $arrayElemAt: [
+                                                    "$menuItems",
+                                                    {
+                                                        $indexOfArray: ["$menuItems._id", "$$orderItem.itemId"],
                                                     },
-                                                },
-                                                as: "menuItem",
-                                                in: "$$menuItem.image",
+                                                ],
                                             },
                                         },
-                                        0,
-                                    ],
+                                        in: "$$item.image",
+                                    },
                                 },
                                 quantity: "$$orderItem.quantity",
                                 itemPrice: {
                                     $toDouble: {
                                         $ifNull: [
                                             {
-                                                $arrayElemAt: [
-                                                    {
-                                                        $map: {
-                                                            input: {
-                                                                $filter: {
-                                                                    input: "$menuItems",
-                                                                    as: "menuItem",
-                                                                    cond: { $eq: ["$$menuItem._id", "$$orderItem.itemId"] },
+                                                $let: {
+                                                    vars: {
+                                                        item: {
+                                                            $arrayElemAt: [
+                                                                "$menuItems",
+                                                                {
+                                                                    $indexOfArray: ["$menuItems._id", "$$orderItem.itemId"],
                                                                 },
-                                                            },
-                                                            as: "menuItem",
-                                                            in: "$$menuItem.price",
+                                                            ],
                                                         },
                                                     },
-                                                    0,
-                                                ],
+                                                    in: "$$item.price",
+                                                },
                                             },
                                             0,
                                         ],
@@ -244,22 +295,19 @@ exports.getCustomerOrderHistory = async (req, res) => {
                                             $toDouble: {
                                                 $ifNull: [
                                                     {
-                                                        $arrayElemAt: [
-                                                            {
-                                                                $map: {
-                                                                    input: {
-                                                                        $filter: {
-                                                                            input: "$menuItems",
-                                                                            as: "menuItem",
-                                                                            cond: { $eq: ["$$menuItem._id", "$$orderItem.itemId"] },
+                                                        $let: {
+                                                            vars: {
+                                                                item: {
+                                                                    $arrayElemAt: [
+                                                                        "$menuItems",
+                                                                        {
+                                                                            $indexOfArray: ["$menuItems._id", "$$orderItem.itemId"],
                                                                         },
-                                                                    },
-                                                                    as: "menuItem",
-                                                                    in: "$$menuItem.price",
+                                                                    ],
                                                                 },
                                                             },
-                                                            0,
-                                                        ],
+                                                            in: "$$item.price",
+                                                        },
                                                     },
                                                     0,
                                                 ],
@@ -267,13 +315,21 @@ exports.getCustomerOrderHistory = async (req, res) => {
                                         },
                                     ],
                                 },
+                                modifiers: {
+                                    $map: {
+                                        input: "$modifierDetails",
+                                        as: "modifier",
+                                        in: {
+                                            modifierName: "$$modifier.additionalItemName",
+                                            description: "$$modifier.description",
+                                            price: "$$modifier.price",
+                                            image: "$$modifier.image",
+                                        },
+                                    },
+                                },
                             },
                         },
                     },
-                    totalAmount: 1,
-                    discount: 1,
-                    finalAmount: 1,
-                    createdAt: 1,
                 },
             },
         ]);
@@ -288,6 +344,22 @@ exports.getCustomerOrderHistory = async (req, res) => {
         errorHandler1(error, req, res);
     }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
