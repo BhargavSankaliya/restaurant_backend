@@ -13,7 +13,7 @@ const languageSchema = new mongoose.Schema({
     required: false,
     default: null
   },
-  localeField: {
+  locale: {
     type: String,
     required: false,
     default: null

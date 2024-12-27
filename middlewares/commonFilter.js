@@ -188,7 +188,7 @@ commonFilter.languageMasterObj = {
     name: 1,
     direction: 1,
     status: 1,
-    localeField: 1,
+    locale: 1,
     isDeleted: 1,
     createdAt: 1
 }
