@@ -10,5 +10,4 @@ router.post("/verify-otp", CustomerAuthCtrl.verifyOTP)
 router.post("/resend-otp", CustomerAuthCtrl.resendOTP)
 
 
-
 module.exports = router

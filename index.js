@@ -11,6 +11,7 @@ const config = require('./config/index')
 const cors = require("cors");
 const { socketConnection } = require('./socket.js')
 const { startEventListener } = require('./events/eventListners.js')
+const customerAuth = require("./middlewares/cutomerAuthCheck.js");
 
 //Master Admin
 const userRoute = require("./routes/masterAdmin/userRoute");
@@ -42,6 +43,7 @@ const stockHistoryRoute = require("./routes/RestaurantAdmin/stockHistoryRoute")
 const couponRoute = require("./routes/RestaurantAdmin/couponRoute")
 const OfferRoute = require("./routes/RestaurantAdmin/OfferRoute")
 const RestaurantPosterRoute = require("./routes/RestaurantAdmin/restaurantPosterRoute.js")
+const RestaurantCashierRoute = require("./routes/RestaurantAdmin/CashierRoute.js")
 
 //customer 
 const CustomerAuthRoute = require("./routes/Customer/customerAuthRoutes.js")
@@ -51,6 +53,7 @@ const CustomerModifierRoute = require("./routes/Customer/modifierRoutes.js")
 const CustomerAddToCartRoute = require("./routes/Customer/addToCartRoutes.js")
 const CustomerPosterRoute = require("./routes/Customer/PosterRoutes.js")
 const CustomerPlaceOrderRoute = require("./routes/Customer/orderRoutes.js")
+const CustomerCouponRoute = require("./routes/Customer/couponRoutes.js")
 
 //Cashier
 const CashierAuthRoute = require("./routes/Cashier/CashierAuthRoute.js")
@@ -109,6 +112,7 @@ app.use("/api/customer-item", CustomerItemRoute)
 app.use("/api/customer-modifier", CustomerModifierRoute)
 app.use("/api/customer-add-to-cart", CustomerAddToCartRoute)
 app.use("/api/customer-poster", CustomerPosterRoute)
+app.use("/api/customer-coupons", CustomerCouponRoute)
 app.use("/api/customer-place-order", CustomerPlaceOrderRoute)
 
 // Cashier Routes
