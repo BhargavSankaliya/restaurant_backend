@@ -39,6 +39,8 @@ languageController.createLanguage = async (req, res, next) => {
       createResponse(Language, 200, "Language Updated Successfully.", res);
     }
   } catch (error) {
+    console.log(error);
+    
     errorHandler(error, req, res);
   }
 };

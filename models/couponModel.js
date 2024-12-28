@@ -24,7 +24,6 @@ const couponSchema = new mongoose.Schema({
     default: 'Active',
   }
 });
-
 couponSchema.add(commonSchema);
 
 couponSchema.pre('save', async function (next) {

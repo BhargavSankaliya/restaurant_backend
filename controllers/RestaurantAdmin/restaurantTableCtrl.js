@@ -10,7 +10,7 @@ exports.createUpdate = async (req, res, next) => {
         let restaurantId = convertIdToObjectId(req.restaurant._id)
         if (req?.query?.id) {
             const { id } = req?.query;
-            let body = { ...req.bode, restaurantId }
+            let body = { ...req.body, restaurantId }
             const existing = await RestaurantTableModel.findOne({
                 _id: { $ne: convertIdToObjectId(id) },
                 restaurantId: restaurantId,
