@@ -1,17 +1,17 @@
 const { CustomError, errorHandler } = require("../../middlewares/error.js");
 const createResponse = require("../../middlewares/response.js");
-const CategoryModel = require("../../models/categoryModel.js");
+const TableModel = require("../../models/restaurantTableModel.js");
 const { convertIdToObjectId, commonFilter } = require("../../middlewares/commonFilter.js");
 
 
-exports.categoryList = async (req, res) => {
+exports.list = async (req, res) => {
     try {
         let matchObj = {}
         matchObj.isDeleted = false
         matchObj.restaurantId = convertIdToObjectId(req.cashier.restaurantId)
         matchObj.status = "Active"
         
-        const result = await CategoryModel.aggregate([
+        const result = await TableModel.aggregate([
             {
                 $match: matchObj
             },
@@ -23,13 +23,14 @@ exports.categoryList = async (req, res) => {
             {
                 $project: {
                     _id: 1,
-                    name: 1,
-                    image: 1,
-                    description: 1
+                    tableNumber: 1,
+                    openTime:1,
+                    qrcode:1,
+                    capacity: 1
                 }
             },
         ]);
-        createResponse(result, 200, "Category retrive Successfully.", res);
+        createResponse(result, 200, "Table retrive Successfully.", res);
     } catch (error) {
         errorHandler(error, req, res);
     }

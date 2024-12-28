@@ -11,7 +11,6 @@ const config = require('./config/index')
 const cors = require("cors");
 const { socketConnection } = require('./socket.js')
 const { startEventListener } = require('./events/eventListners.js')
-const customerAuth = require("./middlewares/cutomerAuthCheck.js");
 
 //Master Admin
 const userRoute = require("./routes/masterAdmin/userRoute");
@@ -60,6 +59,9 @@ const CashierAuthRoute = require("./routes/Cashier/CashierAuthRoute.js")
 const CashierRestaurantRoute = require("./routes/Cashier/CashierRestaurantRoute.js")
 const CashierPlaceOrderRoute = require("./routes/Cashier/orderRoutes.js")
 const CashierAddToCartRoute = require("./routes/Cashier/addToCartRoutes.js")
+const CashierCategoryRoute =require("./routes/Cashier/CategoryRoutes.js")
+const CashierTableRoute =require("./routes/Cashier/TableRoutes.js")
+const CashierItemRoute =require("./routes/Cashier/ItemRoute.js")
 
 dotenv.config();
 app.use(cors());
@@ -120,6 +122,9 @@ app.use("/api/cashier", CashierAuthRoute)
 app.use("/api/cashier-restaurant", CashierRestaurantRoute)
 app.use("/api/cashier-place-order", CashierPlaceOrderRoute)
 app.use("/api/cashier-add-to-cart", CashierAddToCartRoute)
+app.use("/api/cashier-category", CashierCategoryRoute)
+app.use("/api/cashier-table", CashierTableRoute)
+app.use("/api/cashier-item", CashierItemRoute)
 
 // Error handling
 app.use((err, req, res, next) => {

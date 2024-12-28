@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router()
 const cashierAuthCheck = require("../../middlewares/cashierAuthCheck");
-const CategoryCtrl = require('../../controllers/Cashier/categoryCtrl');
+const ItemCtrl = require('../../controllers/Cashier/ItemCtrl');
 
 
-router.get("/", cashierAuthCheck, CategoryCtrl.categoryList);
+router.get("/:categoryId", cashierAuthCheck, ItemCtrl.list);
 
 module.exports = router
