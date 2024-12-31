@@ -110,7 +110,7 @@ exports.verifyOTP = async (req, res) => {
         const checkOTP = await LoginVerificationModel.findOne({
             email: email,
         });
-        if (checkOTP?.otp !== Number(otp)) {
+        if (checkOTP?.otp !== String(otp)) {
             throw new CustomError("Invalid OTP", 400);
         }
         createResponse({}, 200, "OTP verifiy successfully", res);
@@ -140,7 +140,7 @@ exports.resetPassword = async (req, res) => {
         const checkOTP = await LoginVerificationModel.findOne({
             email: email,
         });
-        if (checkOTP?.otp !== Number(otp)) {
+        if (checkOTP?.otp !== String(otp)) {
             throw new CustomError("Invalid OTP", 400);
         }
         await deleteOTP(email, otp);
@@ -169,7 +169,7 @@ exports.changePassword = async (req, res) => {
             });
         }
 
-        await RestaurantStaffModel.findByIdAndUpdate(req.cashier._id, { $set: { pin:pin} })
+        await RestaurantStaffModel.findByIdAndUpdate(req.cashier._id, { $set: { pin: pin } })
         createResponse({}, 200, "Password updated successfully", res);
 
     } catch (error) {
@@ -217,7 +217,7 @@ exports.list = async (req, res) => {
 const deleteOTP = async (email, otp) => {
     let deleteOTP = await LoginVerificationModel.findOneAndDelete({
         email: email,
-        otp,
+        otp: String(otp),
     });
     if (!deleteOTP) {
         console.log("Unable to delete OTP");

@@ -2,7 +2,23 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const commonSchema = require("./CommonModel");
 
-
+const openingHourSchema = new mongoose.Schema(
+  {
+    day: {
+      type: String,
+      default: ""
+    },
+    startTime: {
+      type: String,
+      default: ""
+    },
+    endTime: {
+      type: String,
+      default: ""
+    }
+  },
+  { _id: false }
+);
 const itemsSchema = new mongoose.Schema(
   {
     name: {
@@ -46,17 +62,35 @@ const itemsSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: [true, 'Ingredient is required.']
     },
-    options: {
-      type: Array,
-      default: []
-    },
-    choices: {
-      type: Array,
-      default: []
-    }
-
-  },
-  { timestamps: true }
+    options: [{
+      name: {
+        type: String,
+        default: ""
+      },
+      minChoice: {
+        type: Number,
+        default: 1,
+      },
+      maxChoice: {
+        type: Number,
+        default: 2,
+      },
+      items: {
+        type: Array,
+        default: []
+      }
+    }],
+    choices: [{
+      name: {
+        type: String,
+        default: ""
+      },
+      price: {
+        type: Number,
+        default: 0
+      }
+    }],
+  }, { timestamps: true }
 );
 
 itemsSchema.add(commonSchema);

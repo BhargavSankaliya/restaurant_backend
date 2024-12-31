@@ -8,7 +8,7 @@ const LoginVerificationSchema = mongoose.Schema(
       default: ""
     },
     otp: {
-      type: Number,
+      type: String,
       require: true
     },
     dialCode: {

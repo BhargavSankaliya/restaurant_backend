@@ -83,7 +83,7 @@ exports.verifyOTP = async (req, res) => {
         if (!checkOTP) {
             throw new CustomError("Invalid phone number or country code", 400);
         }
-        if (checkOTP?.otp !== Number(otp)) {
+        if (checkOTP?.otp !== String(otp)) {
             throw new CustomError("Invalid OTP", 400);
         }
 
@@ -152,7 +152,7 @@ const deleteOTP = async (phoneNumber, dialCode, otp) => {
     let deleteOTP = await LoginVerificationModel.findOneAndDelete({
         phoneNumber: phoneNumber,
         dialCode: dialCode,
-        otp: otp,
+        otp: String(otp),
     });
     if (!deleteOTP) {
         console.log("Unable to delete OTP");
