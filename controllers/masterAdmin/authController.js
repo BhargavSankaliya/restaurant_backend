@@ -255,7 +255,6 @@ authController.forgotPassword = async (req, res) => {
     }
     try {
       const otp = await Helper.generateRandomString(6, true)
-      console.log(otp, typeof (otp));
 
       let checkEmail = await LoginVerificationModel.findOne({ email: email });
       if (checkEmail) { await LoginVerificationModel.findByIdAndUpdate(checkEmail._id, { $set: { otp: otp } }); }
@@ -292,7 +291,7 @@ authController.verifyOTP = async (req, res) => {
     const checkOTP = await LoginVerificationModel.findOne({
       email: email,
     });
-    if (checkOTP?.otp !== Number(otp)) {
+    if (checkOTP?.otp !== String(otp)) {
       throw new CustomError("Invalid OTP", 400);
     }
     createResponse({}, 200, "OTP verifiy successfully", res);
@@ -322,7 +321,7 @@ authController.resetPassword = async (req, res) => {
     const checkOTP = await LoginVerificationModel.findOne({
       email: email,
     });
-    if (checkOTP?.otp !== Number(otp)) {
+    if (checkOTP?.otp !== String(otp)) {
       throw new CustomError("Invalid OTP", 400);
     }
     password = await Helper.bcyptPass(password)
@@ -365,7 +364,7 @@ authController.changePassword = async (req, res) => {
 const deleteOTP = async (email, otp) => {
   let deleteOTP = await LoginVerificationModel.findOneAndDelete({
     email: email,
-    otp,
+    otp: String(otp),
   });
   if (!deleteOTP) {
     console.log("Unable to delete OTP");

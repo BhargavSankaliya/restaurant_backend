@@ -325,7 +325,7 @@ restaurantStaffController.verifyOTP = async (req, res) => {
     const checkOTP = await LoginVerificationModel.findOne({
       email: email,
     });
-    if (checkOTP?.otp !== Number(otp)) {
+    if (checkOTP?.otp !== otp) {
       throw new CustomError("Invalid OTP", 400);
     }
     createResponse({}, 200, "OTP verifiy successfully", res);
@@ -354,7 +354,7 @@ restaurantStaffController.resetPin = async (req, res) => {
     const checkOTP = await LoginVerificationModel.findOne({
       email: email,
     });
-    if (checkOTP?.otp !== Number(otp)) {
+    if (checkOTP?.otp !== otp) {
       throw new CustomError("Invalid OTP", 400);
     }
     await deleteOTP(email, otp);
@@ -394,7 +394,7 @@ restaurantStaffController.changePin = async (req, res) => {
 const deleteOTP = async (email, code) => {
   let deleteOTP = await LoginVerificationModel.findOneAndDelete({
     email: email,
-    otp: code,
+    otp: String(code),
   });
   if (!deleteOTP) {
     console.log("Unable to delete OTP");
