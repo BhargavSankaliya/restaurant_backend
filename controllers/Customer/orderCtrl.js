@@ -220,6 +220,21 @@ exports.getCustomerOrderHistory = async (req, res) => {
                             input: "$items",
                             as: "orderItem",
                             in: {
+                                id: {
+                                    $let: {
+                                        vars: {
+                                            item: {
+                                                $arrayElemAt: [
+                                                    "$menuItems",
+                                                    {
+                                                        $indexOfArray: ["$menuItems._id", "$$orderItem.itemId"],
+                                                    },
+                                                ],
+                                            },
+                                        },
+                                        in: "$$item._id",
+                                    },
+                                },
                                 name: {
                                     $let: {
                                         vars: {
@@ -263,6 +278,66 @@ exports.getCustomerOrderHistory = async (req, res) => {
                                             },
                                         },
                                         in: "$$item.image",
+                                    },
+                                },
+                                spiceLevel: {
+                                    $let: {
+                                        vars: {
+                                            item: {
+                                                $arrayElemAt: [
+                                                    "$menuItems",
+                                                    {
+                                                        $indexOfArray: ["$menuItems._id", "$$orderItem.itemId"],
+                                                    },
+                                                ],
+                                            },
+                                        },
+                                        in: "$$item.spiceLevel",
+                                    },
+                                },
+                                status: {
+                                    $let: {
+                                        vars: {
+                                            item: {
+                                                $arrayElemAt: [
+                                                    "$menuItems",
+                                                    {
+                                                        $indexOfArray: ["$menuItems._id", "$$orderItem.itemId"],
+                                                    },
+                                                ],
+                                            },
+                                        },
+                                        in: "$$item.status",
+                                    },
+                                },
+                                options: {
+                                    $let: {
+                                        vars: {
+                                            item: {
+                                                $arrayElemAt: [
+                                                    "$menuItems",
+                                                    {
+                                                        $indexOfArray: ["$menuItems._id", "$$orderItem.itemId"],
+                                                    },
+                                                ],
+                                            },
+                                        },
+                                        in: "$$item.options",
+                                    },
+                                },
+                                choices: {
+                                    $let: {
+                                        vars: {
+                                            item: {
+                                                $arrayElemAt: [
+                                                    "$menuItems",
+                                                    {
+                                                        $indexOfArray: ["$menuItems._id", "$$orderItem.itemId"],
+                                                    },
+                                                ],
+                                            },
+                                        },
+                                        in: "$$item.choices",
                                     },
                                 },
                                 quantity: "$$orderItem.quantity",

@@ -127,9 +127,8 @@ exports.GetCartItems = async (req, res) => {
                     _id: 1,
                     itemUniqueId: "$items._id",
                     itemId: "$items.itemId",
-                    name: "$itemDetails.name",
                     quantity: "$items.quantity",
-                    price: "$itemDetails.price",
+                    itemDetails: "$itemDetails",
                     totalPrice: { $multiply: ["$items.quantity", "$itemDetails.price"] },
                     choices: "$items.choices",
                     modifiers: "$modifierDetails",
@@ -138,22 +137,31 @@ exports.GetCartItems = async (req, res) => {
             },
         ]);
 
-        const items = cart.map(item => ({
+        const items = cart.map((item) => ({
             _id: item._id,
             itemUniqueId: item.itemUniqueId,
             itemId: item.itemId,
-            name: item.name,
             quantity: item.quantity,
-            price: item.price,
             totalPrice: item.totalPrice,
             choices: item.choices,
-            modifiers: item.modifiers.map(modifier => ({
+            modifiers: item.modifiers.map((modifier) => ({
                 id: modifier._id,
                 additionalItemName: modifier.additionalItemName,
                 description: modifier.description,
                 restaurantId: modifier.restaurantId,
                 price: modifier.price,
             })),
+            itemDetails: {
+                id: item.itemDetails._id,
+                name: item.itemDetails.name,
+                description: item.itemDetails.description,
+                image: item.itemDetails.image,
+                price: item.itemDetails.price,
+                spiceLevel: item.itemDetails.spiceLevel,
+                status: item.itemDetails.status,
+                options: item.itemDetails.options,
+                choices: item.itemDetails.choices,
+            },
             option: item.option,
         }));
 
@@ -178,6 +186,7 @@ exports.GetCartItems = async (req, res) => {
         errorHandler1(error, req, res);
     }
 };
+
 
 exports.incrementDecrement = async (req, res) => {
     try {
