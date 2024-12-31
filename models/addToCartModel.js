@@ -72,6 +72,19 @@ const addToCartSchema = new mongoose.Schema(
       type: [itemSchema],
       default: [],
     },
+    coupons: [
+      {
+        couponId: { type: mongoose.Schema.Types.ObjectId, ref: "Coupon", default: null },
+        couponCode: { type: String, default: null },
+      },
+    ],
+    payment: {
+      totalAmount: { type: Number, required: true, default: 0 },
+      discountAmount: { type: Number, default: 0 },
+      finalAmount: { type: Number, required: true },
+      tipAmount: { type: Number, required: true, default: 0 },
+      gst: { type: Number, required: true, default: 0 },
+    },
   },
   { timestamps: true }
 );
