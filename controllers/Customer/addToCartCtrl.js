@@ -249,12 +249,16 @@ exports.RemoveItem = async (req, res) => {
         const cart = await addToCartModel.findOne({
             userId: userId,
             restaurantId: convertIdToObjectId(restaurantId),
-            _id: convertIdToObjectId(_id),
             isDeleted: false,
         });
 
         if (!cart) {
             throw new CustomError1(404, "Cart not found.");
+        }
+
+        if (req.query.type == 'all') {
+            await addToCartModel.deleteOne({ _id: cart._id })
+            return createResponse(null, 200, "Item removed from cart successfully.", res);
         }
 
         const itemIndex = cart.items.findIndex(

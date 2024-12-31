@@ -32,6 +32,11 @@ const itemSchema = new mongoose.Schema(
       min: 1,
       default: 1,
     },
+    notes: {
+      type: String,
+      required: false,
+      default: "",
+    },
     option: {
       type: [optionSchema],
       default: [],
