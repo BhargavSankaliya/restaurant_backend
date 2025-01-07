@@ -53,6 +53,7 @@ const CustomerAddToCartRoute = require("./routes/Customer/addToCartRoutes.js")
 const CustomerPosterRoute = require("./routes/Customer/PosterRoutes.js")
 const CustomerPlaceOrderRoute = require("./routes/Customer/orderRoutes.js")
 const CustomerCouponRoute = require("./routes/Customer/couponRoutes.js")
+const CustomerRestaurantRoute = require("./routes/Customer/restaurantCtrl.js")
 
 //Cashier
 const CashierAuthRoute = require("./routes/Cashier/CashierAuthRoute.js")
@@ -116,6 +117,7 @@ app.use("/api/customer-add-to-cart", CustomerAddToCartRoute)
 app.use("/api/customer-poster", CustomerPosterRoute)
 app.use("/api/customer-coupons", CustomerCouponRoute)
 app.use("/api/customer-place-order", CustomerPlaceOrderRoute)
+app.use("/api/customer-restaurant-order", CustomerRestaurantRoute)
 
 // Cashier Routes
 app.use("/api/cashier", CashierAuthRoute)
