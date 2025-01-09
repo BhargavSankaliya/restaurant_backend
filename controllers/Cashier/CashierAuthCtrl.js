@@ -217,7 +217,7 @@ exports.userListByRestaurantId = async (req, res) => {
 exports.list = async (req, res) => {
     try {
 
-        const result = await restaurantModel.aggregate([
+        let query = [
             {
                 $match: {
                     isDeleted: false,
@@ -233,8 +233,21 @@ exports.list = async (req, res) => {
 
                 }
             }
-        ]);
-        createResponse(result, 200, "Restaurant retrive Successfully.", res);
+        ];
+
+        if (req.query.restaurantId) {
+            query.push({
+                $match: {
+                    _id: convertIdToObjectId(req.query.restaurantId)
+                }
+            })
+        }
+
+        const result = await restaurantModel.aggregate(query);
+
+
+
+        createResponse(!req.query.restaurantId ? result : result[0], 200, "Restaurant retrive Successfully.", res);
 
 
     } catch (error) {
