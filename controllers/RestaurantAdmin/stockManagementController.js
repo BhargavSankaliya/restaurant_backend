@@ -44,7 +44,29 @@ stockManagementController.stockGetById = async (req, res) => {
         $match: { _id: convertIdToObjectId(id) }
       },
       {
-        $project: commonFilter.restaurantStockManagementObj
+        $lookup: {
+          from: "categories",
+          localField: "category",
+          foreignField: "_id",
+          as: "categoryDetails",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+                image: 1
+              }
+            }
+          ]
+        }
+      },
+      {
+        $unwind: {
+          path: "$categoryDetails",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $project: { ...commonFilter.restaurantStockManagementObj, categoryDetails: 1 }
       }
     ]);
     createResponse(Stock?.length > 0 ? Stock[0] : [], 200, "Stock found Successfully.", res);

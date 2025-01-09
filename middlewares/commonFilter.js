@@ -157,6 +157,7 @@ commonFilter.restaurantStockManagementObj = {
     minThreshold: 1,
     purchasePrice: 1,
     sellPrice: 1,
+    category: 1,
     expiryDate: 1,
     status: 1,
     isDeleted: 1,

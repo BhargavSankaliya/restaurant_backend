@@ -5,7 +5,8 @@ const niv = require("node-input-validator");
 const LoginVerificationModel = require("../../models/loginVerification.js")
 const otpHelper = require("../../helper/otpHelper.js")
 const Helper = require("../../helper/helper.js")
-const { convertIdToObjectId } = require("../../middlewares/commonFilter.js")
+const { convertIdToObjectId } = require("../../middlewares/commonFilter.js");
+const restaurantModel = require("../../models/restaurantModel.js");
 
 exports.login = async (req, res) => {
     try {
@@ -180,7 +181,7 @@ exports.changePassword = async (req, res) => {
 
 
 //Drop down
-exports.list = async (req, res) => {
+exports.userListByRestaurantId = async (req, res) => {
     try {
         let matchObj = {}
         matchObj.isDeleted = false
@@ -206,6 +207,34 @@ exports.list = async (req, res) => {
             },
         ]);
         createResponse(result, 200, "Cashier retrive Successfully.", res);
+
+
+    } catch (error) {
+        errorHandler(error, req, res);
+
+    }
+}
+exports.list = async (req, res) => {
+    try {
+
+        const result = await restaurantModel.aggregate([
+            {
+                $match: {
+                    isDeleted: false,
+                    status: 'Active'
+                }
+            },
+            {
+                $project: {
+                    token: 0,
+                    createdAt: 0,
+                    updatedAt: 0,
+                    deletedAt: 0,
+
+                }
+            }
+        ]);
+        createResponse(result, 200, "Restaurant retrive Successfully.", res);
 
 
     } catch (error) {
