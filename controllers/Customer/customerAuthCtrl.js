@@ -7,6 +7,7 @@ const niv = require("node-input-validator");
 const smsHelper = require("../../helper/smsHelper.js")
 const Helper = require("../../helper/helper.js")
 const LoginVerificationModel = require("../../models/loginVerification.js");
+const restaurantTableModel = require("../../models/restaurantTableModel.js");
 
 exports.SendOtp = async (req, res) => {
     try {
@@ -147,6 +148,43 @@ exports.resendOTP = async (req, res) => {
         errorHandler(error, req, res);
     }
 }
+
+exports.get = async (req, res) => {
+    try {
+        const { restaurantId } = req?.params;
+        const restaurant = await RestaurantModel.aggregate([
+            {
+                $match: {
+                    isDeleted: false,
+                    status: "Active",
+                    _id: convertIdToObjectId(restaurantId)
+                }
+            },
+            {
+                $project: commonFilter.restaurantMasterObj
+            },
+        ]);
+        if (restaurant.length == 0) {
+            throw new CustomError("No data found", 404)
+        }
+        createResponse(restaurant[0], 200, "Restaurant retrieved successfully.", res);
+    } catch (error) {
+        errorHandler(error, req, res);
+    }
+}
+
+exports.getTableById = async (req, res, next) => {
+    try {
+        let id = convertIdToObjectId(req.params.id)
+        const table = await restaurantTableModel.findOne({ _id: id }, { _id: 1, name: 1, tableNumber: 1, capacity: 1, status: 1, openTime: 1, qrcode: 1 });
+        if (!table) {
+            throw new CustomError("Table not found!", 404);
+        }
+        createResponse(table, 200, "Table retrieved successfully.", res);
+    } catch (error) {
+        errorHandler(error, req, res);
+    }
+};
 
 const deleteOTP = async (phoneNumber, dialCode, otp) => {
     let deleteOTP = await LoginVerificationModel.findOneAndDelete({

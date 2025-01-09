@@ -77,11 +77,11 @@ exports.customerPlaceOrder = async (req, res) => {
             finalAmount = totalAmount - discount;
         }
 
-        if (altogether) {
-            items.forEach((val) => {
-                val.status = "Preparing";
-            });
-        }
+        // if (altogether) {
+        //     items.forEach((val) => {
+        //         val.status = "Preparing";
+        //     });
+        // }
 
         const order = new OrderModel({
             userId: convertIdToObjectId(userId),

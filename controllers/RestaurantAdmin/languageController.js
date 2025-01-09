@@ -16,7 +16,7 @@ languageController.createLanguage = async (req, res, next) => {
       }
       let createObj = { ...req.body, restaurantId }
       let LanguageCreated = await LanguageModel.create(createObj);
-      createResponse(LanguageCreated, 200, "Language Created Successfully.", res);
+      return createResponse(LanguageCreated, 200, "Language Created Successfully.", res);
     } else {
       const { id } = req?.query;
       const existing = await LanguageModel.findOne({
@@ -36,11 +36,11 @@ languageController.createLanguage = async (req, res, next) => {
       if (!Language) {
         throw new CustomError("Language could not be edited!", 400);
       }
-      createResponse(Language, 200, "Language Updated Successfully.", res);
+      return createResponse(Language, 200, "Language Updated Successfully.", res);
     }
   } catch (error) {
     console.log(error);
-    
+
     errorHandler(error, req, res);
   }
 };

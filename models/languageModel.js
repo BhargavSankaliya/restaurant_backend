@@ -6,7 +6,6 @@ const languageSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    // unique: true,
   },
   direction: {
     type: String,

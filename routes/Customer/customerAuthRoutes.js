@@ -8,6 +8,8 @@ const CustomerModel = require('../../models/customerModel');
 router.post("/send-otp", validateSchema(CustomerModel), CustomerAuthCtrl.SendOtp)
 router.post("/verify-otp", CustomerAuthCtrl.verifyOTP)
 router.post("/resend-otp", CustomerAuthCtrl.resendOTP)
+router.get("/:restaurantId", CustomerAuthCtrl.get);
+router.get("/table/:id", CustomerAuthCtrl.getTableById);
 
 
 module.exports = router
