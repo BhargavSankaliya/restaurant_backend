@@ -5,7 +5,7 @@ const ModifierCtrl = require('../../controllers/Customer/modifierCtrl');
 const CutomerAuthCheck = require("../../middlewares/cutomerAuthCheck");
 
 
-router.get("/list/:restaurantId", CutomerAuthCheck, ModifierCtrl.List)
+router.get("/list/:restaurantId", ModifierCtrl.List)
 
 
 

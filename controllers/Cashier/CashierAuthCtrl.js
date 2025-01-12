@@ -34,16 +34,14 @@ exports.login = async (req, res) => {
         cashier.save()
 
         const response = {
-            data: {
-                id: cashier?._id,
-                firstName: cashier?.firstName,
-                lastName: cashier?.lastName,
-                mobile: cashier?.mobile,
-                email: cashier?.email,
-                gender: cashier?.gender,
-                restaurantId: cashier?.restaurantId,
-                image: cashier?.image,
-            },
+            id: cashier?._id,
+            firstName: cashier?.firstName,
+            lastName: cashier?.lastName,
+            mobile: cashier?.mobile,
+            email: cashier?.email,
+            gender: cashier?.gender,
+            restaurantId: cashier?.restaurantId,
+            image: cashier?.image,
             token: cashier.token,
         };
 

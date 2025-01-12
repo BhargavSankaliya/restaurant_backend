@@ -5,7 +5,7 @@ const CategoryCtrl = require('../../controllers/Customer/categoryCtrl');
 const CutomerAuthCheck = require("../../middlewares/cutomerAuthCheck");
 
 
-router.get("/list/:restaurantId", CutomerAuthCheck, CategoryCtrl.List)
+router.get("/list/:restaurantId", CategoryCtrl.List)
 
 
 

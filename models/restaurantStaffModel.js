@@ -103,6 +103,11 @@ const restaurantStaffSchema = new mongoose.Schema({
     required: false,
     default: ""
   },
+  token: {
+    type: String,
+    required: false,
+    default: ""
+  },
   status: {
     type: String,
     enum: ['Active', 'Inactive'],

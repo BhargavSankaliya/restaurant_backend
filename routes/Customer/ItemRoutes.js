@@ -5,7 +5,7 @@ const ItemCtrl = require('../../controllers/Customer/ItemCtrl');
 const CutomerAuthCheck = require("../../middlewares/cutomerAuthCheck");
 
 
-router.get("/list/:categoryId", CutomerAuthCheck, ItemCtrl.List)
+router.get("/list/:categoryId", ItemCtrl.List)
 
 
 
