@@ -11,23 +11,14 @@ itemsController.createUpdate = async (req, res, next) => {
   try {
     let { name, description, image, price, spiceLevel, categoryId, ingredientId, choices, options } = req.body;
     let restaurantId = convertIdToObjectId(req.restaurant._id)
-    if (!choices || choices.length == 0) {
-      req.body.choices = [
-        {
-          name: "",
-          minChoice: 1,
-          maxChoice: 2,
-          items: []
-        }
-      ]
-    }
-    if (!options || options.length == 0) {
-      req.body.options = [
-        {
-          name: "",
-          price: 0
-        }
-      ]
+
+
+    if (choices && choices.length > 0) {
+      req.body.choices.map((x) => {
+        x.items = x.items.map((y) =>
+          convertIdToObjectId(y)
+        )
+      })
     }
 
     if (req?.query?.itemId) {

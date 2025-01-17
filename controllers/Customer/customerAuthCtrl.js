@@ -52,7 +52,7 @@ exports.SendOtp = async (req, res) => {
             await CustomerModel.create(newObj)
         }
 
-        createResponse({}, 200, "Otp sent successfully", res);
+        createResponse(otpObj.otp, 200, "Otp sent successfully", res);
     } catch (error) {
         console.log("Error", error)
         errorHandler(error, req, res);

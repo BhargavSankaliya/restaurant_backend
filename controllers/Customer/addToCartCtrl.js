@@ -28,7 +28,7 @@ exports.AddToCart = async (req, res) => {
         };
 
         let paymentObject = {
-            totalAmount: await calculatePrice(itemId, quantity, modifiers),
+            totalAmount: await calculatePrice(itemId, quantity, modifiers, option.price),
             discountAmount: 0,
             finalAmount: 0,
             tipAmount: 0,
@@ -136,12 +136,12 @@ const calculateGST = async (totalAmount) => {
     return gstAmount;
 }
 
-const calculatePrice = async (itemId, quantity, modifiers) => {
+const calculatePrice = async (itemId, quantity, modifiers, price) => {
     let itemIds = await itemsModel.findById(itemId);
 
     let itemTotalPrice = 0;
 
-    itemTotalPrice = itemIds.price * quantity;
+    itemTotalPrice = (price ? price : itemIds.price) * quantity;
 
     if (modifiers && modifiers.length > 0) {
         let mPrice = 0;
@@ -351,7 +351,7 @@ exports.incrementDecrement = async (req, res) => {
 
         let items = updatedCart.items.map(async (x) => {
 
-            let calculateAmount = await calculatePrice(x.itemId, x.quantity, x.modifiers)
+            let calculateAmount = await calculatePrice(x.itemId, x.quantity, x.modifiers, x.option[0].price)
 
             paymentObject = {
                 totalAmount: paymentObject.totalAmount + calculateAmount,
@@ -446,7 +446,7 @@ exports.RemoveItem = async (req, res) => {
 
             let items = cart.items.map(async (x) => {
 
-                let calculateAmount = await calculatePrice(x.itemId, x.quantity, x.modifiers)
+                let calculateAmount = await calculatePrice(x.itemId, x.quantity, x.modifiers, x.option[0].price)
 
                 paymentObject = {
                     totalAmount: paymentObject.totalAmount + calculateAmount,
@@ -506,7 +506,7 @@ exports.addCouponinCart = async (req, res) => {
 
         let items = cart.items.map(async (x) => {
 
-            let calculateAmount = await calculatePrice(x.itemId, x.quantity, x.modifiers)
+            let calculateAmount = await calculatePrice(x.itemId, x.quantity, x.modifiers, x.option[0].price)
 
             paymentObject = {
                 totalAmount: paymentObject.totalAmount + calculateAmount,
@@ -567,7 +567,7 @@ exports.addCouponinCart = async (req, res) => {
             paymentObject.discountAmount = discount;
         }
 
-        
+
         cart.payment = paymentObject;
         cart.coupons = coupons;
         cart.save();

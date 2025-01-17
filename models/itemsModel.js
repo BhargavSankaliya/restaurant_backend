@@ -62,25 +62,21 @@ const itemsSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: [true, 'Ingredient is required.']
     },
-    options: [{
+    choices: [{
       name: {
         type: String,
-        default: ""
       },
       minChoice: {
         type: Number,
-        default: 1,
       },
       maxChoice: {
         type: Number,
-        default: 2,
       },
       items: {
         type: Array,
-        default: []
       }
     }],
-    choices: [{
+    options: [{
       name: {
         type: String,
         default: ""

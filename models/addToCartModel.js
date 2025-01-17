@@ -42,7 +42,7 @@ const itemSchema = new mongoose.Schema(
       default: [],
     },
     choices: {
-      type: [String],
+      type: Array,
       default: [],
     },
     modifiers: [
