@@ -57,9 +57,9 @@ exports.customerPlaceOrder = async (req, res) => {
                     throw new CustomError1(400, "Coupon usage limit has been reached.");
                 }
 
-                if (coupon.min_order_value > 0 && totalAmount < coupon.min_order_value) {
-                    throw new CustomError1(400, `Minimum order value for this coupon is ${coupon.min_order_value}.`);
-                }
+                // if (coupon.min_order_value > 0 && totalAmount < coupon.min_order_value) {
+                //     throw new CustomError1(400, `Minimum order value for this coupon is ${coupon.min_order_value}.`);
+                // }
 
                 const currentDiscount = Math.min(
                     (totalAmount * (coupon.discount_percentage / 100)),

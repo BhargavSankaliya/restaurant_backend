@@ -10,7 +10,8 @@ switch (process.env.NODE_ENV) {
       },
       server: {
         port: process.env.PROD_PORT,
-      }
+      },
+      uploadUrl: process.env.URL
     };
     break;
   case 'staging':
@@ -20,7 +21,8 @@ switch (process.env.NODE_ENV) {
       },
       server: {
         port: process.env.STAGING_PORT,
-      }
+      },
+      uploadUrl: process.env.URL
     };
     break;
   case 'development':

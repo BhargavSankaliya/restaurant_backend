@@ -40,7 +40,7 @@ const languageMethodRoute = require("./routes/RestaurantAdmin/languageRoute")
 const stockManagementMethodRoute = require("./routes/RestaurantAdmin/stockManagementRoute")
 const stockHistoryRoute = require("./routes/RestaurantAdmin/stockHistoryRoute")
 const couponRoute = require("./routes/RestaurantAdmin/couponRoute")
-const OfferRoute = require("./routes/RestaurantAdmin/OfferRoute")
+const offerRoute = require("./routes/RestaurantAdmin/offerRoute.js")
 const RestaurantPosterRoute = require("./routes/RestaurantAdmin/restaurantPosterRoute.js")
 // const RestaurantCashierRoute = require("./routes/RestaurantAdmin/CashierRoute.js")
 
@@ -60,9 +60,9 @@ const CashierAuthRoute = require("./routes/Cashier/CashierAuthRoute.js")
 const CashierRestaurantRoute = require("./routes/Cashier/CashierRestaurantRoute.js")
 const CashierPlaceOrderRoute = require("./routes/Cashier/orderRoutes.js")
 const CashierAddToCartRoute = require("./routes/Cashier/addToCartRoutes.js")
-const CashierCategoryRoute =require("./routes/Cashier/CategoryRoutes.js")
-const CashierTableRoute =require("./routes/Cashier/TableRoutes.js")
-const CashierItemRoute =require("./routes/Cashier/ItemRoute.js")
+const CashierCategoryRoute = require("./routes/Cashier/CategoryRoutes.js")
+const CashierTableRoute = require("./routes/Cashier/TableRoutes.js")
+const CashierItemRoute = require("./routes/Cashier/ItemRoute.js")
 
 dotenv.config();
 app.use(cors());
@@ -73,6 +73,7 @@ app.use(cookieParser());
 
 // Serve static files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/assets", express.static(path.join(__dirname, "assets")));
 
 
 //master Admin 
@@ -104,7 +105,7 @@ app.use("/api/restaurant-admin-language", languageMethodRoute);
 app.use("/api/restaurant-admin-stock-management", stockManagementMethodRoute);
 app.use("/api/restaurant-admin-stock-history", stockHistoryRoute);
 app.use("/api/restaurant-admin-coupon", couponRoute);
-app.use("/api/restaurant-admin-offer", OfferRoute);
+app.use("/api/restaurant-admin-offer", offerRoute);
 app.use("/api/restaurant-admin-poster", RestaurantPosterRoute);
 
 
@@ -142,13 +143,48 @@ app.use((err, req, res, next) => {
 });
 app.use(errorHandler);
 
-// Serve static files from the frontend directory
-app.use(express.static(path.join(__dirname, 'frontend')));
+// // Serve the static files from the dist directory
+// app.use(express.static(path.join(__dirname, 'frontend')));
+
+// // Serve the index.html file for all requests (for Angular routing)
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'frontend/index.html'));
+// });
+
+
+// Serve static files for /qrapp
+// app.use(express.static(path.join(__dirname, 'qrapp')));
+// app.use((req, res, next) => {
+//   const host = req.headers.host;
+//   let staticFolder = null;
+//   if (req.url.includes("qrapp")) {
+//     staticFolder = path.join(__dirname, 'frontend/qrapp');
+//   }
+//   else {
+//     staticFolder = path.join(__dirname, 'qrapp');
+//   }
+
+
+//   if (staticFolder) {
+//     express.static(staticFolder)(req, res, next);
+//   } else {
+//     res.status(404).send('Domain not found');
+//   }
+// });
+
+// app.get('*', (req, res) => {
+//   if (req.url.includes("qrapp")) {
+//     res.sendFile(path.join(__dirname, 'frontend/qrapp/index.html'));
+//   }
+// });
+
+// Serve static files for /kdsapp
+// app.use('/masteradminpanel', express.static(path.join(__dirname, 'frontend/masteradminpanel')));
 
 // Create HTTP server
 const http = require("http");
 let server = http.createServer(app);
-app.set("port", process.env.PORT || config.PORT);
+app.set("port", config.server.port);
 
 Promise.all([
   socketConnection(server),

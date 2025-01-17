@@ -1,11 +1,11 @@
 const { CustomError, errorHandler } = require("../../middlewares/error.js");
 const createResponse = require("../../middlewares/response.js");
-const OfferModel = require("../../models/OfferModel.js");
+const OfferModel = require("../../models/offerModel.js");
 const { convertIdToObjectId, commonFilter } = require("../../middlewares/commonFilter.js");
 
-const OfferController = {};
+const offerController = {};
 
-OfferController.createOffer = async (req, res, next) => {
+offerController.createOffer = async (req, res, next) => {
   try {
     let restaurantId = convertIdToObjectId(req.restaurant._id)
     if (!req?.query?.id) {
@@ -43,7 +43,7 @@ OfferController.createOffer = async (req, res, next) => {
   }
 };
 
-OfferController.OfferGetById = async (req, res) => {
+offerController.OfferGetById = async (req, res) => {
   try {
     const { id } = req?.params;
     const Offer = await OfferModel.aggregate([
@@ -62,7 +62,7 @@ OfferController.OfferGetById = async (req, res) => {
   }
 }
 
-OfferController.OfferList = async (req, res) => {
+offerController.OfferList = async (req, res) => {
   try {
     let { status, limit, page } = req?.query;
     let matchObj = {}
@@ -109,7 +109,7 @@ OfferController.OfferList = async (req, res) => {
   }
 }
 
-OfferController.toggleStatus = async (req, res) => {
+offerController.toggleStatus = async (req, res) => {
   try {
     let id = convertIdToObjectId(req?.params?.id)
     let Offer = await OfferModel.findById(id)
@@ -124,7 +124,7 @@ OfferController.toggleStatus = async (req, res) => {
   }
 }
 
-OfferController.delete = async (req, res) => {
+offerController.delete = async (req, res) => {
   try {
     let id = convertIdToObjectId(req?.params?.id)
     let OfferCheck = await OfferModel.findById(id)
@@ -139,7 +139,7 @@ OfferController.delete = async (req, res) => {
 }
 
 
-OfferController.dropDown = async (req, res) => {
+offerController.dropDown = async (req, res) => {
   try {
 
     let restaurantId = convertIdToObjectId(req.restaurant._id)
@@ -151,4 +151,4 @@ OfferController.dropDown = async (req, res) => {
 }
 
 
-module.exports = { OfferController };
+module.exports = { offerController };
