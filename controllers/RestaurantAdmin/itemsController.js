@@ -135,7 +135,7 @@ itemsController.toggleStatus = async (req, res, next) => {
 itemsController.getItemById = async (req, res, next) => {
   try {
     let itemId = convertIdToObjectId(req.params.id)
-    const Item = await ItemsModel.findOne({ _id: itemId }, { _id: 1, name: 1, description: 1, image: 1, price: 1, spiceLevel: 1, status: 1, categoryId: 1, ingredientId: 1, options: 1, choices: 1, createdAt: 1 });
+    const Item = await ItemsModel.findOne({ _id: itemId }, { _id: 1, name: 1, description: 1, image: 1, price: 1, spiceLevel: 1, status: 1, categoryId: 1, ingredientId: 1, options: 1, choices: 1, createdAt: 1, itemBackgroundImage: 1 });
     if (!Item) {
       throw new CustomError("Item not found!", 404);
     }
