@@ -232,6 +232,7 @@ commonFilter.itemObj = {
     name: 1,
     price: 1,
     image: 1,
+    itemBackgroundImage: 1,
     status: 1,
     categoryName: "$categoryData.name"
 }
