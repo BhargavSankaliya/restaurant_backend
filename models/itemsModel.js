@@ -35,6 +35,10 @@ const itemsSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Image is requied.'],
     },
+    itemBackgroundImage: {
+      type: String,
+      required: false,
+    },
     price: {
       type: Number,
       required: [true, 'Price is requied.'],
