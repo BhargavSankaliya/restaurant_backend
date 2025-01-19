@@ -2,6 +2,7 @@ const { CustomError, errorHandler } = require("../../middlewares/error.js");
 const createResponse = require("../../middlewares/response.js");
 const ItemModel = require("../../models/itemsModel.js");
 const { convertIdToObjectId, commonFilter } = require("../../middlewares/commonFilter.js");
+const IngredienceModel = require("../../models/ingredience.js");
 
 
 exports.List = async (req, res) => {
@@ -55,6 +56,9 @@ exports.List = async (req, res) => {
                     image: {
                         $first: "$image"
                     },
+                    ingredientId: {
+                        $first: "$ingredientId"
+                    },
                     spiceLevel: {
                         $first: "$spiceLevel"
                     },
@@ -79,6 +83,7 @@ exports.List = async (req, res) => {
                     image: 1,
                     description: 1,
                     price: 1,
+                    ingredientId: 1,
                     choices: 1,
                     options: 1,
                 }
@@ -89,5 +94,19 @@ exports.List = async (req, res) => {
         console.log(error);
 
         errorHandler(error, req, res);
+    }
+}
+
+
+exports.ingredientById = async (req, res) => {
+    try {
+        let ingredientId = req.query.ingredientId;
+
+        let response = await IngredienceModel.findById(ingredientId);
+
+        createResponse(response, 200, "", res)
+
+    } catch (error) {
+        errorHandler(error)
     }
 }
