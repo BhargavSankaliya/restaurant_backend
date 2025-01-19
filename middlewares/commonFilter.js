@@ -222,6 +222,7 @@ commonFilter.modifierMasterObj = {
     price: 1,
     image: 1,
     status: 1,
+    categoryId: 1,
     isDeleted: 1,
     createdAt: 1
 }

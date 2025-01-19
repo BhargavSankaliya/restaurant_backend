@@ -20,6 +20,10 @@ const modifierSchema = new mongoose.Schema(
       ref: "restaurants",
       default: null
     },
+    categoryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: null
+    },
     price: {
       type: Number,
       required: [true, 'Price is requied.'],

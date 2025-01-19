@@ -6,107 +6,167 @@ const modifierController = {};
 
 modifierController.createNewModifier = async (req, res, next) => {
   try {
-    let restaurantId = convertIdToObjectId(req.restaurant._id)
+    let restaurantId = convertIdToObjectId(req.restaurant._id);
+
     if (!req?.query?.id) {
-      let { additionalItemName, } = req.body;
-      const findModifire = await ModifierModel.findOne({ additionalItemName: additionalItemName, isDeleted: false, restaurantId: restaurantId });
-      if (findModifire) {
-        throw new CustomError("Modifire already exists!", 400);
+      let { additionalItemName, categoryId } = req.body;
+
+      let convertedCategoryId = convertIdToObjectId(categoryId);
+
+      const findModifier = await ModifierModel.findOne({
+        additionalItemName: additionalItemName,
+        // categoryId: convertedCategoryId,
+        isDeleted: false,
+        restaurantId: restaurantId,
+      });
+
+      if (findModifier) {
+        throw new CustomError("Modifier with this name and category already exists!", 400);
       }
-      let createObj = { ...req.body, restaurantId }
-      let newRoleCreated = await ModifierModel.create(
-        createObj
-      );
-      createResponse(newRoleCreated, 200, "New modifire created successfully.", res);
+
+      let createObj = { ...req.body, categoryId: convertedCategoryId, restaurantId };
+      let newModifierCreated = await ModifierModel.create(createObj);
+
+      createResponse(newModifierCreated, 200, "New modifier created successfully.", res);
     } else {
       const { id } = req?.query;
+      const { additionalItemName, categoryId } = req.body;
+
+      let convertedCategoryId = convertIdToObjectId(categoryId);
+
       const existingModifier = await ModifierModel.findOne({
-        additionalItemName: req?.body?.additionalItemName,
+        additionalItemName: additionalItemName,
+        // categoryId: convertedCategoryId,
         restaurantId: restaurantId,
         isDeleted: false,
         _id: { $ne: convertIdToObjectId(id) },
       });
+
       if (existingModifier) {
-        throw new CustomError("Additional Item Name already exists!", 400);
+        throw new CustomError("Modifier with this name and category already exists!", 400);
       }
+
       const updatedModifierData = await ModifierModel.findOneAndUpdate(
-        { _id: id },
-        req?.body,
+        { _id: convertIdToObjectId(id) },
+        { ...req.body, categoryId: convertedCategoryId },
         { new: true }
       );
+
       createResponse(updatedModifierData, 200, "Modifier updated successfully.", res);
     }
   } catch (error) {
-    console.log("error", error)
-    errorHandler(error, req, res)
+    console.log("error", error);
+    errorHandler(error, req, res);
   }
-}
+};
+
 
 modifierController.getModifierList = async (req, res) => {
   try {
     let { status, limit, page } = req?.query;
-    let matchObj = {}
-    matchObj.isDeleted = false
-    matchObj.restaurantId = convertIdToObjectId(req.restaurant._id)
+    let matchObj = {};
+    matchObj.isDeleted = false;
+    matchObj.restaurantId = convertIdToObjectId(req.restaurant._id);
+
     if (!limit) {
-      limit = 10
+      limit = 10;
     }
     if (!page) {
-      page = 1
+      page = 1;
     }
-    let skip = (Number(page) - 1) * Number(limit)
+
+    let skip = (Number(page) - 1) * Number(limit);
+
     if (status) {
-      matchObj.status = status
+      matchObj.status = status;
     }
+
     const Cuisines = await ModifierModel.aggregate([
       {
-        $match: matchObj
+        $match: matchObj,
+      },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "categoryId",
+          foreignField: "_id",
+          as: "categoryDetails",
+        },
+      },
+      {
+        $unwind: {
+          path: "$categoryDetails",
+          preserveNullAndEmptyArrays: true,
+        },
       },
       {
         $sort: {
-          createdAt: -1
-        }
+          createdAt: -1,
+        },
       },
       {
-        $project: commonFilter.modifierMasterObj
+        $project: {
+          ...commonFilter.modifierMasterObj,
+          categoryDetails: 1,
+        },
       },
       {
         $skip: Number(skip),
       },
       {
-        $limit: Number(limit)
-      }
+        $limit: Number(limit),
+      },
     ]);
+
     let result = {
       data: Cuisines,
-      pagination: await commonFilter.paginationCalculation(Cuisines, limit, page)
-    }
+      pagination: await commonFilter.paginationCalculation(Cuisines, limit, page),
+    };
+
     createResponse(result, 200, "Modifier found Successfully.", res);
   } catch (error) {
     console.log(error);
-
     errorHandler(error, req, res);
   }
-}
+};
 
 modifierController.getModifierById = async (req, res) => {
   try {
     const { id } = req?.params;
+
     const Modifier = await ModifierModel.aggregate([
       {
-        $match: { _id: convertIdToObjectId(id) }
+        $match: { _id: convertIdToObjectId(id) },
       },
       {
-        $project: commonFilter.modifierMasterObj
-      }
+        $lookup: {
+          from: "categories",
+          localField: "categoryId",
+          foreignField: "_id",
+          as: "categoryDetails",
+        },
+      },
+      {
+        $unwind: {
+          path: "$categoryDetails",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $project: {
+          ...commonFilter.modifierMasterObj,
+          categoryDetails: 1,
+        },
+      },
     ]);
+
     createResponse(Modifier?.length > 0 ? Modifier[0] : [], 200, "Modifier found Successfully.", res);
   } catch (error) {
     console.log(error);
-
     errorHandler(error, req, res);
   }
-}
+};
+
 
 modifierController.toggleStatus = async (req, res) => {
   try {
