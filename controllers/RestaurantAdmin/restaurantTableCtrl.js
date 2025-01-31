@@ -22,8 +22,9 @@ exports.createUpdate = async (req, res, next) => {
             if (existing) {
                 throw new CustomError("Table already exist!", 400);
             }
-            body.qrcode = await Helper.QRCodeGen(body)
+            body.qrcode = await Helper.QRCodeGen(body, req.query.id)
             await RestaurantTableModel.findOneAndUpdate({ _id: convertIdToObjectId(id) }, { $set: body })
+
             createResponse({}, 200, "Table Updated Successfully.", res);
         } else {
             let body = { ...req.body, restaurantId }

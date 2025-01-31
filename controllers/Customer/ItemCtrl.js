@@ -85,6 +85,7 @@ exports.List = async (req, res) => {
                     price: 1,
                     ingredientId: 1,
                     choices: 1,
+                    spiceLevel: 1,
                     options: 1,
                 }
             },

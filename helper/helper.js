@@ -56,7 +56,7 @@ exports.generateRandomString = (length, isNumber = false) => {
 
 
 
-exports.QRCodeGen = async (data) => {
+exports.QRCodeGen = async (data, id) => {
     try {
         let startPoint = "./";
         let filePath = `uploads/restaurant/${data.restaurantId}/QR/`;
@@ -68,7 +68,7 @@ exports.QRCodeGen = async (data) => {
             fs.mkdirSync(dirPath, { recursive: true });
         }
 
-        let qrcode = process.env.FRONTENDURL + `?tableId=${data._id}&restaurantId=${data.restaurantId}`
+        let qrcode = process.env.FRONTENDURL + `?tableId=${data._id ? data._id : id}&restaurantId=${data.restaurantId}`
 
         const jsonData = JSON.stringify(data);
 
